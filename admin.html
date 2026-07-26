@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin — The Spirit Creative</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="icon" href="assets/spirit-mark.png" type="image/png" />
+    <link rel="stylesheet" href="admin.css?v=36" />
+  </head>
+  <body class="admin-body">
+    <section class="lock-screen" id="lockScreen">
+      <form class="lock-card" id="loginForm">
+        <img src="assets/spirit-logo.png" alt="" class="lock-logo" />
+        <p class="eyebrow">Private Admin</p>
+        <h1>The Spirit Creative</h1>
+        <label>
+          <span>Password</span>
+          <input id="passwordInput" type="password" autocomplete="current-password" required />
+        </label>
+        <button class="btn-primary" type="submit">Unlock Dashboard</button>
+        <p class="status-text" id="loginStatus" role="status"></p>
+      </form>
+    </section>
+
+    <main class="admin-app" id="adminApp" hidden>
+      <header class="admin-header">
+        <div class="admin-header-left">
+          <img src="assets/spirit-logo.png" alt="" class="admin-logo" />
+          <div>
+            <p class="eyebrow">Dashboard</p>
+            <h1 id="panelTitle">Projects</h1>
+          </div>
+        </div>
+        <div class="admin-actions">
+          <a class="btn-secondary" href="index.html" target="_blank">View Site</a>
+          <button class="btn-secondary" id="exportButton" type="button">Export Works</button>
+          <label class="btn-secondary file-action">
+            Import
+            <input id="importInput" type="file" accept="application/json" hidden />
+          </label>
+          <button class="btn-secondary" id="logoutButton" type="button">Log Out</button>
+        </div>
+      </header>
+
+      <nav class="admin-tabs" aria-label="Admin sections">
+        <button class="tab-btn is-active" type="button" data-panel="works">
+          Projects <span class="badge" id="worksCount">0</span>
+        </button>
+        <button class="tab-btn" type="button" data-panel="inquiries">
+          Inquiries <span class="badge badge-alert" id="inquiryBadge" hidden>0</span>
+        </button>
+      </nav>
+
+      <div class="admin-panel is-active" id="worksPanel">
+        <div class="admin-layout">
+          <aside class="sidebar">
+            <button class="btn-primary full-width" id="newWorkButton" type="button">+ Add Project</button>
+            <p class="sidebar-hint">Drag to reorder · Toggle visibility</p>
+            <div class="work-list" id="workList" aria-label="Projects list"></div>
+          </aside>
+
+          <section class="editor">
+            <form id="workForm">
+              <div class="editor-head">
+                <h2 id="editorTitle">Select a project</h2>
+                <div class="editor-actions">
+                  <button class="btn-secondary danger" id="deleteButton" type="button">Delete</button>
+                  <button class="btn-primary" type="submit">Save Project</button>
+                </div>
+              </div>
+
+              <label class="toggle-row">
+                <input type="checkbox" name="visible" checked />
+                <span>Visible on website</span>
+              </label>
+
+              <div class="form-grid">
+                <label><span>Title *</span><input name="title" type="text" required /></label>
+                <label><span>Service label *</span><input name="services" type="text" required /></label>
+                <label><span>Card subtitle *</span><input name="subtitle" type="text" required placeholder="Short one-line project description" /></label>
+                <label><span>Industry</span><input name="industry" type="text" /></label>
+                <label><span>Client</span><input name="client" type="text" /></label>
+                <label><span>Year</span><input name="year" type="text" inputmode="numeric" /></label>
+                <label><span>Image alt text</span><input name="cardAlt" type="text" /></label>
+              </div>
+
+              <fieldset class="category-fieldset">
+                <legend>Categories</legend>
+                <label><input type="checkbox" name="categories" value="branding" /> Branding</label>
+                <label><input type="checkbox" name="categories" value="packaging" /> Packaging</label>
+                <label><input type="checkbox" name="categories" value="product" /> Product</label>
+                <label><input type="checkbox" name="categories" value="direction" /> Creative Direction</label>
+              </fieldset>
+
+              <div class="image-section image-section-single">
+                <div class="image-field">
+                  <label><span>Card image (3:4 portrait)</span></label>
+                  <input name="cardImage" type="hidden" />
+                  <input type="url" placeholder="Paste image URL" data-image-url-target="cardImage" class="image-url-input" />
+                  <label class="upload-btn">Upload from computer<input type="file" accept="image/*" data-image-target="cardImage" hidden /></label>
+                  <div class="image-preview image-preview-portrait" data-preview="cardImage"></div>
+                </div>
+              </div>
+
+              <section class="gallery-editor hero-editor">
+                <div class="gallery-head">
+                  <h3>Hero slides (horizontal)</h3>
+                  <label class="upload-btn">Upload<input id="heroUpload" type="file" accept="image/*" multiple hidden /></label>
+                </div>
+                <p class="field-hint">Wide photos that slide left and right at the top of the project page.</p>
+                <div class="gallery-list gallery-list-wide" id="heroList"></div>
+              </section>
+
+              <label class="story-field">
+                <span>Brand story</span>
+                <textarea name="brandStory" rows="8" placeholder="Write the brand story for this project"></textarea>
+              </label>
+
+              <section class="gallery-editor">
+                <div class="gallery-head">
+                  <h3>Project photos (3:4)</h3>
+                  <label class="upload-btn">Upload<input id="galleryUpload" type="file" accept="image/*" multiple hidden /></label>
+                </div>
+                <p class="field-hint">Portrait photos shown in a horizontal scroll row on the project page.</p>
+                <div class="gallery-add">
+                  <input id="galleryUrl" type="url" placeholder="Paste image URL" />
+                  <button class="btn-secondary" id="addGalleryUrl" type="button">Add</button>
+                </div>
+                <div class="gallery-list gallery-list-portrait" id="galleryList"></div>
+              </section>
+
+              <p class="status-text" id="saveStatus" role="status"></p>
+            </form>
+          </section>
+        </div>
+      </div>
+
+      <div class="admin-panel" id="inquiriesPanel">
+        <div class="inquiries-toolbar">
+          <p class="inquiries-count" id="inquiriesCount">0 inquiries</p>
+          <button class="btn-secondary" id="markAllRead" type="button">Mark all as read</button>
+        </div>
+        <div class="inquiries-list" id="inquiriesList"></div>
+      </div>
+    </main>
+
+    <script src="works-data.js?v=36"></script>
+    <script src="admin.js?v=36"></script>
+  </body>
+</html>
