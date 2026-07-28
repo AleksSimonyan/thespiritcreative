@@ -1,5 +1,5 @@
-const ADMIN_PASSWORD = "spirit2026";
 const ADMIN_SESSION_KEY = "theSpiritCreativeAdminUnlocked";
+const ADMIN_TOKEN_KEY = "spiritAdminToken";
 
 const loginForm = document.querySelector("#loginForm");
 const passwordInput = document.querySelector("#passwordInput");
@@ -31,8 +31,8 @@ const tabButtons = [...document.querySelectorAll(".tab-btn")];
 const worksPanel = document.querySelector("#worksPanel");
 const inquiriesPanel = document.querySelector("#inquiriesPanel");
 
-let works = window.SpiritWorks.getWorks(true);
-let activeId = works[0]?.id || null;
+let works = [];
+let activeId = null;
 let activeGallery = [];
 let activeHeroImages = [];
 let dragId = null;
@@ -50,10 +50,11 @@ const setStatus = (element, message, isError = false) => {
   element.classList.toggle("is-error", isError);
 };
 
-const showAdmin = () => {
+const showAdmin = async () => {
   setStatus(loginStatus, "");
   lockScreen.hidden = true;
   adminApp.hidden = false;
+  await window.SpiritWorks.init({ includeInquiries: true, force: true });
   refreshAll();
 };
 
@@ -82,13 +83,17 @@ const uniqueId = (title, currentId = "") => {
   return next;
 };
 
-const persistWorks = () => {
+const persistWorks = async () => {
   try {
     works = works.map((work, index) => ({ ...work, order: index }));
-    window.SpiritWorks.saveWorks(works);
+    await window.SpiritWorks.saveWorks(works);
     return true;
-  } catch {
-    setStatus(saveStatus, "Could not save — browser storage may be full. Try smaller images.", true);
+  } catch (error) {
+    setStatus(
+      saveStatus,
+      error.message || "Could not save — check your connection and try again.",
+      true
+    );
     return false;
   }
 };
@@ -243,14 +248,14 @@ const readForm = () => {
   });
 };
 
-const saveActiveWork = () => {
+const saveActiveWork = async () => {
   const saved = readForm();
   const index = works.findIndex((work) => work.id === activeId);
   if (index >= 0) works[index] = saved;
   else works.unshift(saved);
   activeId = saved.id;
 
-  if (persistWorks()) {
+  if (await persistWorks()) {
     renderWorkList();
     populateForm(saved);
     updateBadges();
@@ -258,24 +263,26 @@ const saveActiveWork = () => {
   }
 };
 
-const moveWork = (id, direction) => {
+const moveWork = async (id, direction) => {
   const index = works.findIndex((w) => w.id === id);
   const target = direction === "up" ? index - 1 : index + 1;
   if (index < 0 || target < 0 || target >= works.length) return;
   [works[index], works[target]] = [works[target], works[index]];
-  persistWorks();
-  renderWorkList();
-  setStatus(saveStatus, "Order updated.");
+  if (await persistWorks()) {
+    renderWorkList();
+    setStatus(saveStatus, "Order updated.");
+  }
 };
 
-const toggleVisibility = (id) => {
+const toggleVisibility = async (id) => {
   const work = works.find((w) => w.id === id);
   if (!work) return;
   work.visible = !work.visible;
-  persistWorks();
-  renderWorkList();
-  if (activeId === id) populateForm(work);
-  setStatus(saveStatus, work.visible ? "Project is now visible." : "Project is now hidden.");
+  if (await persistWorks()) {
+    renderWorkList();
+    if (activeId === id) populateForm(work);
+    setStatus(saveStatus, work.visible ? "Project is now visible." : "Project is now hidden.");
+  }
 };
 
 const blankWork = () =>
@@ -405,12 +412,20 @@ const switchPanel = (panel) => {
 };
 
 /* Events */
-loginForm.addEventListener("submit", (event) => {
+loginForm.addEventListener("submit", async (event) => {
   event.preventDefault();
-  if (passwordInput.value === ADMIN_PASSWORD) {
+  try {
+    const response = await fetch("/api/auth", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ password: passwordInput.value }),
+    });
+    if (!response.ok) throw new Error("Unauthorized");
+    const { token } = await response.json();
     sessionStorage.setItem(ADMIN_SESSION_KEY, "true");
-    showAdmin();
-  } else {
+    sessionStorage.setItem(ADMIN_TOKEN_KEY, token);
+    await showAdmin();
+  } catch {
     setStatus(loginStatus, "Wrong password.", true);
   }
 });
@@ -419,15 +434,16 @@ tabButtons.forEach((btn) => {
   btn.addEventListener("click", () => switchPanel(btn.dataset.panel));
 });
 
-newWorkButton.addEventListener("click", () => {
+newWorkButton.addEventListener("click", async () => {
   const work = blankWork();
   works.unshift(work);
   activeId = work.id;
-  persistWorks();
-  renderWorkList();
-  populateForm(work);
-  updateBadges();
-  setStatus(saveStatus, "New project added.");
+  if (await persistWorks()) {
+    renderWorkList();
+    populateForm(work);
+    updateBadges();
+    setStatus(saveStatus, "New project added.");
+  }
 });
 
 workList.addEventListener("click", (event) => {
@@ -457,7 +473,7 @@ workList.addEventListener("dragend", (event) => {
   dragId = null;
 });
 
-workList.addEventListener("dragover", (event) => {
+workList.addEventListener("dragover", async (event) => {
   event.preventDefault();
   const target = event.target.closest("[data-id]");
   if (!target || !dragId || target.dataset.id === dragId) return;
@@ -466,8 +482,7 @@ workList.addEventListener("dragover", (event) => {
   if (from < 0 || to < 0) return;
   const [moved] = works.splice(from, 1);
   works.splice(to, 0, moved);
-  persistWorks();
-  renderWorkList();
+  if (await persistWorks()) renderWorkList();
 });
 
 workForm.addEventListener("submit", (event) => {
@@ -475,16 +490,17 @@ workForm.addEventListener("submit", (event) => {
   saveActiveWork();
 });
 
-deleteButton.addEventListener("click", () => {
+deleteButton.addEventListener("click", async () => {
   const work = activeWork();
   if (!work || !confirm(`Delete "${work.title}"?`)) return;
   works = works.filter((item) => item.id !== work.id);
   activeId = works[0]?.id || null;
-  persistWorks();
-  renderWorkList();
-  populateForm(activeWork());
-  updateBadges();
-  setStatus(saveStatus, "Deleted.");
+  if (await persistWorks()) {
+    renderWorkList();
+    populateForm(activeWork());
+    updateBadges();
+    setStatus(saveStatus, "Deleted.");
+  }
 });
 
 workForm.addEventListener("input", (event) => {
@@ -584,8 +600,8 @@ importInput.addEventListener("change", async () => {
     const importedWorks = Array.isArray(parsed) ? parsed : parsed.works;
     if (!Array.isArray(importedWorks)) throw new Error("Invalid backup file.");
     works = importedWorks.map(window.SpiritWorks.normalizeWork);
-    window.SpiritWorks.saveWorks(works);
-    if (parsed.inquiries) window.SpiritWorks.saveInquiries(parsed.inquiries);
+    await window.SpiritWorks.saveWorks(works);
+    if (parsed.inquiries) await window.SpiritWorks.saveInquiries(parsed.inquiries);
     activeId = works[0]?.id || null;
     refreshAll();
     setStatus(saveStatus, "Imported successfully.");
@@ -596,32 +612,36 @@ importInput.addEventListener("change", async () => {
   }
 });
 
-inquiriesList.addEventListener("click", (event) => {
+inquiriesList.addEventListener("click", async (event) => {
   const markBtn = event.target.closest("[data-mark-read]");
   if (markBtn) {
-    window.SpiritWorks.markInquiryRead(markBtn.dataset.markRead, markBtn.dataset.read === "true" ? false : true);
+    await window.SpiritWorks.markInquiryRead(
+      markBtn.dataset.markRead,
+      markBtn.dataset.read === "true" ? false : true
+    );
     renderInquiries();
     updateBadges();
     return;
   }
   const deleteBtn = event.target.closest("[data-delete-inquiry]");
   if (deleteBtn && confirm("Delete this inquiry?")) {
-    window.SpiritWorks.deleteInquiry(deleteBtn.dataset.deleteInquiry);
+    await window.SpiritWorks.deleteInquiry(deleteBtn.dataset.deleteInquiry);
     renderInquiries();
     updateBadges();
   }
 });
 
-markAllRead.addEventListener("click", () => {
-  window.SpiritWorks.getInquiries().forEach((inq) => {
-    if (!inq.read) window.SpiritWorks.markInquiryRead(inq.id, true);
-  });
+markAllRead.addEventListener("click", async () => {
+  for (const inq of window.SpiritWorks.getInquiries()) {
+    if (!inq.read) await window.SpiritWorks.markInquiryRead(inq.id, true);
+  }
   renderInquiries();
   updateBadges();
 });
 
 logoutButton.addEventListener("click", () => {
   sessionStorage.removeItem(ADMIN_SESSION_KEY);
+  sessionStorage.removeItem(ADMIN_TOKEN_KEY);
   passwordInput.value = "";
   showLogin();
 });

@@ -6,7 +6,7 @@ Production-ready portfolio site for **The Spirit Creative** — premium branding
 
 ## Stack
 
-Plain HTML, CSS, and JavaScript. No build step. Data persists in the browser via `localStorage`.
+Plain HTML, CSS, and JavaScript. No build step. Project and inquiry data is stored in `data/*.json` and served through `/api/*` serverless routes.
 
 ## Local development
 
@@ -22,41 +22,56 @@ Or serve manually:
 python3 tools/serve.py
 ```
 
+The local server serves the static site **and** the `/api` routes, writing changes to `data/works.json` and `data/inquiries.json`.
+
 ## Project structure
 
 ```
 index.html       Main site
 styles.css       Public styles
 script.js        Interactions, portfolio, case studies
-works-data.js    Project data + localStorage API
-admin.html       Admin dashboard (client-side password)
+works-data.js    Client data layer (loads/saves via /api)
+admin.html       Admin dashboard
 admin.js         Works & inquiries management
 admin.css        Admin styles
 assets/          Logo assets
-tools/serve.py   Local static server (port 8787)
+data/            Server-side JSON storage (works + inquiries)
+api/             Vercel serverless API routes
+tools/serve.py   Local dev server with API support (port 8787)
 vercel.json      Production headers & caching
+package.json     ESM module type for API routes
 ```
 
 ## Admin panel
 
 Open `/admin.html` on the deployed site or locally.
 
-- Default password: `spirit2026` (change in `admin.js` before going live)
+- Default password: `spirit2026` (override with the `ADMIN_PASSWORD` environment variable on Vercel)
 - Upload project images, edit copy, reorder works
-- View contact form inquiries (stored in browser localStorage only)
+- View contact form inquiries submitted from the public site
 
-> **Note:** Admin auth is client-side only. Do not expose sensitive data. For production-grade admin, add server-side auth.
+Admin saves go to the server API, so changes appear for all visitors — not just in your browser.
 
 ## Contact form
 
-Submissions are saved to `localStorage` and visible in the admin inquiries tab. They are **not emailed** automatically. Connect a form backend (Formspree, Resend, etc.) for email delivery if needed.
+Submissions are saved to `data/inquiries.json` via `POST /api/inquiries` and appear in the admin inquiries tab. They are **not emailed** automatically. Connect a form backend (Formspree, Resend, etc.) for email delivery if needed.
 
 ## Deploy to Vercel
 
 1. Push this repo to GitHub
 2. Import the repo at [vercel.com/new](https://vercel.com/new)
-3. Framework preset: **Other** (static site, no build command)
-4. Add custom domain `thespiritcreative.com`
+3. Framework preset: **Other** (no build command)
+4. Add these environment variables:
+
+| Variable | Value |
+|----------|-------|
+| `GITHUB_TOKEN` | GitHub fine-grained PAT with **Contents** read/write on this repo |
+| `GITHUB_REPO` | `AleksSimonyan/thespiritcreative` |
+| `ADMIN_PASSWORD` | Your admin password (optional; defaults to `spirit2026`) |
+
+`GITHUB_TOKEN` lets the API persist admin edits by updating `data/works.json` and `data/inquiries.json` in the repo. Without it, the site still **reads** the bundled JSON files, but admin saves will fail in production.
+
+5. Add custom domain `thespiritcreative.com`
 
 ## DNS (Vercel custom domain)
 

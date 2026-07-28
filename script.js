@@ -646,6 +646,13 @@ caseStudyShell?.addEventListener("click", (event) => {
 
 renderWorks();
 
+window.SpiritWorks.init().then(() => {
+  renderWorks();
+
+  const initialProject = window.location.hash.match(/^#project-(.+)$/)?.[1];
+  if (initialProject) setTimeout(() => openProject(initialProject, false), 800);
+});
+
 window.addEventListener("storage", (event) => {
   if (event.key === window.SpiritWorks?.WORKS_KEY) renderWorks();
 });
@@ -670,9 +677,6 @@ portfolioShowcase?.addEventListener("click", (e) => {
 document.querySelectorAll(".main-nav a, .footer-nav a, .brand, .to-top").forEach((link) => {
   link.addEventListener("click", () => closeProject());
 });
-
-const initialProject = window.location.hash.match(/^#project-(.+)$/)?.[1];
-if (initialProject) setTimeout(() => openProject(initialProject, false), 800);
 
 const initHeroLogoLightning = () => {
   const wrap = document.querySelector("#heroLogoWrap");
@@ -814,7 +818,7 @@ const validateField = (field) => {
   return !message;
 };
 
-bookingForm?.addEventListener("submit", (event) => {
+bookingForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
   formSuccess.hidden = true;
 
@@ -823,15 +827,19 @@ bookingForm?.addEventListener("submit", (event) => {
   );
   if (!fields.every(validateField)) return;
 
-  window.SpiritWorks.addInquiry(Object.fromEntries(new FormData(bookingForm)));
-  bookingForm.reset();
-  formSuccess.hidden = false;
-  bookingForm.querySelector('[type="submit"]').disabled = true;
+  try {
+    await window.SpiritWorks.addInquiry(Object.fromEntries(new FormData(bookingForm)));
+    bookingForm.reset();
+    formSuccess.hidden = false;
+    bookingForm.querySelector('[type="submit"]').disabled = true;
 
-  setTimeout(() => {
-    formSuccess.hidden = true;
-    bookingForm.querySelector('[type="submit"]').disabled = false;
-  }, 6000);
+    setTimeout(() => {
+      formSuccess.hidden = true;
+      bookingForm.querySelector('[type="submit"]').disabled = false;
+    }, 6000);
+  } catch {
+    fields[0]?.focus();
+  }
 });
 
 bookingForm?.querySelectorAll("input, select, textarea").forEach((field) => {

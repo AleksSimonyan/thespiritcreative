@@ -315,6 +315,12 @@
   const sortWorks = (works) =>
     [...works].sort((a, b) => a.order - b.order || a.title.localeCompare(b.title));
 
+  const ADMIN_TOKEN_KEY = "spiritAdminToken";
+
+  let worksCache = null;
+  let inquiriesCache = null;
+  let initPromise = null;
+
   const readWorksStore = () => {
     const saved = localStorage.getItem(WORKS_KEY);
     if (!saved) return clone(DEFAULT_WORKS);
@@ -329,24 +335,101 @@
     }
   };
 
+  const cacheWorks = (works) => {
+    const payload = {
+      version: STORAGE_VERSION,
+      updatedAt: new Date().toISOString(),
+      works: sortWorks(works.map((work, index) => normalizeWork(work, index))),
+    };
+    localStorage.setItem(WORKS_KEY, JSON.stringify(payload));
+    worksCache = payload.works;
+    return worksCache;
+  };
+
+  const authHeaders = () => {
+    const token = sessionStorage.getItem(ADMIN_TOKEN_KEY);
+    return token ? { Authorization: `Bearer ${token}` } : {};
+  };
+
+  const apiRequest = async (url, options = {}) => {
+    const response = await fetch(url, {
+      ...options,
+      headers: {
+        "Content-Type": "application/json",
+        ...(options.headers || {}),
+      },
+    });
+
+    const text = await response.text();
+    let data = null;
+    if (text) {
+      try {
+        data = JSON.parse(text);
+      } catch {
+        data = text;
+      }
+    }
+
+    if (!response.ok) {
+      const message =
+        typeof data === "object" && data?.error ? data.error : `Request failed (${response.status})`;
+      throw new Error(message);
+    }
+
+    return data;
+  };
+
+  const init = async (options = {}) => {
+    const { includeInquiries = false, force = false } = options;
+    if (initPromise && !force) return initPromise;
+
+    initPromise = (async () => {
+      try {
+        const data = await apiRequest("/api/works");
+        if (Array.isArray(data?.works) && data.works.length) {
+          cacheWorks(data.works);
+        } else {
+          worksCache = readWorksStore();
+        }
+      } catch {
+        worksCache = readWorksStore();
+      }
+
+      if (includeInquiries) {
+        try {
+          const data = await apiRequest("/api/inquiries", { headers: authHeaders() });
+          inquiriesCache = Array.isArray(data?.inquiries)
+            ? data.inquiries.map(normalizeInquiry)
+            : readInquiriesStore();
+        } catch {
+          inquiriesCache = readInquiriesStore();
+        }
+      }
+    })();
+
+    return initPromise;
+  };
+
   const getWorks = (includeHidden = false) => {
-    const works = readWorksStore();
+    const works = worksCache ?? readWorksStore();
     if (includeHidden) return works;
     return works.filter((work) => work.visible);
   };
 
-  const saveWorks = (works) => {
-    localStorage.setItem(
-      WORKS_KEY,
-      JSON.stringify({
-        version: STORAGE_VERSION,
-        updatedAt: new Date().toISOString(),
-        works: sortWorks(works.map((work, index) => normalizeWork(work, index))),
-      })
-    );
+  const saveWorks = async (works) => {
+    const normalized = cacheWorks(works);
+    await apiRequest("/api/works", {
+      method: "PUT",
+      headers: authHeaders(),
+      body: JSON.stringify({ works: normalized }),
+    });
+    return normalized;
   };
 
-  const resetWorks = () => localStorage.removeItem(WORKS_KEY);
+  const resetWorks = () => {
+    localStorage.removeItem(WORKS_KEY);
+    worksCache = null;
+  };
 
   const normalizeInquiry = (inquiry) => ({
     id: inquiry.id || `inq-${Date.now()}`,
@@ -361,7 +444,7 @@
     read: Boolean(inquiry.read),
   });
 
-  const getInquiries = () => {
+  const readInquiriesStore = () => {
     const saved = localStorage.getItem(INQUIRIES_KEY);
     if (!saved) return [];
 
@@ -377,41 +460,80 @@
     }
   };
 
-  const saveInquiries = (inquiries) => {
-    localStorage.setItem(
-      INQUIRIES_KEY,
-      JSON.stringify({
-        version: STORAGE_VERSION,
-        updatedAt: new Date().toISOString(),
-        inquiries: inquiries.map(normalizeInquiry),
-      })
-    );
+  const cacheInquiries = (inquiries) => {
+    const payload = {
+      version: STORAGE_VERSION,
+      updatedAt: new Date().toISOString(),
+      inquiries: inquiries.map(normalizeInquiry),
+    };
+    localStorage.setItem(INQUIRIES_KEY, JSON.stringify(payload));
+    inquiriesCache = payload.inquiries;
+    return inquiriesCache;
   };
 
-  const addInquiry = (data) => {
+  const getInquiries = () => {
+    const inquiries = inquiriesCache ?? readInquiriesStore();
+    return [...inquiries].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  };
+
+  const saveInquiries = async (inquiries) => {
+    cacheInquiries(inquiries);
+    await apiRequest("/api/inquiries", {
+      method: "PUT",
+      headers: authHeaders(),
+      body: JSON.stringify({ inquiries: getInquiries() }),
+    });
+  };
+
+  const addInquiry = async (data) => {
     const inquiry = normalizeInquiry({ ...data, id: `inq-${Date.now()}`, read: false });
-    const inquiries = [inquiry, ...getInquiries()];
-    saveInquiries(inquiries);
+    try {
+      await apiRequest("/api/inquiries", {
+        method: "POST",
+        body: JSON.stringify(inquiry),
+      });
+      const inquiries = [inquiry, ...getInquiries()];
+      cacheInquiries(inquiries);
+    } catch {
+      cacheInquiries([inquiry, ...readInquiriesStore()]);
+    }
     return inquiry;
   };
 
-  const markInquiryRead = (id, read = true) => {
-    const inquiries = getInquiries().map((item) =>
-      item.id === id ? { ...item, read } : item
-    );
-    saveInquiries(inquiries);
+  const markInquiryRead = async (id, read = true) => {
+    const inquiries = getInquiries().map((item) => (item.id === id ? { ...item, read } : item));
+    cacheInquiries(inquiries);
+    try {
+      await apiRequest("/api/inquiries", {
+        method: "PATCH",
+        headers: authHeaders(),
+        body: JSON.stringify({ id, read }),
+      });
+    } catch {
+      /* keep local cache updated even if sync fails */
+    }
   };
 
-  const deleteInquiry = (id) => {
-    saveInquiries(getInquiries().filter((item) => item.id !== id));
+  const deleteInquiry = async (id) => {
+    cacheInquiries(getInquiries().filter((item) => item.id !== id));
+    try {
+      await apiRequest(`/api/inquiries?id=${encodeURIComponent(id)}`, {
+        method: "DELETE",
+        headers: authHeaders(),
+      });
+    } catch {
+      /* keep local cache updated even if sync fails */
+    }
   };
 
   const getUnreadCount = () => getInquiries().filter((item) => !item.read).length;
 
   window.SpiritWorks = {
+    ADMIN_TOKEN_KEY,
     DEFAULT_WORKS: clone(DEFAULT_WORKS),
     WORKS_KEY,
     INQUIRIES_KEY,
+    init,
     getWorks,
     normalizeWork,
     resetWorks,
