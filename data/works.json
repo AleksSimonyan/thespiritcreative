@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "updatedAt": "2026-07-28T17:56:06Z",
+  "updatedAt": "2026-07-30T13:49:43.316Z",
   "works": [
     {
       "id": "matenits",
@@ -15,19 +15,13 @@
       "year": "2026",
       "order": 0,
       "visible": true,
-      "cardImage": "https://images.unsplash.com/photo-1587017539504-67cfbddac569?auto=format&fit=crop&w=1200&q=85",
-      "heroImage": "https://images.unsplash.com/photo-1587017539504-67cfbddac569?auto=format&fit=crop&w=1800&q=90",
+      "cardImage": "",
+      "heroImage": "",
       "cardAlt": "Ornate premium bottle packaging",
       "subtitle": "Ceremonial beverage packaging with ornate, gift-like detail.",
-      "overview": "A ceremonial drink brand inspired by illuminated manuscripts \u2014 a richly detailed package system with collectible, gift-like presence.",
-      "challenge": "Feel ancient and precious while remaining clear enough for modern retail and digital launch.",
-      "solution": "Ornamental frames, deep black space, jewel tones, and a compact symbol spanning bottle, box, and campaign.",
-      "statement": "Every surface is a small stage \u2014 dense pattern, quiet negative space, tactile contrast.",
-      "moreText": "Add process photography, close-ups, and launch copy when final assets are ready.",
-      "gallery": [
-        "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=1600&q=90",
-        "https://images.unsplash.com/photo-1607344645866-009c320b63e0?auto=format&fit=crop&w=1600&q=90"
-      ]
+      "brandStory": "A ceremonial drink brand inspired by illuminated manuscripts — a richly detailed package system with collectible, gift-like presence.\n\nFeel ancient and precious while remaining clear enough for modern retail and digital launch.\n\nOrnamental frames, deep black space, jewel tones, and a compact symbol spanning bottle, box, and campaign.\n\nEvery surface is a small stage — dense pattern, quiet negative space, tactile contrast.\n\nAdd process photography, close-ups, and launch copy when final assets are ready.",
+      "heroImages": [],
+      "gallery": []
     },
     {
       "id": "once",
@@ -46,11 +40,10 @@
       "heroImage": "https://images.unsplash.com/photo-1612817159949-195b6eb9e31a?auto=format&fit=crop&w=1800&q=90",
       "cardAlt": "Round black bottle with metallic cap",
       "subtitle": "Ultra-premium spirit identity built on rarity and restraint.",
-      "overview": "An ultra-premium spirit identity built around rarity, patience, and restraint.",
-      "challenge": "Communicate extraordinary value without decorative noise.",
-      "solution": "Dark architectural bottle world, precise typography, circular geometry, cinematic imagery.",
-      "statement": "The story unfolds through shadow, glass, and a single compact mark.",
-      "moreText": "Replace with final production notes and founder message when ready.",
+      "brandStory": "An ultra-premium spirit identity built around rarity, patience, and restraint.\n\nCommunicate extraordinary value without decorative noise.\n\nDark architectural bottle world, precise typography, circular geometry, cinematic imagery.\n\nThe story unfolds through shadow, glass, and a single compact mark.\n\nReplace with final production notes and founder message when ready.",
+      "heroImages": [
+        "https://images.unsplash.com/photo-1612817159949-195b6eb9e31a?auto=format&fit=crop&w=1800&q=90"
+      ],
       "gallery": [
         "https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=1600&q=90",
         "https://images.unsplash.com/photo-1517685352821-92cf88aee5a5?auto=format&fit=crop&w=1600&q=90"
@@ -73,11 +66,10 @@
       "heroImage": "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=1800&q=90",
       "cardAlt": "Amber perfume bottle on patterned backdrop",
       "subtitle": "Warm fragrance system shaped by memory and ritual.",
-      "overview": "A warm fragrance system shaped by memory, ritual, and tactile material cues.",
-      "challenge": "Build intimacy while keeping the line scalable across multiple scents.",
-      "solution": "Muted typography, amber light, and pattern-led packaging for a quiet shelf world.",
-      "statement": "Designed to feel discovered rather than announced.",
-      "moreText": "Add ingredient notes and collection names when final copy is ready.",
+      "brandStory": "A warm fragrance system shaped by memory, ritual, and tactile material cues.\n\nBuild intimacy while keeping the line scalable across multiple scents.\n\nMuted typography, amber light, and pattern-led packaging for a quiet shelf world.\n\nDesigned to feel discovered rather than announced.\n\nAdd ingredient notes and collection names when final copy is ready.",
+      "heroImages": [
+        "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=1800&q=90"
+      ],
       "gallery": [
         "https://images.unsplash.com/photo-1517685352821-92cf88aee5a5?auto=format&fit=crop&w=1600&q=90"
       ]
@@ -99,11 +91,10 @@
       "heroImage": "https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=1800&q=90",
       "cardAlt": "Cosmetic product with dramatic light",
       "subtitle": "Minimal cosmetic brand with confident, controlled color.",
-      "overview": "A cosmetic concept built on simple routines and confident color.",
-      "challenge": "Make minimal product feel ownable without noisy decoration.",
-      "solution": "Controlled art direction with high-contrast sets and precise pack forms.",
-      "statement": "Softness and control in equal measure \u2014 clean silhouettes, direct photographic tone.",
-      "moreText": "Add final ingredients and campaign credits when ready.",
+      "brandStory": "A cosmetic concept built on simple routines and confident color.\n\nMake minimal product feel ownable without noisy decoration.\n\nControlled art direction with high-contrast sets and precise pack forms.\n\nSoftness and control in equal measure — clean silhouettes, direct photographic tone.\n\nAdd final ingredients and campaign credits when ready.",
+      "heroImages": [
+        "https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=1800&q=90"
+      ],
       "gallery": [
         "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1600&q=90"
       ]
@@ -124,11 +115,10 @@
       "heroImage": "https://images.unsplash.com/photo-1560461396-ec0ef7bb29dd?auto=format&fit=crop&w=1800&q=90",
       "cardAlt": "Colorful beverage cartons on pastel set",
       "subtitle": "Playful drink packaging with bold shelf presence.",
-      "overview": "Playful drink packaging with bold shelf blocking and character-led flavor cues.",
-      "challenge": "Stand out in a crowded refrigerated aisle while keeping the family flexible.",
-      "solution": "High-energy illustration, simple flavor coding, bold pack silhouettes.",
-      "statement": "Built for fast recognition across cartons, cans, motion, and seasonal flavors.",
-      "moreText": "Add final SKU names and production images when ready.",
+      "brandStory": "Playful drink packaging with bold shelf blocking and character-led flavor cues.\n\nStand out in a crowded refrigerated aisle while keeping the family flexible.\n\nHigh-energy illustration, simple flavor coding, bold pack silhouettes.\n\nBuilt for fast recognition across cartons, cans, motion, and seasonal flavors.\n\nAdd final SKU names and production images when ready.",
+      "heroImages": [
+        "https://images.unsplash.com/photo-1560461396-ec0ef7bb29dd?auto=format&fit=crop&w=1800&q=90"
+      ],
       "gallery": [
         "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=1600&q=90"
       ]
@@ -150,11 +140,10 @@
       "heroImage": "https://images.unsplash.com/photo-1526947425960-945c6e72858f?auto=format&fit=crop&w=1800&q=90",
       "cardAlt": "Botanical skin care packaging",
       "subtitle": "Natural care identity with calm, botanical rhythm.",
-      "overview": "Natural care identity with botanical materials and a calm visual rhythm.",
-      "challenge": "Create softness without becoming generic in a crowded wellness market.",
-      "solution": "Earthy photography, restrained type, modular brand kit for repeat launches.",
-      "statement": "Simple, tactile, slow \u2014 space for material, scent, and routine.",
-      "moreText": "Add founder story and certifications when ready.",
+      "brandStory": "Natural care identity with botanical materials and a calm visual rhythm.\n\nCreate softness without becoming generic in a crowded wellness market.\n\nEarthy photography, restrained type, modular brand kit for repeat launches.\n\nSimple, tactile, slow — space for material, scent, and routine.\n\nAdd founder story and certifications when ready.",
+      "heroImages": [
+        "https://images.unsplash.com/photo-1526947425960-945c6e72858f?auto=format&fit=crop&w=1800&q=90"
+      ],
       "gallery": [
         "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1600&q=90"
       ]
@@ -176,11 +165,10 @@
       "heroImage": "https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&w=1800&q=90",
       "cardAlt": "Specialty coffee packaging",
       "subtitle": "Specialty coffee brand with origin-forward storytelling.",
-      "overview": "Specialty coffee brand with origin-forward storytelling and refined pack architecture.",
-      "challenge": "Differentiate in a saturated specialty market without clich\u00e9 craft aesthetics.",
-      "solution": "Typographic hierarchy, origin maps, and a restrained earth-tone system.",
-      "statement": "Every bag reads like a passport stamp \u2014 precise, warm, unmistakable.",
-      "moreText": "Add origin stories and roast profiles when final copy is ready.",
+      "brandStory": "Specialty coffee brand with origin-forward storytelling and refined pack architecture.\n\nDifferentiate in a saturated specialty market without cliché craft aesthetics.\n\nTypographic hierarchy, origin maps, and a restrained earth-tone system.\n\nEvery bag reads like a passport stamp — precise, warm, unmistakable.\n\nAdd origin stories and roast profiles when final copy is ready.",
+      "heroImages": [
+        "https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&w=1800&q=90"
+      ],
       "gallery": [
         "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=1600&q=90"
       ]
@@ -202,11 +190,10 @@
       "heroImage": "https://images.unsplash.com/photo-1556906781-9a412961c28c?auto=format&fit=crop&w=1800&q=90",
       "cardAlt": "Athletic brand visual identity",
       "subtitle": "Performance sportswear with kinetic campaign language.",
-      "overview": "Performance sportswear identity with kinetic typography and high-contrast campaign language.",
-      "challenge": "Feel premium and technical without copying established athletic giants.",
-      "solution": "Modular wordmark, electric accent system, and motion-first art direction.",
-      "statement": "Energy encoded in every frame \u2014 speed, precision, controlled aggression.",
-      "moreText": "Add athlete partnerships and campaign credits when ready.",
+      "brandStory": "Performance sportswear identity with kinetic typography and high-contrast campaign language.\n\nFeel premium and technical without copying established athletic giants.\n\nModular wordmark, electric accent system, and motion-first art direction.\n\nEnergy encoded in every frame — speed, precision, controlled aggression.\n\nAdd athlete partnerships and campaign credits when ready.",
+      "heroImages": [
+        "https://images.unsplash.com/photo-1556906781-9a412961c28c?auto=format&fit=crop&w=1800&q=90"
+      ],
       "gallery": [
         "https://images.unsplash.com/photo-1571902943202-507ec2618e8f?auto=format&fit=crop&w=1600&q=90"
       ]
@@ -228,11 +215,10 @@
       "heroImage": "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1800&q=90",
       "cardAlt": "Luxury hotel brand identity",
       "subtitle": "Boutique hospitality identity with understated luxury.",
-      "overview": "Boutique hospitality brand balancing warmth, silence, and understated luxury.",
-      "challenge": "Create a unified identity across properties with distinct local character.",
-      "solution": "Flexible monogram system, editorial photography, and tactile print collateral.",
-      "statement": "Luxury that whispers \u2014 material, light, and service as the primary brand signals.",
-      "moreText": "Add property-specific guidelines when portfolio expands.",
+      "brandStory": "Boutique hospitality brand balancing warmth, silence, and understated luxury.\n\nCreate a unified identity across properties with distinct local character.\n\nFlexible monogram system, editorial photography, and tactile print collateral.\n\nLuxury that whispers — material, light, and service as the primary brand signals.\n\nAdd property-specific guidelines when portfolio expands.",
+      "heroImages": [
+        "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1800&q=90"
+      ],
       "gallery": [
         "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1600&q=90"
       ]
@@ -254,11 +240,10 @@
       "heroImage": "https://images.unsplash.com/photo-1569529465841-df597ade617e?auto=format&fit=crop&w=1800&q=90",
       "cardAlt": "Dark spirits bottle design",
       "subtitle": "Night-inspired gin line with lunar symbolism.",
-      "overview": "Night-inspired gin line with lunar symbolism and deep indigo material palette.",
-      "challenge": "Stand out on back-bar shelves dominated by transparent bottles.",
-      "solution": "Matte ceramic-feel glass, embossed moon phases, and copper foil accents.",
-      "statement": "Darkness as a design material \u2014 depth, mystery, and slow discovery.",
-      "moreText": "Add tasting notes and batch stories when ready.",
+      "brandStory": "Night-inspired gin line with lunar symbolism and deep indigo material palette.\n\nStand out on back-bar shelves dominated by transparent bottles.\n\nMatte ceramic-feel glass, embossed moon phases, and copper foil accents.\n\nDarkness as a design material — depth, mystery, and slow discovery.\n\nAdd tasting notes and batch stories when ready.",
+      "heroImages": [
+        "https://images.unsplash.com/photo-1569529465841-df597ade617e?auto=format&fit=crop&w=1800&q=90"
+      ],
       "gallery": [
         "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&w=1600&q=90"
       ]
@@ -280,11 +265,10 @@
       "heroImage": "https://images.unsplash.com/photo-1487958449943-2429e8be8625?auto=format&fit=crop&w=1800&q=90",
       "cardAlt": "Architecture studio brand",
       "subtitle": "Architecture practice rooted in structural clarity.",
-      "overview": "Architecture practice identity rooted in structural clarity and monolithic typography.",
-      "challenge": "Communicate precision and vision without cold corporate sterility.",
-      "solution": "Grid-based identity, architectural photography, and restrained motion principles.",
-      "statement": "Structure as language \u2014 every line intentional, every space considered.",
-      "moreText": "Add project portfolio and team bios when ready.",
+      "brandStory": "Architecture practice identity rooted in structural clarity and monolithic typography.\n\nCommunicate precision and vision without cold corporate sterility.\n\nGrid-based identity, architectural photography, and restrained motion principles.\n\nStructure as language — every line intentional, every space considered.\n\nAdd project portfolio and team bios when ready.",
+      "heroImages": [
+        "https://images.unsplash.com/photo-1487958449943-2429e8be8625?auto=format&fit=crop&w=1800&q=90"
+      ],
       "gallery": [
         "https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=1600&q=90"
       ]
@@ -306,11 +290,10 @@
       "heroImage": "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?auto=format&fit=crop&w=1800&q=90",
       "cardAlt": "Clinical skincare packaging",
       "subtitle": "Clinical-meets-luxury skincare packaging system.",
-      "overview": "Clinical-meets-luxury skincare with transparent ingredient storytelling.",
-      "challenge": "Balance scientific credibility with aspirational beauty marketing.",
-      "solution": "Laboratory-inspired typography, glass-and-aluminum pack system, clean data visualization.",
-      "statement": "Transparency as luxury \u2014 every ingredient named, every claim earned.",
-      "moreText": "Add clinical study references when approved for public use.",
+      "brandStory": "Clinical-meets-luxury skincare with transparent ingredient storytelling.\n\nBalance scientific credibility with aspirational beauty marketing.\n\nLaboratory-inspired typography, glass-and-aluminum pack system, clean data visualization.\n\nTransparency as luxury — every ingredient named, every claim earned.\n\nAdd clinical study references when approved for public use.",
+      "heroImages": [
+        "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?auto=format&fit=crop&w=1800&q=90"
+      ],
       "gallery": [
         "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=1600&q=90"
       ]
