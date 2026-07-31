@@ -423,46 +423,26 @@ h1 strong, h2 strong { font-weight: 600; color: var(--white); }
 
 .hero-logo-wrap {
   position: relative;
-  width: clamp(280px, 34vw, 480px);
+  width: clamp(260px, 32vw, 440px);
   max-width: 100%;
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 5 / 4;
   animation: heroLogoFloat 7s ease-in-out infinite;
   will-change: transform;
 }
 
-.hero-logo-mark,
-.hero-logo-words {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  line-height: 0;
-}
-
-.hero-logo-mark img,
-.hero-logo-words-img {
+.hero-logo-img {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  object-position: center;
+  object-position: right center;
   display: block;
-}
-
-.hero-logo-mark {
-  clip-path: inset(0 0 57% 0);
-}
-
-.hero-logo-words {
-  clip-path: inset(43% 0 0 0);
-}
-
-.hero-logo-words-img {
   pointer-events: none;
   animation: heroWordsLightning 6s ease-in-out infinite;
   will-change: filter, opacity;
 }
 
-.hero-logo-wrap.is-cursor-over .hero-logo-words-img {
-  animation-duration: 4.5s;
+.hero-logo-wrap.is-cursor-over .hero-logo-img {
+  animation-duration: 3.5s;
 }
 
 @keyframes heroWordsLightning {
@@ -499,7 +479,7 @@ h1 strong, h2 strong { font-weight: 600; color: var(--white); }
     heroLogoFloat 7s ease-in-out 1.1s infinite;
 }
 
-.hero-logo-panel.reveal .hero-logo-words-img {
+.hero-logo-panel.reveal .hero-logo-img {
   animation: heroWordsLightning 6s ease-in-out 1.1s infinite;
 }
 
@@ -1939,7 +1919,7 @@ body.is-project-open .marquee { display: none; }
   .case-gallery-row { scroll-behavior: auto; }
   .hero-title,
   .hero-logo-wrap,
-  .hero-logo-words-img {
+  .hero-logo-img {
     animation: none !important;
     opacity: 1 !important;
     transform: none !important;
