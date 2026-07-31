@@ -175,7 +175,9 @@ export async function writeAsset(relativePath, buffer) {
       existing?.sha,
       `Upload ${normalizedPath}`
     );
-    return `/${normalizedPath}`;
+    const [owner, repo] = process.env.GITHUB_REPO.split("/");
+    const branch = process.env.GITHUB_BRANCH || "main";
+    return `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${normalizedPath}`;
   }
 
   if (process.env.VERCEL) {

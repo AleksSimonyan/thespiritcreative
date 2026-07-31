@@ -89,24 +89,56 @@ const authHeaders = () => {
   return token ? { Authorization: `Bearer ${token}` } : {};
 };
 
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const mapSequential = async (values, mapper) => {
+  const results = [];
+  for (let index = 0; index < values.length; index += 1) {
+    try {
+      results.push(await mapper(values[index], index));
+    } catch (error) {
+      throw new Error(`Photo ${index + 1}: ${error.message}`);
+    }
+    if (index < values.length - 1) await sleep(200);
+  }
+  return results;
+};
+
+const uploadBlob = async (blob, label = "image") => {
+  const formData = new FormData();
+  formData.append("file", blob, `${label}.jpg`);
+
+  let lastError = "Image upload failed.";
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    const response = await fetch("/api/upload", {
+      method: "POST",
+      headers: authHeaders(),
+      body: formData,
+    });
+    const data = await response.json().catch(() => ({}));
+    if (response.ok) return data.url;
+    lastError = data.error || lastError;
+    if (attempt < 3) await sleep(400 * attempt);
+  }
+  throw new Error(lastError);
+};
+
 const uploadDataUrl = async (value) => {
   if (!value || !value.startsWith("data:image/")) return value;
+  const response = await fetch(value);
+  const blob = await response.blob();
+  return uploadBlob(blob, "embedded");
+};
 
-  const response = await fetch("/api/upload", {
-    method: "POST",
-    headers: { ...authHeaders(), "Content-Type": "application/json" },
-    body: JSON.stringify({ dataUrl: value }),
-  });
-
-  const data = await response.json();
-  if (!response.ok) throw new Error(data.error || "Image upload failed.");
-  return data.url;
+const workHasEmbeddedImages = (work) => {
+  const images = [work.cardImage, ...(work.heroImages || []), ...(work.gallery || [])];
+  return images.some((img) => img?.startsWith("data:image/"));
 };
 
 const externalizeWork = async (work) => {
   const cardImage = await uploadDataUrl(work.cardImage);
-  const heroImages = await Promise.all((work.heroImages || []).map(uploadDataUrl));
-  const gallery = await Promise.all((work.gallery || []).map(uploadDataUrl));
+  const heroImages = await mapSequential(work.heroImages || [], (img) => uploadDataUrl(img));
+  const gallery = await mapSequential(work.gallery || [], (img) => uploadDataUrl(img));
 
   return {
     ...work,
@@ -120,9 +152,14 @@ const externalizeWork = async (work) => {
 const persistWorks = async () => {
   try {
     setStatus(saveStatus, "Saving...");
-    works = await Promise.all(
-      works.map(async (work, index) => externalizeWork({ ...work, order: index }))
-    );
+    const nextWorks = [];
+    for (let index = 0; index < works.length; index += 1) {
+      const ordered = { ...works[index], order: index };
+      nextWorks.push(
+        workHasEmbeddedImages(ordered) ? await externalizeWork(ordered) : ordered
+      );
+    }
+    works = nextWorks;
     await window.SpiritWorks.saveWorks(works);
     return true;
   } catch (error) {
@@ -200,21 +237,48 @@ const setImageField = (name, value) => {
 
 const renderImageList = (container, images, removePrefix) => {
   if (!container) return;
-  container.innerHTML = images
-    .map(
-      (image, index) => `
-        <div class="gallery-item">
-          <img src="${escapeHtml(image)}" alt="" />
-          <button class="btn-secondary danger" type="button" data-remove-${removePrefix}="${index}">Remove</button>
-        </div>
-      `
-    )
-    .join("");
+  container.innerHTML = "";
+
+  images.forEach((image, index) => {
+    const item = document.createElement("div");
+    item.className = "gallery-item";
+
+    const img = document.createElement("img");
+    img.alt = "";
+    img.src = image;
+
+    const button = document.createElement("button");
+    button.className = "btn-secondary danger";
+    button.type = "button";
+    button.textContent = "Remove";
+    button.setAttribute(`data-remove-${removePrefix}`, String(index));
+
+    item.appendChild(img);
+    item.appendChild(button);
+    container.appendChild(item);
+  });
 };
 
-const renderGallery = () => renderImageList(galleryList, activeGallery, "gallery");
+const updateGalleryCounts = () => {
+  const heroHint = document.querySelector(".hero-editor .field-hint");
+  const galleryHint = document.querySelector(".gallery-editor:not(.hero-editor) .field-hint");
+  if (heroHint) {
+    heroHint.textContent = `${activeHeroImages.length} hero slide${activeHeroImages.length === 1 ? "" : "s"} — upload as many as you need.`;
+  }
+  if (galleryHint) {
+    galleryHint.textContent = `${activeGallery.length} project photo${activeGallery.length === 1 ? "" : "s"} — upload as many as you need.`;
+  }
+};
 
-const renderHeroList = () => renderImageList(heroList, activeHeroImages, "hero");
+const renderGallery = () => {
+  renderImageList(galleryList, activeGallery, "gallery");
+  updateGalleryCounts();
+};
+
+const renderHeroList = () => {
+  renderImageList(heroList, activeHeroImages, "hero");
+  updateGalleryCounts();
+};
 
 const populateForm = (work) => {
   if (!work) {
@@ -341,7 +405,7 @@ const blankWork = () =>
     gallery: [],
   });
 
-const resizeImageToAspect = (file, aspectW, aspectH, maxWidth = 1200, quality = 0.82) =>
+const resizeImageToBlob = (file, aspectW, aspectH, maxWidth = 1200, quality = 0.82) =>
   new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onerror = () => reject(new Error("Could not read image."));
@@ -373,7 +437,11 @@ const resizeImageToAspect = (file, aspectW, aspectH, maxWidth = 1200, quality = 
         canvas.width = Math.round(sw * scale);
         canvas.height = Math.round(sh * scale);
         canvas.getContext("2d").drawImage(image, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
-        resolve(canvas.toDataURL("image/jpeg", quality));
+        canvas.toBlob(
+          (blob) => (blob ? resolve(blob) : reject(new Error("Could not compress image."))),
+          "image/jpeg",
+          quality
+        );
       };
       image.src = reader.result;
     };
@@ -381,9 +449,19 @@ const resizeImageToAspect = (file, aspectW, aspectH, maxWidth = 1200, quality = 
   });
 
 const processImageUpload = async (file, target) => {
-  if (target === "cardImage") return resizeImageToAspect(file, 3, 4, 900);
-  if (target === "hero") return resizeImageToAspect(file, 16, 9, 1600);
-  return resizeImageToAspect(file, 3, 4, 900);
+  if (target === "cardImage") return resizeImageToBlob(file, 3, 4, 900, 0.82);
+  if (target === "hero") return resizeImageToBlob(file, 16, 9, 1400, 0.8);
+  return resizeImageToBlob(file, 3, 4, 800, 0.76);
+};
+
+const uploadProcessedFiles = async (files, target, label) => {
+  const urls = [];
+  for (let index = 0; index < files.length; index += 1) {
+    setStatus(saveStatus, `Uploading ${label} ${index + 1} of ${files.length}...`);
+    const blob = await processImageUpload(files[index], target);
+    urls.push(await uploadBlob(blob, `${target}-${index + 1}`));
+  }
+  return urls;
 };
 
 const formatDate = (iso) => {
@@ -559,8 +637,8 @@ document.querySelectorAll("[data-image-target]").forEach((input) => {
     if (!file) return;
     setStatus(saveStatus, "Processing image...");
     try {
-      const dataUrl = await processImageUpload(file, input.dataset.imageTarget);
-      const url = await uploadDataUrl(dataUrl);
+      const blob = await processImageUpload(file, input.dataset.imageTarget);
+      const url = await uploadBlob(blob, input.dataset.imageTarget);
       setImageField(input.dataset.imageTarget, url);
       setStatus(saveStatus, "Image uploaded — save the project.");
     } catch (error) {
@@ -582,14 +660,11 @@ addGalleryUrl.addEventListener("click", async () => {
 galleryUpload.addEventListener("change", async () => {
   const files = [...(galleryUpload.files || [])];
   if (!files.length) return;
-  setStatus(saveStatus, "Processing photos...");
   try {
-    for (const file of files) {
-      const dataUrl = await processImageUpload(file, "gallery");
-      activeGallery.push(await uploadDataUrl(dataUrl));
-    }
+    const urls = await uploadProcessedFiles(files, "gallery", "photo");
+    activeGallery.push(...urls);
     renderGallery();
-    setStatus(saveStatus, "Photos uploaded — save the project.");
+    setStatus(saveStatus, `${urls.length} photo${urls.length === 1 ? "" : "s"} uploaded — save the project.`);
   } catch (error) {
     setStatus(saveStatus, error.message, true);
   } finally {
@@ -600,14 +675,11 @@ galleryUpload.addEventListener("change", async () => {
 heroUpload.addEventListener("change", async () => {
   const files = [...(heroUpload.files || [])];
   if (!files.length) return;
-  setStatus(saveStatus, "Processing hero slides...");
   try {
-    for (const file of files) {
-      const dataUrl = await processImageUpload(file, "hero");
-      activeHeroImages.push(await uploadDataUrl(dataUrl));
-    }
+    const urls = await uploadProcessedFiles(files, "hero", "hero slide");
+    activeHeroImages.push(...urls);
     renderHeroList();
-    setStatus(saveStatus, "Hero slides uploaded — save the project.");
+    setStatus(saveStatus, `${urls.length} hero slide${urls.length === 1 ? "" : "s"} uploaded — save the project.`);
   } catch (error) {
     setStatus(saveStatus, error.message, true);
   } finally {

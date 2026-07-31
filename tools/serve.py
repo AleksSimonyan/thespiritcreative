@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import base64
+import cgi
 import hashlib
 import hmac
 import json
@@ -120,6 +121,28 @@ class SiteHandler(BaseHTTPRequestHandler):
         if path == "/api/upload" and method == "POST":
             if not verify_token(self.headers.get("Authorization")):
                 return json_response(self, 401, {"error": "Unauthorized"})
+
+            content_type = self.headers.get("Content-Type", "")
+            if "multipart/form-data" in content_type:
+                form = cgi.FieldStorage(
+                    fp=self.rfile,
+                    headers=self.headers,
+                    environ={
+                        "REQUEST_METHOD": "POST",
+                        "CONTENT_TYPE": content_type,
+                        "CONTENT_LENGTH": self.headers.get("Content-Length", "0"),
+                    },
+                )
+                file_item = form["file"] if "file" in form else None
+                if not file_item or not getattr(file_item, "file", None):
+                    return json_response(self, 400, {"error": "Missing image file"})
+                payload = file_item.file.read()
+                mime = file_item.type or "image/jpeg"
+                ext = "png" if "png" in mime else "webp" if "webp" in mime else "jpg"
+                filename = f"assets/uploads/{int(time.time() * 1000)}-{os.urandom(4).hex()}.{ext}"
+                url = write_asset(filename, payload)
+                return json_response(self, 200, {"url": url})
+
             body = self.parse_json_body()
             match = DATA_URL_PATTERN.match(body.get("dataUrl") or "")
             if not match:
