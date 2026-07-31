@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "updatedAt": "2026-07-31T11:28:12.572Z",
+  "updatedAt": "2026-07-31T11:33:24.467Z",
   "works": [
     {
       "id": "otmartina-popcorn-packaging",
@@ -62,29 +62,35 @@
       ]
     },
     {
-      "id": "once",
-      "title": "Once",
-      "services": "Branding / Packaging",
+      "id": "gaud-ly-brand-identity",
+      "title": "GAUDÉLY Brand Identity",
+      "services": "Brand Identity",
       "categories": [
-        "branding",
-        "packaging"
+        "branding"
       ],
-      "industry": "Spirits",
-      "client": "Once",
+      "industry": "Fashion & Accessories",
+      "client": "GAUDÉLY",
       "year": "2026",
       "order": 2,
       "visible": true,
-      "cardImage": "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785496656641-h194i9sf.mp4",
-      "heroImage": "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785496656641-h194i9sf.mp4",
-      "cardAlt": "Round black bottle with metallic cap",
-      "subtitle": "Ultra-premium spirit identity built on rarity and restraint.",
-      "brandStory": "An ultra-premium spirit identity built around rarity, patience, and restraint.\n\nCommunicate extraordinary value without decorative noise.\n\nDark architectural bottle world, precise typography, circular geometry, cinematic imagery.\n\nThe story unfolds through shadow, glass, and a single compact mark.\n\nReplace with final production notes and founder message when ready.",
-      "heroImages": [
-        "https://images.unsplash.com/photo-1612817159949-195b6eb9e31a?auto=format&fit=crop&w=1800&q=90"
-      ],
+      "cardImage": "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785497364194-vjakbg6j.jpg",
+      "heroImage": "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785497364194-vjakbg6j.jpg",
+      "cardAlt": "Luxury brand identity system for GAUDÉLY featuring logo design, typography, packaging, and social media assets.",
+      "subtitle": "Elegant branding designed to communicate authenticity, trust, and timeless sophistication.",
+      "brandStory": "GAUDÉLY was created as a premium reseller brand focused on authentic watches and carefully selected luxury accessories. The goal was to build an identity that communicates trust, exclusivity, and timeless elegance while remaining modern and recognizable across every customer touchpoint.\nThe visual identity is centered around sophisticated typography and a distinctive symbolic \"G\", creating a memorable mark that reflects precision, heritage, and refined taste. A deep burgundy color palette reinforces the brand's premium positioning, while clean layouts and generous white space emphasize clarity and confidence.\nBeyond the logo, the identity extends into packaging, printed materials, social media, and digital communication, forming a consistent visual language that strengthens recognition across every platform.\nThe result is a complete branding system that elevates the shopping experience, positioning GAUDÉLY as a trusted destination for original luxury products with a modern and elegant presence.",
+      "heroImages": [],
       "gallery": [
-        "https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=1600&q=90",
-        "https://images.unsplash.com/photo-1517685352821-92cf88aee5a5?auto=format&fit=crop&w=1600&q=90"
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785497532378-jq74c3ni.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785497534450-ibl1bhtv.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785497551870-8if1l2dr.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785497536648-43tzb13d.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785497538564-lpxysjpo.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785497550050-e5sl8bhk.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785497543949-qzzacrfl.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785497547680-7idojkxn.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785497546171-2fexerws.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785497540540-tdkkcm49.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785497542378-itg306ln.jpg"
       ]
     },
     {
