@@ -35,14 +35,24 @@ export async function PUT(request) {
 
     const body = parseJsonText(rawBody, "PUT /api/works request body");
 
-    if (!Array.isArray(body.works)) {
+    let nextWorks = [];
+
+    if (body.merge && body.work && typeof body.work === "object") {
+      const existing = (await readData("works.json")) || emptyPayload();
+      nextWorks = Array.isArray(existing.works) ? [...existing.works] : [];
+      const index = nextWorks.findIndex((work) => work.id === body.work.id);
+      if (index >= 0) nextWorks[index] = body.work;
+      else nextWorks.unshift(body.work);
+    } else if (Array.isArray(body.works)) {
+      nextWorks = body.works;
+    } else {
       return Response.json({ error: "Invalid payload: works must be an array" }, { status: 400 });
     }
 
     const payload = {
       version: 2,
       updatedAt: new Date().toISOString(),
-      works: body.works,
+      works: nextWorks,
     };
 
     await writeData("works.json", payload);

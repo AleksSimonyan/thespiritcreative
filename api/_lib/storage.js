@@ -94,9 +94,11 @@ async function githubPutRaw(relativePath, base64Content, sha, message) {
 
   const responseText = await response.text();
   if (!response.ok) {
-    throw new Error(
+    const error = new Error(
       `[githubPutRaw] HTTP ${response.status} — ${responseText.slice(0, 500) || "(empty body)"}`
     );
+    error.status = response.status;
+    throw error;
   }
 }
 
@@ -107,7 +109,26 @@ async function githubPutFile(relativePath, content, sha) {
     hasSha: Boolean(sha),
     contentBytes: base64Content.length,
   });
-  await githubPutRaw(relativePath, base64Content, sha, `Update ${relativePath}`);
+
+  let lastError = null;
+  for (let attempt = 1; attempt <= 4; attempt += 1) {
+    try {
+      let nextSha = sha;
+      if (attempt > 1) {
+        const latest = await githubGetFileMeta(relativePath);
+        nextSha = latest?.sha;
+      }
+      await githubPutRaw(relativePath, base64Content, nextSha, `Update ${relativePath}`);
+      return;
+    } catch (error) {
+      lastError = error;
+      const shouldRetry = error.status === 409 && attempt < 4;
+      if (!shouldRetry) throw error;
+      await new Promise((resolve) => setTimeout(resolve, 250 * attempt));
+    }
+  }
+
+  throw lastError;
 }
 
 function localRead(fileName) {
@@ -234,16 +255,30 @@ export async function writeAsset(relativePath, buffer) {
   });
 
   if (githubConfigured()) {
-    const existing = await githubGetFileMeta(normalizedPath);
-    await githubPutRaw(
-      normalizedPath,
-      buffer.toString("base64"),
-      existing?.sha,
-      `Upload ${normalizedPath}`
-    );
-    const [owner, repo] = process.env.GITHUB_REPO.split("/");
-    const branch = process.env.GITHUB_BRANCH || "main";
-    return `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${normalizedPath}`;
+    const base64Content = buffer.toString("base64");
+    let lastError = null;
+
+    for (let attempt = 1; attempt <= 4; attempt += 1) {
+      try {
+        const existing = await githubGetFileMeta(normalizedPath);
+        await githubPutRaw(
+          normalizedPath,
+          base64Content,
+          existing?.sha,
+          `Upload ${normalizedPath}`
+        );
+        const [owner, repo] = process.env.GITHUB_REPO.split("/");
+        const branch = process.env.GITHUB_BRANCH || "main";
+        return `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${normalizedPath}`;
+      } catch (error) {
+        lastError = error;
+        const shouldRetry = error.status === 409 && attempt < 4;
+        if (!shouldRetry) throw error;
+        await new Promise((resolve) => setTimeout(resolve, 250 * attempt));
+      }
+    }
+
+    throw lastError;
   }
 
   if (process.env.VERCEL) {

@@ -217,13 +217,28 @@ class SiteHandler(BaseHTTPRequestHandler):
                 if not verify_token(self.headers.get("Authorization")):
                     return json_response(self, 401, {"error": "Unauthorized"})
                 body = self.parse_json_body()
-                if not isinstance(body.get("works"), list):
+                if body.get("merge") and isinstance(body.get("work"), dict):
+                    data = read_json("works.json") or {"version": 2, "updatedAt": "", "works": []}
+                    works = list(data.get("works") or [])
+                    work = body["work"]
+                    index = next((i for i, item in enumerate(works) if item.get("id") == work.get("id")), -1)
+                    if index >= 0:
+                        works[index] = work
+                    else:
+                        works.insert(0, work)
+                    payload = {
+                        "version": 2,
+                        "updatedAt": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+                        "works": works,
+                    }
+                elif isinstance(body.get("works"), list):
+                    payload = {
+                        "version": 2,
+                        "updatedAt": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+                        "works": body["works"],
+                    }
+                else:
                     return json_response(self, 400, {"error": "Invalid payload"})
-                payload = {
-                    "version": 2,
-                    "updatedAt": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-                    "works": body["works"],
-                }
                 write_json("works.json", payload)
                 return json_response(self, 200, payload)
 

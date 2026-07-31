@@ -37,6 +37,8 @@ let activeGallery = [];
 let activeHeroImages = [];
 let dragId = null;
 let dragReordered = false;
+let isSaving = false;
+let isUploading = false;
 
 const escapeHtml = (value = "") =>
   String(value)
@@ -122,15 +124,15 @@ const extensionForBlob = (type = "", name = "") => {
   return "jpg";
 };
 
-const mapSequential = async (values, mapper) => {
+const mapSequential = async (values, mapper, onProgress) => {
   const results = [];
   for (let index = 0; index < values.length; index += 1) {
+    onProgress?.(index + 1, values.length);
     try {
       results.push(await mapper(values[index], index));
     } catch (error) {
       throw new Error(`Photo ${index + 1}: ${error.message}`);
     }
-    if (index < values.length - 1) await sleep(200);
   }
   return results;
 };
@@ -215,10 +217,31 @@ const workHasEmbeddedImages = (work) => {
   return images.some((img) => img?.startsWith("data:image/") || img?.startsWith("data:video/"));
 };
 
-const externalizeWork = async (work) => {
+const externalizeWork = async (work, onStatus) => {
+  const status = (message) => onStatus?.(message);
+
+  if (work.cardImage?.startsWith("data:")) status("Uploading card image...");
   const cardImage = await uploadDataUrl(work.cardImage);
-  const heroImages = await mapSequential(work.heroImages || [], (img) => uploadDataUrl(img));
-  const gallery = await mapSequential(work.gallery || [], (img) => uploadDataUrl(img));
+
+  const heroImages = await mapSequential(
+    work.heroImages || [],
+    (img) => uploadDataUrl(img),
+    (current, total) => {
+      if ((work.heroImages || [])[current - 1]?.startsWith("data:")) {
+        status(`Uploading hero slide ${current} of ${total}...`);
+      }
+    }
+  );
+
+  const gallery = await mapSequential(
+    work.gallery || [],
+    (img) => uploadDataUrl(img),
+    (current, total) => {
+      if ((work.gallery || [])[current - 1]?.startsWith("data:")) {
+        status(`Uploading gallery photo ${current} of ${total}...`);
+      }
+    }
+  );
 
   return {
     ...work,
@@ -229,14 +252,64 @@ const externalizeWork = async (work) => {
   };
 };
 
+const updateSaveButton = () => {
+  const saveButton = workForm?.querySelector('button[type="submit"]');
+  if (!saveButton) return;
+  const busy = isSaving || isUploading;
+  saveButton.disabled = busy;
+  saveButton.textContent = isUploading ? "Uploading photos..." : isSaving ? "Saving..." : "Save Project";
+};
+
+const persistActiveWork = async () => {
+  if (isSaving || isUploading) return false;
+  isSaving = true;
+  updateSaveButton();
+
+  try {
+    const index = works.findIndex((work) => work.id === activeId);
+    if (index < 0) throw new Error("No active project to save.");
+
+    let work = { ...works[index], order: index };
+    const photoCount = (work.gallery || []).length;
+    setStatus(saveStatus, photoCount ? `Saving project with ${photoCount} photos...` : "Saving...");
+
+    if (workHasEmbeddedImages(work)) {
+      work = await externalizeWork(work, (message) => setStatus(saveStatus, message));
+    }
+
+    works[index] = work;
+    await window.SpiritWorks.saveWork(work);
+    await window.SpiritWorks.init({ includeInquiries: true, force: true });
+    works = window.SpiritWorks.getWorks(true);
+    if (activeId && !works.find((w) => w.id === activeId)) activeId = works[0]?.id || null;
+    return true;
+  } catch (error) {
+    setStatus(
+      saveStatus,
+      error.message || "Could not save — check your connection and try again.",
+      true
+    );
+    return false;
+  } finally {
+    isSaving = false;
+    updateSaveButton();
+  }
+};
+
 const persistWorks = async () => {
+  if (isSaving || isUploading) return false;
+  isSaving = true;
+  updateSaveButton();
+
   try {
     setStatus(saveStatus, "Saving...");
     const nextWorks = [];
     for (let index = 0; index < works.length; index += 1) {
       const ordered = { ...works[index], order: index };
       nextWorks.push(
-        workHasEmbeddedImages(ordered) ? await externalizeWork(ordered) : ordered
+        workHasEmbeddedImages(ordered)
+          ? await externalizeWork(ordered, (message) => setStatus(saveStatus, message))
+          : ordered
       );
     }
     works = nextWorks;
@@ -252,6 +325,9 @@ const persistWorks = async () => {
       true
     );
     return false;
+  } finally {
+    isSaving = false;
+    updateSaveButton();
   }
 };
 
@@ -499,17 +575,25 @@ const readForm = () => {
 };
 
 const saveActiveWork = async () => {
+  if (isSaving || isUploading) return;
+
   const saved = readForm();
   const index = works.findIndex((work) => work.id === activeId);
   if (index >= 0) works[index] = saved;
   else works.unshift(saved);
   activeId = saved.id;
 
-  if (await persistWorks()) {
+  if (await persistActiveWork()) {
     renderWorkList();
     populateForm(activeWork());
     updateBadges();
-    setStatus(saveStatus, "Saved — changes are live on the website.");
+    const count = activeWork()?.gallery?.length || 0;
+    setStatus(
+      saveStatus,
+      count
+        ? `Saved — ${count} project photo${count === 1 ? "" : "s"} are live on the website.`
+        : "Saved — changes are live on the website."
+    );
   }
 };
 
@@ -604,13 +688,20 @@ const processImageUpload = async (file, target) => {
 };
 
 const uploadProcessedFiles = async (files, target, label) => {
+  isUploading = true;
+  updateSaveButton();
   const urls = [];
-  for (let index = 0; index < files.length; index += 1) {
-    setStatus(saveStatus, `Uploading ${label} ${index + 1} of ${files.length}...`);
-    const blob = await processImageUpload(files[index], target);
-    urls.push(await uploadBlob(blob, `${target}-${index + 1}`));
+  try {
+    for (let index = 0; index < files.length; index += 1) {
+      setStatus(saveStatus, `Uploading ${label} ${index + 1} of ${files.length}...`);
+      const blob = await processImageUpload(files[index], target);
+      urls.push(await uploadBlob(blob, `${target}-${index + 1}`));
+    }
+    return urls;
+  } finally {
+    isUploading = false;
+    updateSaveButton();
   }
-  return urls;
 };
 
 const formatDate = (iso) => {

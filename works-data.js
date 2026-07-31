@@ -341,7 +341,11 @@
       updatedAt: new Date().toISOString(),
       works: sortWorks(works.map((work, index) => normalizeWork(work, index))),
     };
-    localStorage.setItem(WORKS_KEY, JSON.stringify(payload));
+    try {
+      localStorage.setItem(WORKS_KEY, JSON.stringify(payload));
+    } catch (error) {
+      console.warn("[SpiritWorks] Could not cache works locally.", error);
+    }
     worksCache = payload.works;
     return worksCache;
   };
@@ -420,13 +424,54 @@
 
   const saveWorks = async (works) => {
     const normalized = sortWorks(works.map((work, index) => normalizeWork(work, index)));
-    const data = await apiRequest("/api/works", {
-      method: "PUT",
-      headers: authHeaders(),
-      body: JSON.stringify({ works: normalized }),
-    });
-    cacheWorks(Array.isArray(data?.works) ? data.works : normalized);
-    return worksCache;
+    let lastError = null;
+
+    for (let attempt = 1; attempt <= 3; attempt += 1) {
+      try {
+        const data = await apiRequest("/api/works", {
+          method: "PUT",
+          headers: authHeaders(),
+          body: JSON.stringify({ works: normalized }),
+        });
+        cacheWorks(Array.isArray(data?.works) ? data.works : normalized);
+        return worksCache;
+      } catch (error) {
+        lastError = error;
+        if (attempt < 3) await new Promise((resolve) => setTimeout(resolve, 400 * attempt));
+      }
+    }
+
+    throw lastError;
+  };
+
+  const saveWork = async (work) => {
+    const normalized = normalizeWork(work);
+    let lastError = null;
+
+    for (let attempt = 1; attempt <= 3; attempt += 1) {
+      try {
+        const data = await apiRequest("/api/works", {
+          method: "PUT",
+          headers: authHeaders(),
+          body: JSON.stringify({ merge: true, work: normalized }),
+        });
+        const savedWork = Array.isArray(data?.works)
+          ? data.works.find((item) => item.id === normalized.id) || normalized
+          : normalized;
+        const current = worksCache ?? readWorksStore();
+        const index = current.findIndex((item) => item.id === savedWork.id);
+        const next = [...current];
+        if (index >= 0) next[index] = savedWork;
+        else next.unshift(savedWork);
+        cacheWorks(next);
+        return savedWork;
+      } catch (error) {
+        lastError = error;
+        if (attempt < 3) await new Promise((resolve) => setTimeout(resolve, 400 * attempt));
+      }
+    }
+
+    throw lastError;
   };
 
   const resetWorks = () => {
@@ -541,6 +586,7 @@
     normalizeWork,
     resetWorks,
     saveWorks,
+    saveWork,
     getInquiries,
     saveInquiries,
     addInquiry,
