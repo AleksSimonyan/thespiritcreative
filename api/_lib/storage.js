@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+import { parseJsonResponse, parseJsonText } from "./parse.js";
 
 const DATA_DIR = path.join(process.cwd(), "data");
 
@@ -14,18 +15,56 @@ const githubHeaders = () => ({
 async function githubGetFile(relativePath) {
   const [owner, repo] = process.env.GITHUB_REPO.split("/");
   const url = `https://api.github.com/repos/${owner}/${repo}/contents/${relativePath}`;
+  console.info("[githubGetFile] fetching", { relativePath, owner, repo });
+
   const response = await fetch(url, { headers: githubHeaders() });
 
-  if (response.status === 404) return null;
-  if (!response.ok) {
-    throw new Error(`GitHub read failed (${response.status})`);
+  if (response.status === 404) {
+    console.info("[githubGetFile] file not found", { relativePath });
+    return null;
   }
 
-  const payload = await response.json();
-  return {
-    content: JSON.parse(Buffer.from(payload.content, "base64").toString("utf8")),
-    sha: payload.sha,
-  };
+  const context = `githubGetFile response ${relativePath}`;
+  let payload;
+  try {
+    payload = await parseJsonResponse(response, context);
+  } catch (error) {
+    console.error("[githubGetFile] failed to parse GitHub API response", {
+      relativePath,
+      status: response.status,
+      error: error.message,
+    });
+    throw error;
+  }
+
+  if (!payload?.content) {
+    const error = new Error(`[githubGetFile] Missing content field for ${relativePath}`);
+    console.error(error.message, { relativePath, keys: Object.keys(payload || {}) });
+    throw error;
+  }
+
+  let decoded;
+  try {
+    decoded = Buffer.from(payload.content, "base64").toString("utf8");
+  } catch (error) {
+    console.error("[githubGetFile] base64 decode failed", { relativePath, error: error.message });
+    throw error;
+  }
+
+  let content;
+  try {
+    content = parseJsonText(decoded, `githubGetFile file content ${relativePath}`);
+  } catch (error) {
+    console.error("[githubGetFile] failed to parse file JSON", {
+      relativePath,
+      decodedLength: decoded.length,
+      decodedPreview: decoded.slice(0, 200),
+      error: error.message,
+    });
+    throw error;
+  }
+
+  return { content, sha: payload.sha };
 }
 
 async function githubPutFile(relativePath, content, sha) {
@@ -38,22 +77,55 @@ async function githubPutFile(relativePath, content, sha) {
 
   if (sha) body.sha = sha;
 
+  console.info("[githubPutFile] writing", {
+    relativePath,
+    hasSha: Boolean(sha),
+    contentBytes: body.content.length,
+  });
+
   const response = await fetch(url, {
     method: "PUT",
     headers: { ...githubHeaders(), "Content-Type": "application/json" },
     body: JSON.stringify(body),
   });
 
+  const responseText = await response.text();
+
   if (!response.ok) {
-    const detail = await response.text();
-    throw new Error(`GitHub write failed (${response.status}): ${detail}`);
+    const error = new Error(
+      `[githubPutFile] HTTP ${response.status} — ${responseText.slice(0, 500) || "(empty body)"}`
+    );
+    console.error(error.message, {
+      relativePath,
+      status: response.status,
+      responseLength: responseText.length,
+      responsePreview: responseText.slice(0, 500),
+    });
+    throw error;
+  }
+
+  if (responseText) {
+    try {
+      parseJsonText(responseText, `githubPutFile success response ${relativePath}`);
+    } catch (error) {
+      console.error("[githubPutFile] success response was not valid JSON", {
+        relativePath,
+        responseLength: responseText.length,
+        responsePreview: responseText.slice(0, 500),
+        error: error.message,
+      });
+      throw error;
+    }
+  } else {
+    console.warn("[githubPutFile] success response had empty body", { relativePath, status: response.status });
   }
 }
 
 function localRead(fileName) {
   const filePath = path.join(DATA_DIR, fileName);
   if (!fs.existsSync(filePath)) return null;
-  return JSON.parse(fs.readFileSync(filePath, "utf8"));
+  const raw = fs.readFileSync(filePath, "utf8");
+  return parseJsonText(raw, `localRead ${fileName}`);
 }
 
 function localWrite(fileName, content) {
@@ -71,10 +143,22 @@ export async function readData(fileName) {
 }
 
 export async function writeData(fileName, content) {
+  console.info("[writeData] start", {
+    fileName,
+    githubConfigured: githubConfigured(),
+    vercel: Boolean(process.env.VERCEL),
+  });
+
   if (githubConfigured()) {
-    const existing = await githubGetFile(`data/${fileName}`);
-    await githubPutFile(`data/${fileName}`, content, existing?.sha);
-    return;
+    try {
+      const existing = await githubGetFile(`data/${fileName}`);
+      await githubPutFile(`data/${fileName}`, content, existing?.sha);
+      console.info("[writeData] GitHub write complete", { fileName });
+      return;
+    } catch (error) {
+      console.error("[writeData] GitHub write failed", { fileName, error: error.message, stack: error.stack });
+      throw error;
+    }
   }
 
   if (process.env.VERCEL) {
