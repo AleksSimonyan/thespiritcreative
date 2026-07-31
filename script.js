@@ -16,6 +16,9 @@ const quotes = [...document.querySelectorAll(".quote")];
 const bookingForm = document.querySelector("#bookingForm");
 const formSuccess = document.querySelector("#formSuccess");
 
+const prefersFinePointer = window.matchMedia("(pointer: fine)").matches;
+const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
 const escapeHtml = (value = "") =>
   String(value)
     .replace(/&/g, "&amp;")
@@ -42,6 +45,7 @@ window.addEventListener("load", () => {
     document.querySelectorAll(".hero-inner .reveal").forEach((el) => {
       el.classList.add("is-visible");
     });
+    observeReveals();
   }, 700);
 });
 
@@ -88,14 +92,39 @@ const revealObserver = new IntersectionObserver(
       }
     });
   },
-  { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
+  { threshold: 0.05, rootMargin: "0px 0px -2% 0px" }
 );
+
+const isRevealInViewport = (el) => {
+  const rect = el.getBoundingClientRect();
+  const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+  return rect.top < viewportHeight * 0.94 && rect.bottom > viewportHeight * 0.04;
+};
 
 const observeReveals = () => {
   document.querySelectorAll(".reveal:not(.is-visible)").forEach((el) => {
+    if (prefersReducedMotion || isRevealInViewport(el)) {
+      el.classList.add("is-visible");
+      revealObserver.unobserve(el);
+      return;
+    }
     revealObserver.observe(el);
   });
 };
+
+let revealScrollTick = false;
+window.addEventListener(
+  "scroll",
+  () => {
+    if (revealScrollTick) return;
+    revealScrollTick = true;
+    requestAnimationFrame(() => {
+      revealScrollTick = false;
+      observeReveals();
+    });
+  },
+  { passive: true }
+);
 
 /* ── Portfolio rendering ── */
 const getCardImage = (work) => work.cardImage || work.gallery?.[0] || work.heroImage || "";
@@ -176,23 +205,48 @@ const updateCaseGalleryScroll = (section) => {
   section.classList.toggle("is-static", maxScroll <= 8);
 };
 
+const scheduleCaseGalleryScrollUpdate = (() => {
+  const pending = new WeakMap();
+
+  return (section) => {
+    if (pending.has(section)) return;
+    pending.set(
+      section,
+      requestAnimationFrame(() => {
+        pending.delete(section);
+        updateCaseGalleryScroll(section);
+      })
+    );
+  };
+})();
+
 const initCaseGalleryRows = (root = document) => {
   root.querySelectorAll(".case-gallery-section:not([data-ready])").forEach((section) => {
     section.dataset.ready = "true";
     const row = section.querySelector(".case-gallery-row");
     if (!row) return;
 
-    const onScroll = () => updateCaseGalleryScroll(section);
+    const onScroll = () => scheduleCaseGalleryScrollUpdate(section);
     row.addEventListener("scroll", onScroll, { passive: true });
     window.setTimeout(() => updateCaseGalleryScroll(section), 60);
     window.addEventListener("resize", onScroll, { passive: true });
 
+    if (!prefersFinePointer) return;
+
     let isDragging = false;
     let startX = 0;
     let scrollStart = 0;
+    let dragRaf = null;
+    let pendingScrollLeft = null;
+
+    const applyDragScroll = () => {
+      dragRaf = null;
+      if (pendingScrollLeft === null) return;
+      row.scrollLeft = pendingScrollLeft;
+    };
 
     const onPointerDown = (event) => {
-      if (event.pointerType === "mouse" && event.button !== 0) return;
+      if (event.pointerType !== "mouse" || event.button !== 0) return;
       isDragging = true;
       startX = event.clientX;
       scrollStart = row.scrollLeft;
@@ -203,13 +257,14 @@ const initCaseGalleryRows = (root = document) => {
 
     const onPointerMove = (event) => {
       if (!isDragging) return;
-      event.preventDefault();
-      row.scrollLeft = scrollStart - (event.clientX - startX);
+      pendingScrollLeft = scrollStart - (event.clientX - startX);
+      if (!dragRaf) dragRaf = requestAnimationFrame(applyDragScroll);
     };
 
     const onPointerUp = (event) => {
       if (!isDragging) return;
       isDragging = false;
+      pendingScrollLeft = null;
       row.classList.remove("is-dragging");
       section.classList.remove("is-scrolling");
       row.releasePointerCapture(event.pointerId);
@@ -227,8 +282,11 @@ const scrollCaseGallery = (button, direction) => {
   const section = button.closest(".case-gallery-section");
   const row = section?.querySelector(".case-gallery-row");
   if (!row) return;
-  row.scrollBy({ left: direction * Math.max(row.clientWidth * 0.75, 320), behavior: "smooth" });
-  window.setTimeout(() => updateCaseGalleryScroll(section), 320);
+  row.scrollBy({
+    left: direction * Math.max(row.clientWidth * 0.75, 320),
+    behavior: prefersFinePointer ? "smooth" : "auto",
+  });
+  window.setTimeout(() => updateCaseGalleryScroll(section), prefersFinePointer ? 320 : 0);
 };
 
 const samplePaletteFromSrc = (src) =>
@@ -508,36 +566,43 @@ const getPortfolioScrollStep = () => {
 const getPortfolioRows = () => [...document.querySelectorAll(".portfolio-row")];
 
 const syncPortfolioRows = (sourceRow, scrollLeft) => {
+  if (!prefersFinePointer) return;
   getPortfolioRows().forEach((row) => {
     if (row !== sourceRow) row.scrollLeft = scrollLeft;
   });
 };
 
+let portfolioScrollRaf = null;
 const updatePortfolioScrollState = () => {
-  const rows = getPortfolioRows();
-  if (!portfolioShowcase || !rows.length) return;
+  if (portfolioScrollRaf) return;
+  portfolioScrollRaf = requestAnimationFrame(() => {
+    portfolioScrollRaf = null;
 
-  const atStart = rows.every((row) => row.scrollLeft <= 8);
-  const atEnd = rows.every((row) => {
-    const maxScroll = row.scrollWidth - row.clientWidth;
-    return maxScroll <= 8 || row.scrollLeft >= maxScroll - 8;
+    const rows = getPortfolioRows();
+    if (!portfolioShowcase || !rows.length) return;
+
+    const atStart = rows.every((row) => row.scrollLeft <= 8);
+    const atEnd = rows.every((row) => {
+      const maxScroll = row.scrollWidth - row.clientWidth;
+      return maxScroll <= 8 || row.scrollLeft >= maxScroll - 8;
+    });
+
+    portfolioShowcase.classList.toggle("at-start", atStart);
+    portfolioShowcase.classList.toggle("at-end", atEnd);
+
+    if (portfolioNavPrev) portfolioNavPrev.disabled = atStart;
+    if (portfolioNavNext) portfolioNavNext.disabled = atEnd;
   });
-
-  portfolioShowcase.classList.toggle("at-start", atStart);
-  portfolioShowcase.classList.toggle("at-end", atEnd);
-
-  if (portfolioNavPrev) portfolioNavPrev.disabled = atStart;
-  if (portfolioNavNext) portfolioNavNext.disabled = atEnd;
 };
 
 const scrollPortfolioRows = (direction) => {
   const step = getPortfolioScrollStep() * direction;
 
   getPortfolioRows().forEach((row) => {
-    row.scrollBy({ left: step, behavior: "smooth" });
+    row.scrollBy({ left: step, behavior: prefersFinePointer ? "smooth" : "auto" });
   });
 
-  window.setTimeout(updatePortfolioScrollState, 320);
+  window.setTimeout(updatePortfolioScrollState, prefersFinePointer ? 320 : 0);
 };
 
 const initPortfolioNavigation = () => {
@@ -553,45 +618,53 @@ const initPortfolioRows = () => {
     if (row.dataset.initialized) return;
     row.dataset.initialized = "1";
 
+    row.addEventListener("scroll", () => updatePortfolioScrollState(), { passive: true });
+
+    if (!prefersFinePointer) return;
+
     let isDragging = false;
     let startX = 0;
     let scrollStart = 0;
+    let dragRaf = null;
+    let pendingScrollLeft = null;
 
-    const getPointerX = (event) => event.pageX ?? event.touches?.[0]?.pageX ?? 0;
+    const applyDragScroll = () => {
+      dragRaf = null;
+      if (pendingScrollLeft === null) return;
+      row.scrollLeft = pendingScrollLeft;
+      syncPortfolioRows(row, pendingScrollLeft);
+      updatePortfolioScrollState();
+    };
 
     const onPointerDown = (event) => {
+      if (event.pointerType !== "mouse" || event.button !== 0) return;
       if (event.target.closest("button, a")) return;
       isDragging = true;
       row.classList.add("is-dragging");
-      startX = getPointerX(event);
+      startX = event.clientX;
       scrollStart = row.scrollLeft;
+      row.setPointerCapture(event.pointerId);
     };
 
     const onPointerMove = (event) => {
       if (!isDragging) return;
-      event.preventDefault();
-      const walk = (getPointerX(event) - startX) * 1.12;
-      row.scrollLeft = scrollStart - walk;
-      syncPortfolioRows(row, row.scrollLeft);
-      updatePortfolioScrollState();
+      pendingScrollLeft = scrollStart - (event.clientX - startX);
+      if (!dragRaf) dragRaf = requestAnimationFrame(applyDragScroll);
     };
 
-    const onPointerUp = () => {
+    const onPointerUp = (event) => {
       if (!isDragging) return;
       isDragging = false;
+      pendingScrollLeft = null;
       row.classList.remove("is-dragging");
+      row.releasePointerCapture(event.pointerId);
       updatePortfolioScrollState();
     };
 
-    row.addEventListener("mousedown", onPointerDown);
-    row.addEventListener("mousemove", onPointerMove);
-    window.addEventListener("mouseup", onPointerUp);
-
-    row.addEventListener("touchstart", onPointerDown, { passive: true });
-    row.addEventListener("touchmove", onPointerMove, { passive: false });
-    row.addEventListener("touchend", onPointerUp, { passive: true });
-
-    row.addEventListener("scroll", () => updatePortfolioScrollState(), { passive: true });
+    row.addEventListener("pointerdown", onPointerDown);
+    row.addEventListener("pointermove", onPointerMove);
+    row.addEventListener("pointerup", onPointerUp);
+    row.addEventListener("pointercancel", onPointerUp);
   });
 
   initPortfolioNavigation();

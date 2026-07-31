@@ -1898,8 +1898,28 @@ body.is-project-open .marquee { display: none; }
     scroll-snap-align: start;
   }
 
+  .project-trigger,
+  .case-gallery-item,
+  .case-gallery-item-inner,
+  .case-gallery-item img {
+    touch-action: pan-x;
+  }
+
   .case-gallery-row {
-    scroll-snap-type: x mandatory;
+    scroll-snap-type: x proximity;
+  }
+
+  .case-gallery-item {
+    animation: none;
+    transition: none;
+  }
+
+  .magnetic {
+    transform: none !important;
+  }
+
+  .hero-logo-wrap {
+    animation: none !important;
   }
 }
 
