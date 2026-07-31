@@ -127,7 +127,7 @@ window.addEventListener(
 );
 
 const isVideoMedia = (url = "") =>
-  /\.mp4(\?|#|$)/i.test(url) || /^data:video\//i.test(url);
+  /\.(mp4|mov)(\?|#|$)/i.test(url) || /^data:video\//i.test(url);
 
 const renderCardMedia = (src, alt) => {
   if (!src) return "";

@@ -159,6 +159,72 @@ export async function writeData(fileName, content) {
   localWrite(fileName, content);
 }
 
+async function githubGetFileBuffer(relativePath) {
+  const payload = await githubGetFileMeta(relativePath);
+  if (!payload) return null;
+
+  if (payload.content) {
+    return Buffer.from(String(payload.content).replace(/\n/g, ""), "base64");
+  }
+
+  if (payload.download_url) {
+    const response = await fetch(payload.download_url, { headers: githubHeaders() });
+    if (!response.ok) {
+      throw new Error(`[readAssetBuffer] download failed (${response.status}) for ${relativePath}`);
+    }
+    return Buffer.from(await response.arrayBuffer());
+  }
+
+  return null;
+}
+
+function localReadBuffer(relativePath) {
+  const filePath = path.join(ROOT_DIR, relativePath.replace(/^\/+/, ""));
+  if (!fs.existsSync(filePath)) return null;
+  return fs.readFileSync(filePath);
+}
+
+export async function readAssetBuffer(relativePath) {
+  const normalizedPath = relativePath.replace(/^\/+/, "");
+
+  if (githubConfigured()) {
+    return githubGetFileBuffer(normalizedPath);
+  }
+
+  if (process.env.VERCEL) {
+    throw new Error("Server storage is not configured.");
+  }
+
+  return localReadBuffer(normalizedPath);
+}
+
+export async function deleteAsset(relativePath) {
+  const normalizedPath = relativePath.replace(/^\/+/, "");
+
+  if (githubConfigured()) {
+    const existing = await githubGetFileMeta(normalizedPath);
+    if (!existing?.sha) return;
+    const [owner, repo] = process.env.GITHUB_REPO.split("/");
+    const url = `https://api.github.com/repos/${owner}/${repo}/contents/${normalizedPath}`;
+    const response = await fetch(url, {
+      method: "DELETE",
+      headers: { ...githubHeaders(), "Content-Type": "application/json" },
+      body: JSON.stringify({
+        message: `Remove ${normalizedPath}`,
+        sha: existing.sha,
+      }),
+    });
+    if (!response.ok) {
+      const text = await response.text();
+      throw new Error(`[deleteAsset] HTTP ${response.status} — ${text.slice(0, 200)}`);
+    }
+    return;
+  }
+
+  const filePath = path.join(ROOT_DIR, normalizedPath);
+  if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+}
+
 export async function writeAsset(relativePath, buffer) {
   const normalizedPath = relativePath.replace(/^\/+/, "");
   console.info("[writeAsset] start", {

@@ -28,6 +28,8 @@ MIME_TYPES = {
     ".jpg": "image/jpeg",
     ".jpeg": "image/jpeg",
     ".webp": "image/webp",
+    ".mp4": "video/mp4",
+    ".mov": "video/quicktime",
     ".svg": "image/svg+xml",
     ".ico": "image/x-icon",
 }
@@ -80,7 +82,19 @@ def verify_token(header):
     return hmac.compare_digest(sig, expected)
 
 
-DATA_URL_PATTERN = re.compile(r"^data:(image/(?:jpeg|jpg|png|webp));base64,(.+)$", re.I)
+DATA_URL_PATTERN = re.compile(r"^data:(image/(?:jpeg|jpg|png|webp)|video/(?:mp4|quicktime));base64,(.+)$", re.I)
+
+
+def extension_for_mime(mime, filename=""):
+    mime = (mime or "").lower()
+    name = (filename or "").lower()
+    if "mp4" in mime or "video" in mime or "quicktime" in mime or name.endswith(".mp4") or name.endswith(".mov"):
+        return "mp4"
+    if "png" in mime:
+        return "png"
+    if "webp" in mime:
+        return "webp"
+    return "jpg"
 
 
 def write_asset(relative_path, payload):
@@ -118,6 +132,46 @@ class SiteHandler(BaseHTTPRequestHandler):
                 return json_response(self, 401, {"error": "Unauthorized"})
             return json_response(self, 200, {"token": create_token()})
 
+        if path == "/api/upload-chunk" and method == "POST":
+            if not verify_token(self.headers.get("Authorization")):
+                return json_response(self, 401, {"error": "Unauthorized"})
+            body = self.parse_json_body()
+            upload_id = str(body.get("uploadId", "")).strip()
+            index = int(body.get("index", -1))
+            total = int(body.get("total", 0))
+            chunk = str(body.get("chunk", ""))
+            if not upload_id or index < 0 or total < 1 or index >= total or not chunk:
+                return json_response(self, 400, {"error": "Invalid chunk payload"})
+            payload = base64.b64decode(chunk)
+            filename = f"assets/uploads/.chunks/{upload_id}/{index}.part"
+            write_asset(filename, payload)
+            return json_response(self, 200, {"ok": True, "index": index})
+
+        if path == "/api/upload-complete" and method == "POST":
+            if not verify_token(self.headers.get("Authorization")):
+                return json_response(self, 401, {"error": "Unauthorized"})
+            body = self.parse_json_body()
+            upload_id = str(body.get("uploadId", "")).strip()
+            total = int(body.get("total", 0))
+            mime = str(body.get("mime", "application/octet-stream"))
+            if not upload_id or total < 1:
+                return json_response(self, 400, {"error": "Invalid upload payload"})
+            parts = []
+            for index in range(total):
+                part_path = ROOT / f"assets/uploads/.chunks/{upload_id}/{index}.part"
+                if not part_path.exists():
+                    return json_response(self, 400, {"error": f"Missing upload chunk {index + 1}"})
+                parts.append(part_path.read_bytes())
+            ext = extension_for_mime(mime)
+            filename = f"assets/uploads/{int(time.time() * 1000)}-{os.urandom(4).hex()}.{ext}"
+            url = write_asset(filename, b"".join(parts))
+            chunk_dir = ROOT / f"assets/uploads/.chunks/{upload_id}"
+            if chunk_dir.exists():
+                for part_file in chunk_dir.iterdir():
+                    part_file.unlink(missing_ok=True)
+                chunk_dir.rmdir()
+            return json_response(self, 200, {"url": url})
+
         if path == "/api/upload" and method == "POST":
             if not verify_token(self.headers.get("Authorization")):
                 return json_response(self, 401, {"error": "Unauthorized"})
@@ -135,10 +189,11 @@ class SiteHandler(BaseHTTPRequestHandler):
                 )
                 file_item = form["file"] if "file" in form else None
                 if not file_item or not getattr(file_item, "file", None):
-                    return json_response(self, 400, {"error": "Missing image file"})
+                    return json_response(self, 400, {"error": "Missing media file"})
                 payload = file_item.file.read()
                 mime = file_item.type or "image/jpeg"
-                ext = "png" if "png" in mime else "webp" if "webp" in mime else "jpg"
+                filename_field = getattr(file_item, "filename", "") or ""
+                ext = extension_for_mime(mime, filename_field)
                 filename = f"assets/uploads/{int(time.time() * 1000)}-{os.urandom(4).hex()}.{ext}"
                 url = write_asset(filename, payload)
                 return json_response(self, 200, {"url": url})
@@ -146,9 +201,9 @@ class SiteHandler(BaseHTTPRequestHandler):
             body = self.parse_json_body()
             match = DATA_URL_PATTERN.match(body.get("dataUrl") or "")
             if not match:
-                return json_response(self, 400, {"error": "Invalid image payload"})
+                return json_response(self, 400, {"error": "Invalid media payload"})
             mime = match.group(1).lower()
-            ext = "png" if "png" in mime else "webp" if "webp" in mime else "jpg"
+            ext = extension_for_mime(mime)
             payload = base64.b64decode(match.group(2))
             filename = f"assets/uploads/{int(time.time() * 1000)}-{os.urandom(4).hex()}.{ext}"
             url = write_asset(filename, payload)

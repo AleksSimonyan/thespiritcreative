@@ -92,11 +92,31 @@ const authHeaders = () => {
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const isVideoMedia = (value = "") =>
-  /\.mp4(\?|#|$)/i.test(value) || /^data:video\//i.test(value);
+  /\.(mp4|mov)(\?|#|$)/i.test(value) || /^data:video\//i.test(value);
 
-const extensionForBlob = (type = "") => {
+const isVideoFile = (file) => {
+  const type = (file.type || "").toLowerCase();
+  const name = (file.name || "").toLowerCase();
+  return type.startsWith("video/") || name.endsWith(".mp4") || name.endsWith(".mov");
+};
+
+const DIRECT_UPLOAD_LIMIT = 4 * 1024 * 1024;
+const CHUNK_SIZE = 3 * 1024 * 1024;
+
+const bytesToBase64 = (bytes) => {
+  let binary = "";
+  for (let index = 0; index < bytes.length; index += 0x8000) {
+    binary += String.fromCharCode(...bytes.subarray(index, index + 0x8000));
+  }
+  return btoa(binary);
+};
+
+const extensionForBlob = (type = "", name = "") => {
   const mime = type.toLowerCase();
-  if (mime.includes("mp4") || mime.includes("video")) return "mp4";
+  const lowerName = name.toLowerCase();
+  if (mime.includes("mp4") || mime.includes("video") || mime.includes("quicktime") || lowerName.endsWith(".mp4") || lowerName.endsWith(".mov")) {
+    return "mp4";
+  }
   if (mime.includes("png")) return "png";
   if (mime.includes("webp")) return "webp";
   return "jpg";
@@ -116,8 +136,56 @@ const mapSequential = async (values, mapper) => {
 };
 
 const uploadBlob = async (blob, label = "image") => {
+  const fileName = blob.name || `${label}.${extensionForBlob(blob.type, blob.name)}`;
+
+  if (blob.size > DIRECT_UPLOAD_LIMIT) {
+    const uploadId = `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+    const bytes = new Uint8Array(await blob.arrayBuffer());
+    const total = Math.ceil(bytes.length / CHUNK_SIZE);
+    let lastError = "Video upload failed.";
+
+    for (let index = 0; index < total; index += 1) {
+      setStatus(saveStatus, `Uploading video — part ${index + 1} of ${total}...`);
+      const slice = bytes.slice(index * CHUNK_SIZE, (index + 1) * CHUNK_SIZE);
+      const response = await fetch("/api/upload-chunk", {
+        method: "POST",
+        headers: { ...authHeaders(), "Content-Type": "application/json" },
+        body: JSON.stringify({
+          uploadId,
+          index,
+          total,
+          mime: blob.type || "video/mp4",
+          chunk: bytesToBase64(slice),
+        }),
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        lastError = data.error || lastError;
+        throw new Error(lastError);
+      }
+    }
+
+    for (let attempt = 1; attempt <= 3; attempt += 1) {
+      const response = await fetch("/api/upload-complete", {
+        method: "POST",
+        headers: { ...authHeaders(), "Content-Type": "application/json" },
+        body: JSON.stringify({
+          uploadId,
+          total,
+          mime: blob.type || "video/mp4",
+          name: fileName,
+        }),
+      });
+      const data = await response.json().catch(() => ({}));
+      if (response.ok) return data.url;
+      lastError = data.error || lastError;
+      if (attempt < 3) await sleep(400 * attempt);
+    }
+    throw new Error(lastError);
+  }
+
   const formData = new FormData();
-  const ext = extensionForBlob(blob.type);
+  const ext = extensionForBlob(blob.type, fileName);
   formData.append("file", blob, `${label}.${ext}`);
 
   let lastError = "Image upload failed.";
@@ -719,7 +787,7 @@ document.querySelectorAll("[data-image-target]").forEach((input) => {
     setStatus(saveStatus, "Processing media...");
     try {
       let url;
-      if (file.type.startsWith("video/")) {
+      if (isVideoFile(file)) {
         if (input.dataset.imageTarget !== "cardImage") {
           throw new Error("MP4 videos are only supported for card media.");
         }

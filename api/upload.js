@@ -33,18 +33,22 @@ export async function POST(request) {
       }
 
       const fileType = file.type || "";
-      const isImage = fileType.startsWith("image/");
-      const isVideo = fileType === "video/mp4";
+      const fileName = file.name || "";
+      const isImage =
+        fileType.startsWith("image/") || /\.(jpe?g|png|webp)$/i.test(fileName);
+      const isVideo =
+        fileType.startsWith("video/") || /\.(mp4|mov)$/i.test(fileName);
       if (!isImage && !isVideo) {
         return Response.json({ error: "Only image or MP4 video files are supported" }, { status: 400 });
       }
 
       const buffer = Buffer.from(await file.arrayBuffer());
       if (!buffer.length) {
-        return Response.json({ error: "Empty image file" }, { status: 400 });
+        return Response.json({ error: "Empty media file" }, { status: 400 });
       }
 
-      const url = await saveBuffer(buffer, fileType || "image/jpeg");
+      const resolvedType = fileType || (isVideo ? "video/mp4" : "image/jpeg");
+      const url = await saveBuffer(buffer, resolvedType);
       return Response.json({ url });
     }
 
