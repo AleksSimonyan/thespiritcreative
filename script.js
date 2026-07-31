@@ -132,9 +132,111 @@ const isVideoMedia = (url = "") =>
 const renderCardMedia = (src, alt) => {
   if (!src) return "";
   if (isVideoMedia(src)) {
-    return `<video src="${escapeHtml(src)}" muted autoplay loop playsinline draggable="false" aria-label="${escapeHtml(alt)}"></video>`;
+    return `<video class="project-card-video" src="${escapeHtml(src)}" muted loop playsinline preload="auto" draggable="false" aria-label="${escapeHtml(alt)}"></video>`;
   }
   return `<img src="${escapeHtml(src)}" alt="${escapeHtml(alt)}" loading="lazy" draggable="false" />`;
+};
+
+const getActiveCardVideos = () =>
+  [...document.querySelectorAll(".project-card:not(.is-hidden) .project-card-video")];
+
+let cardVideoSyncTimer = null;
+let cardVideoObserver = null;
+
+const pauseCardVideos = (videos = getActiveCardVideos()) => {
+  videos.forEach((video) => video.pause());
+};
+
+const syncProjectCardVideos = () => {
+  const videos = getActiveCardVideos();
+  if (cardVideoSyncTimer) {
+    clearInterval(cardVideoSyncTimer);
+    cardVideoSyncTimer = null;
+  }
+
+  if (!videos.length) return;
+
+  videos.forEach((video) => {
+    video.muted = true;
+    video.playsInline = true;
+    video.loop = true;
+  });
+
+  let synced = false;
+  const pending = new Set(videos);
+
+  const playTogether = () => {
+    if (synced) return;
+    synced = true;
+
+    videos.forEach((video) => {
+      video.pause();
+      try {
+        video.currentTime = 0;
+      } catch {
+        /* ignore seek errors while loading */
+      }
+    });
+
+    requestAnimationFrame(() => {
+      videos.forEach((video) => {
+        video.play().catch(() => {});
+      });
+    });
+
+    if (videos.length > 1) {
+      const leader = videos[0];
+      cardVideoSyncTimer = setInterval(() => {
+        if (leader.paused || document.hidden) return;
+        const time = leader.currentTime;
+        videos.slice(1).forEach((video) => {
+          if (Math.abs(video.currentTime - time) > 0.18) {
+            try {
+              video.currentTime = time;
+            } catch {
+              /* ignore seek errors */
+            }
+          }
+        });
+      }, 1200);
+    }
+  };
+
+  const markReady = (video) => {
+    pending.delete(video);
+    if (pending.size === 0) playTogether();
+  };
+
+  videos.forEach((video) => {
+    if (video.readyState >= 2) markReady(video);
+    else video.addEventListener("loadeddata", () => markReady(video), { once: true });
+  });
+
+  window.setTimeout(() => {
+    if (!synced) playTogether();
+  }, 2500);
+};
+
+const initProjectCardVideos = () => {
+  const worksSection = document.querySelector(".works-section");
+  if (!worksSection || cardVideoObserver) return;
+
+  cardVideoObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) syncProjectCardVideos();
+        else pauseCardVideos();
+      });
+    },
+    { threshold: 0.12 }
+  );
+
+  cardVideoObserver.observe(worksSection);
+
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) pauseCardVideos();
+    else syncProjectCardVideos();
+  });
 };
 
 /* ── Portfolio rendering ── */
@@ -561,6 +663,8 @@ const renderWorks = () => {
   observeReveals();
   initMagnetic();
   initPortfolioRows();
+  initProjectCardVideos();
+  syncProjectCardVideos();
   initCaseGalleryRows(caseStudyShell);
   initPhotoGlows(caseStudyShell);
   initCaseStudyAmbience(caseStudyShell);
@@ -764,6 +868,7 @@ filterButtons.forEach((btn) => {
       card.classList.toggle("is-hidden", filter !== "all" && !cats.includes(filter));
     });
     updatePortfolioScrollState();
+    syncProjectCardVideos();
   });
 });
 
