@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "updatedAt": "2026-07-31T14:41:06.915Z",
+  "updatedAt": "2026-07-31T14:41:17.353Z",
   "works": [
     {
       "id": "ot-martina-pop-corn",
@@ -306,7 +306,7 @@
       "client": "Volt",
       "year": "2024",
       "order": 10,
-      "visible": true,
+      "visible": false,
       "cardImage": "https://images.unsplash.com/photo-1556906781-9a412961c28c?auto=format&fit=crop&w=1200&q=85",
       "heroImage": "https://images.unsplash.com/photo-1556906781-9a412961c28c?auto=format&fit=crop&w=1800&q=90",
       "cardAlt": "Athletic brand visual identity",
