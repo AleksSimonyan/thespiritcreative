@@ -1,4 +1,5 @@
 import { verifyToken } from "./_lib/auth.js";
+import { parseJsonText } from "./_lib/parse.js";
 import { readData, writeData } from "./_lib/storage.js";
 
 const emptyPayload = () => ({
@@ -14,6 +15,7 @@ export async function GET() {
       headers: { "Cache-Control": "no-store" },
     });
   } catch (error) {
+    console.error("[GET /api/works] failed", { error: error.message, stack: error.stack });
     return Response.json({ error: error.message }, { status: 500 });
   }
 }
@@ -23,10 +25,18 @@ export async function PUT(request) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  let rawBody = "";
   try {
-    const body = await request.json();
+    rawBody = await request.text();
+    console.info("[PUT /api/works] received body", {
+      length: rawBody.length,
+      preview: rawBody.slice(0, 200),
+    });
+
+    const body = parseJsonText(rawBody, "PUT /api/works request body");
+
     if (!Array.isArray(body.works)) {
-      return Response.json({ error: "Invalid payload" }, { status: 400 });
+      return Response.json({ error: "Invalid payload: works must be an array" }, { status: 400 });
     }
 
     const payload = {
@@ -38,6 +48,12 @@ export async function PUT(request) {
     await writeData("works.json", payload);
     return Response.json(payload);
   } catch (error) {
+    console.error("[PUT /api/works] failed", {
+      error: error.message,
+      stack: error.stack,
+      bodyLength: rawBody.length,
+      bodyPreview: rawBody.slice(0, 200),
+    });
     return Response.json({ error: error.message }, { status: 500 });
   }
 }
