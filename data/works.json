@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "updatedAt": "2026-07-31T14:22:57.935Z",
+  "updatedAt": "2026-07-31T14:25:04.300Z",
   "works": [
     {
       "id": "otmartina-popcorn-packaging",
@@ -106,16 +106,26 @@
       "year": "2025",
       "order": 3,
       "visible": true,
-      "cardImage": "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785491776970-wwg3saw3.jpg",
-      "heroImage": "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=1800&q=90",
+      "cardImage": "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785507795027-zpkuxr7q.jpg",
+      "heroImage": "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785507795027-zpkuxr7q.jpg",
       "cardAlt": "Amber perfume bottle on patterned backdrop",
       "subtitle": "Warm fragrance system shaped by memory and ritual.",
       "brandStory": "A warm fragrance system shaped by memory, ritual, and tactile material cues.\n\nBuild intimacy while keeping the line scalable across multiple scents.\n\nMuted typography, amber light, and pattern-led packaging for a quiet shelf world.\n\nDesigned to feel discovered rather than announced.\n\nAdd ingredient notes and collection names when final copy is ready.",
       "heroImages": [
-        "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=1800&q=90"
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785507822051-d7z2ync9.jpg"
       ],
       "gallery": [
-        "https://images.unsplash.com/photo-1517685352821-92cf88aee5a5?auto=format&fit=crop&w=1600&q=90"
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785507807789-0003jro7.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785507829627-tqqu7dp8.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785507818639-2xwu549c.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785507821103-r7rm1t98.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785507809951-qvnbdft2.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785507824713-ir202bv4.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785507812052-wsoqwtgc.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785507816236-ddt787be.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785507813986-by44igus.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785507827038-0ctmi1tu.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785507822906-azo0k7sg.jpg"
       ]
     },
     {
