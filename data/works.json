@@ -1,7 +1,38 @@
 {
   "version": 2,
-  "updatedAt": "2026-07-31T14:30:55.188Z",
+  "updatedAt": "2026-07-31T14:39:55.370Z",
   "works": [
+    {
+      "id": "dr-diana",
+      "title": "Dr. Diana",
+      "services": "Personal Brand Identity",
+      "categories": [
+        "branding"
+      ],
+      "industry": "Medical & Aesthetic",
+      "client": "Dr. Diana",
+      "year": "2025",
+      "order": 4,
+      "visible": true,
+      "cardImage": "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785508623935-zrajrx8y.jpg",
+      "heroImage": "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785508623935-zrajrx8y.jpg",
+      "cardAlt": "Personal brand identity for a plastic surgeon featuring elegant typography, stationery, color palette, and premium medical branding.",
+      "subtitle": "A refined visual identity designed for a multidisciplinary plastic surgeon focused on trust, precision, and patient care.",
+      "brandStory": "Dr. Diana is a multidisciplinary plastic surgeon whose practice combines medical precision with aesthetic excellence. The objective was to create a visual identity that communicates trust, professionalism, and calm confidence while reflecting the premium standard of modern medical care.\nThe identity is built around a minimalist monogram inspired by precision and balance. Soft neutral tones, refined typography, and generous white space create a clean and reassuring visual language that reflects safety, expertise, and attention to detail.\nEvery element from printed materials and consultation documents to digital communication and brand visuals—was designed to deliver a consistent patient experience. The branding emphasizes clarity and elegance, allowing the medical expertise to remain at the center of every interaction.\nThe result is a timeless healthcare identity that strengthens credibility, builds patient trust, and positions Dr. Diana's practice with a modern, sophisticated, and highly recognizable presence.",
+      "heroImages": [],
+      "gallery": [
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785508686295-jmyyuyau.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785508510168-2xt6ssbt.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785508516381-4j86y80e.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785508513268-y6uo5raw.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785508525631-9m98rgb4.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785508523929-1usb8t9u.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785508518341-h63zfwtc.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785508520966-f7wqjbvx.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785508507815-34sjs0y8.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785508528111-83dqlx8x.jpg"
+      ]
+    },
     {
       "id": "ot-martina-pop-corn",
       "title": "OT MARTINA POP CORN",
