@@ -6,7 +6,7 @@
     <title>Admin — The Spirit Creative</title>
     <meta name="robots" content="noindex, nofollow" />
     <link rel="icon" href="assets/spirit-mark.png?v=5" type="image/png" />
-    <link rel="stylesheet" href="admin.css?v=37" />
+    <link rel="stylesheet" href="admin.css?v=38" />
   </head>
   <body class="admin-body">
     <section class="lock-screen" id="lockScreen">
@@ -95,10 +95,10 @@
 
               <div class="image-section image-section-single">
                 <div class="image-field">
-                  <label><span>Card image (3:4 portrait)</span></label>
+                  <label><span>Card image or video (3:4 portrait)</span></label>
                   <input name="cardImage" type="hidden" />
-                  <input type="url" placeholder="Paste image URL" data-image-url-target="cardImage" class="image-url-input" />
-                  <label class="upload-btn">Upload from computer<input type="file" accept="image/*" data-image-target="cardImage" hidden /></label>
+                  <input type="url" placeholder="Paste image or MP4 URL" data-image-url-target="cardImage" class="image-url-input" />
+                  <label class="upload-btn">Upload image or MP4<input type="file" accept="image/*,video/mp4" data-image-target="cardImage" hidden /></label>
                   <div class="image-preview image-preview-portrait" data-preview="cardImage"></div>
                 </div>
               </div>
@@ -146,6 +146,6 @@
     </main>
 
     <script src="works-data.js?v=50"></script>
-    <script src="admin.js?v=51"></script>
+    <script src="admin.js?v=52"></script>
   </body>
 </html>

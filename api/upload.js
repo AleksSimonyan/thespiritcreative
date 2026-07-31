@@ -1,10 +1,11 @@
 import { verifyToken } from "./_lib/auth.js";
 import { writeAsset } from "./_lib/storage.js";
 
-const DATA_URL_PATTERN = /^data:(image\/(?:jpeg|jpg|png|webp));base64,(.+)$/i;
+const DATA_URL_PATTERN = /^data:(image\/(?:jpeg|jpg|png|webp)|video\/mp4);base64,(.+)$/i;
 
 const extensionForType = (type = "") => {
   const mime = type.toLowerCase();
+  if (mime.includes("mp4") || mime.includes("video")) return "mp4";
   if (mime.includes("png")) return "png";
   if (mime.includes("webp")) return "webp";
   return "jpg";
@@ -28,7 +29,14 @@ export async function POST(request) {
       const formData = await request.formData();
       const file = formData.get("file");
       if (!file || typeof file === "string") {
-        return Response.json({ error: "Missing image file" }, { status: 400 });
+        return Response.json({ error: "Missing media file" }, { status: 400 });
+      }
+
+      const fileType = file.type || "";
+      const isImage = fileType.startsWith("image/");
+      const isVideo = fileType === "video/mp4";
+      if (!isImage && !isVideo) {
+        return Response.json({ error: "Only image or MP4 video files are supported" }, { status: 400 });
       }
 
       const buffer = Buffer.from(await file.arrayBuffer());
@@ -36,14 +44,14 @@ export async function POST(request) {
         return Response.json({ error: "Empty image file" }, { status: 400 });
       }
 
-      const url = await saveBuffer(buffer, file.type || "image/jpeg");
+      const url = await saveBuffer(buffer, fileType || "image/jpeg");
       return Response.json({ url });
     }
 
     const body = await request.json();
     const match = String(body.dataUrl || "").match(DATA_URL_PATTERN);
     if (!match) {
-      return Response.json({ error: "Invalid image payload" }, { status: 400 });
+      return Response.json({ error: "Invalid media payload" }, { status: 400 });
     }
 
     const buffer = Buffer.from(match[2], "base64");

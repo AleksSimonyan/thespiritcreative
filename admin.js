@@ -91,6 +91,17 @@ const authHeaders = () => {
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+const isVideoMedia = (value = "") =>
+  /\.mp4(\?|#|$)/i.test(value) || /^data:video\//i.test(value);
+
+const extensionForBlob = (type = "") => {
+  const mime = type.toLowerCase();
+  if (mime.includes("mp4") || mime.includes("video")) return "mp4";
+  if (mime.includes("png")) return "png";
+  if (mime.includes("webp")) return "webp";
+  return "jpg";
+};
+
 const mapSequential = async (values, mapper) => {
   const results = [];
   for (let index = 0; index < values.length; index += 1) {
@@ -106,7 +117,8 @@ const mapSequential = async (values, mapper) => {
 
 const uploadBlob = async (blob, label = "image") => {
   const formData = new FormData();
-  formData.append("file", blob, `${label}.jpg`);
+  const ext = extensionForBlob(blob.type);
+  formData.append("file", blob, `${label}.${ext}`);
 
   let lastError = "Image upload failed.";
   for (let attempt = 1; attempt <= 3; attempt += 1) {
@@ -124,7 +136,7 @@ const uploadBlob = async (blob, label = "image") => {
 };
 
 const uploadDataUrl = async (value) => {
-  if (!value || !value.startsWith("data:image/")) return value;
+  if (!value || (!value.startsWith("data:image/") && !value.startsWith("data:video/"))) return value;
   const response = await fetch(value);
   const blob = await response.blob();
   return uploadBlob(blob, "embedded");
@@ -132,7 +144,7 @@ const uploadDataUrl = async (value) => {
 
 const workHasEmbeddedImages = (work) => {
   const images = [work.cardImage, ...(work.heroImages || []), ...(work.gallery || [])];
-  return images.some((img) => img?.startsWith("data:image/"));
+  return images.some((img) => img?.startsWith("data:image/") || img?.startsWith("data:video/"));
 };
 
 const externalizeWork = async (work) => {
@@ -195,7 +207,9 @@ const renderWorkList = () => {
           data-id="${escapeHtml(work.id)}"
           data-index="${index}"
         >
-          <img src="${escapeHtml(work.cardImage || work.gallery?.[0] || "")}" alt="" />
+          ${isVideoMedia(work.cardImage || work.gallery?.[0] || "")
+            ? `<video src="${escapeHtml(work.cardImage || work.gallery?.[0] || "")}" muted autoplay loop playsinline></video>`
+            : `<img src="${escapeHtml(work.cardImage || work.gallery?.[0] || "")}" alt="" />`}
           <span>
             <strong>${escapeHtml(work.title)}</strong>
             <small>${work.visible ? escapeHtml(work.services || "No label") : "Hidden"}</small>
@@ -226,6 +240,18 @@ const renderPreview = (name) => {
   }
 
   if (!value) return;
+
+  if (isVideoMedia(value)) {
+    const video = document.createElement("video");
+    video.src = value;
+    video.muted = true;
+    video.autoplay = true;
+    video.loop = true;
+    video.playsInline = true;
+    video.controls = true;
+    preview.appendChild(video);
+    return;
+  }
 
   const img = document.createElement("img");
   img.src = value;
@@ -690,12 +716,20 @@ document.querySelectorAll("[data-image-target]").forEach((input) => {
   input.addEventListener("change", async () => {
     const file = input.files?.[0];
     if (!file) return;
-    setStatus(saveStatus, "Processing image...");
+    setStatus(saveStatus, "Processing media...");
     try {
-      const blob = await processImageUpload(file, input.dataset.imageTarget);
-      const url = await uploadBlob(blob, input.dataset.imageTarget);
+      let url;
+      if (file.type.startsWith("video/")) {
+        if (input.dataset.imageTarget !== "cardImage") {
+          throw new Error("MP4 videos are only supported for card media.");
+        }
+        url = await uploadBlob(file, "card-video");
+      } else {
+        const blob = await processImageUpload(file, input.dataset.imageTarget);
+        url = await uploadBlob(blob, input.dataset.imageTarget);
+      }
       setImageField(input.dataset.imageTarget, url);
-      setStatus(saveStatus, "Image uploaded — save the project.");
+      setStatus(saveStatus, "Media uploaded — save the project.");
     } catch (error) {
       setStatus(saveStatus, error.message, true);
     } finally {

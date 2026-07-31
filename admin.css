@@ -190,7 +190,8 @@ input, textarea, select, button { font-family: inherit; }
 .work-list-item.is-active { border-color: var(--white); }
 .work-list-item.is-hidden-work { opacity: 0.45; }
 .work-list-item.is-dragging { opacity: 0.5; }
-.work-list-item img {
+.work-list-item img,
+.work-list-item video {
   width: 48px; height: 36px;
   object-fit: cover; border-radius: 2px;
   flex-shrink: 0;
@@ -309,7 +310,8 @@ input, textarea, select, button { font-family: inherit; }
   margin-top: 10px;
   min-height: 60px;
 }
-.image-preview img {
+.image-preview img,
+.image-preview video {
   max-width: 200px; max-height: 120px;
   object-fit: cover; border-radius: 2px;
   border: 1px solid var(--border);
@@ -325,7 +327,8 @@ input, textarea, select, button { font-family: inherit; }
   max-width: 320px;
 }
 
-.image-preview-portrait img {
+.image-preview-portrait img,
+.image-preview-portrait video {
   width: 100%;
   max-width: 220px;
   aspect-ratio: 3 / 4;

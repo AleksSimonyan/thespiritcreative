@@ -126,6 +126,17 @@ window.addEventListener(
   { passive: true }
 );
 
+const isVideoMedia = (url = "") =>
+  /\.mp4(\?|#|$)/i.test(url) || /^data:video\//i.test(url);
+
+const renderCardMedia = (src, alt) => {
+  if (!src) return "";
+  if (isVideoMedia(src)) {
+    return `<video src="${escapeHtml(src)}" muted autoplay loop playsinline draggable="false" aria-label="${escapeHtml(alt)}"></video>`;
+  }
+  return `<img src="${escapeHtml(src)}" alt="${escapeHtml(alt)}" loading="lazy" draggable="false" />`;
+};
+
 /* ── Portfolio rendering ── */
 const getCardImage = (work) => work.cardImage || work.gallery?.[0] || work.heroImage || "";
 
@@ -134,7 +145,7 @@ const renderProjectCard = (work) => `
     <div class="project-card-inner">
       <button class="project-trigger magnetic" type="button" aria-label="Open ${escapeHtml(work.title)}">
         <div class="project-slide">
-          <img src="${escapeHtml(getCardImage(work))}" alt="${escapeHtml(work.cardAlt)}" loading="lazy" draggable="false" />
+          ${renderCardMedia(getCardImage(work), work.cardAlt)}
         </div>
         <div class="project-meta">
           <strong>${escapeHtml(work.title)}</strong>
@@ -362,7 +373,7 @@ const samplePaletteFromSrc = (src) =>
 
 const getWorkImageSources = (work) => {
   const sources = [work.cardImage, ...(work.gallery || []), ...(work.heroImages || [])].filter(Boolean);
-  return [...new Set(sources)];
+  return [...new Set(sources)].filter((src) => !isVideoMedia(src));
 };
 
 const brightenColor = ({ r, g, b }, amount = 0.58) => {
@@ -401,8 +412,10 @@ const applyCaseStudyAmbience = async (study, work) => {
   if (!orbs.length || !work) return;
 
   const heroSrc = work.cardImage || work.gallery?.[0] || work.heroImages?.[0] || "";
-  if (photoEl && heroSrc) {
+  if (photoEl && heroSrc && !isVideoMedia(heroSrc)) {
     photoEl.style.backgroundImage = `url("${heroSrc}")`;
+  } else if (photoEl) {
+    photoEl.style.backgroundImage = "";
   }
 
   const orbColors = [];

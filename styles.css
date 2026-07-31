@@ -734,7 +734,8 @@ h1 strong, h2 strong { font-weight: 600; color: var(--white); }
     box-shadow: 0 0 32px rgba(255, 255, 255, 0.06);
   }
 
-  .project-card:hover .project-slide img {
+  .project-card:hover .project-slide img,
+  .project-card:hover .project-slide video {
     transform: scale(1.02);
   }
 }
@@ -746,11 +747,18 @@ h1 strong, h2 strong { font-weight: 600; color: var(--white); }
   background: var(--black);
 }
 
-.project-slide img {
+.project-slide img,
+.project-slide video {
   width: 100%;
   height: 100%;
   object-fit: cover;
   transition: transform 0.35s var(--ease);
+}
+
+.project-slide video {
+  display: block;
+  pointer-events: none;
+  background: var(--black);
 }
 
 .project-slide::after {
