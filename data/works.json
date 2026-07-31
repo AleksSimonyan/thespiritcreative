@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "updatedAt": "2026-07-31T14:41:44.489Z",
+  "updatedAt": "2026-07-31T14:42:19.911Z",
   "works": [
     {
       "id": "ot-martina-pop-corn",
@@ -172,7 +172,7 @@
       "client": "Hearth Archive",
       "year": "2025",
       "order": 5,
-      "visible": false,
+      "visible": true,
       "cardImage": "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785507795027-zpkuxr7q.jpg",
       "heroImage": "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785507795027-zpkuxr7q.jpg",
       "cardAlt": "Amber perfume bottle on patterned backdrop",
