@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "updatedAt": "2026-07-31T14:28:59.044Z",
+  "updatedAt": "2026-07-31T14:29:29.741Z",
   "works": [
     {
       "id": "otmartina-popcorn",
@@ -33,7 +33,7 @@
     },
     {
       "id": "har-energy",
-      "title": "HAR Energy",
+      "title": "HAR ENERGY",
       "services": "Packaging / Product Design",
       "categories": [
         "packaging",
@@ -42,7 +42,7 @@
       "industry": "Beverages",
       "client": "Union Ltd.",
       "year": "2025",
-      "order": 1,
+      "order": 2,
       "visible": true,
       "cardImage": "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785497114028-ompxe7uj.jpg",
       "heroImage": "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785497114028-ompxe7uj.jpg",
