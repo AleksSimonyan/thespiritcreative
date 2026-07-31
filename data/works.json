@@ -1,7 +1,37 @@
 {
   "version": 2,
-  "updatedAt": "2026-07-31T14:27:03.126Z",
+  "updatedAt": "2026-07-31T14:27:20.890Z",
   "works": [
+    {
+      "id": "har-energy",
+      "title": "HAR Energy",
+      "services": "Packaging / Product Design",
+      "categories": [
+        "packaging",
+        "product"
+      ],
+      "industry": "Beverages",
+      "client": "Union Ltd.",
+      "year": "2025",
+      "order": 1,
+      "visible": true,
+      "cardImage": "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785497114028-ompxe7uj.jpg",
+      "heroImage": "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785497114028-ompxe7uj.jpg",
+      "cardAlt": "Modern energy drink can packaging featuring a bold H-shaped identity across multiple flavors.",
+      "subtitle": "A vibrant packaging system inspired by the different forms of energy.",
+      "brandStory": "This project explores how different forms of energy can be translated into a bold and memorable visual identity. Each flavor represents a unique type of energy from ice and fire to power, wildness, and vibrant fruit expressed through distinctive colors and atmospheric textures.\nAt the heart of the design is a large symbolic \"H\", transforming the brand's initial into a dynamic graphic element that instantly captures attention. Combined with clean typography and a modern can layout, the identity creates a strong shelf presence while remaining highly recognizable across the entire product range.\nEvery flavor is built around its own visual atmosphere without losing the consistency of the brand system. The result is a flexible packaging family that communicates movement, strength, and personality, delivering a modern energy drink experience that stands apart from conventional competitors.",
+      "heroImages": [],
+      "gallery": [
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785497139163-gfsos6wj.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785497135457-bccq310d.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785497143138-giph8t35.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785497137414-jlj2kumk.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785497140861-pmlbfptm.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785497133594-piv0vvbl.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785497129932-g3o189qt.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785497131738-1qrkb62i.jpg"
+      ]
+    },
     {
       "id": "chocolate-palace",
       "title": "Chocolate Palace",
