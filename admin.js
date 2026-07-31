@@ -238,38 +238,90 @@ const setImageField = (name, value) => {
   renderPreview(name);
 };
 
-const renderImageList = (container, images, removePrefix) => {
+const renderImageList = (container, images, kind) => {
   if (!container) return;
   container.innerHTML = "";
 
   images.forEach((image, index) => {
     const item = document.createElement("div");
     item.className = "gallery-item";
+    item.draggable = true;
+    item.dataset.index = String(index);
+    item.dataset.kind = kind;
 
     const img = document.createElement("img");
     img.alt = "";
     img.src = image;
+    img.draggable = false;
 
-    const button = document.createElement("button");
-    button.className = "btn-secondary danger";
-    button.type = "button";
-    button.textContent = "Remove";
-    button.setAttribute(`data-remove-${removePrefix}`, String(index));
+    const sequence = document.createElement("span");
+    sequence.className = "gallery-item-sequence";
+    sequence.textContent = String(index + 1);
 
+    const controls = document.createElement("div");
+    controls.className = "gallery-item-controls";
+
+    if (index > 0) {
+      const upButton = document.createElement("button");
+      upButton.type = "button";
+      upButton.className = "gallery-move-btn";
+      upButton.title = "Move earlier";
+      upButton.textContent = "↑";
+      upButton.setAttribute("data-move-image", "up");
+      upButton.setAttribute("data-kind", kind);
+      upButton.setAttribute("data-index", String(index));
+      controls.appendChild(upButton);
+    }
+
+    if (index < images.length - 1) {
+      const downButton = document.createElement("button");
+      downButton.type = "button";
+      downButton.className = "gallery-move-btn";
+      downButton.title = "Move later";
+      downButton.textContent = "↓";
+      downButton.setAttribute("data-move-image", "down");
+      downButton.setAttribute("data-kind", kind);
+      downButton.setAttribute("data-index", String(index));
+      controls.appendChild(downButton);
+    }
+
+    const removeButton = document.createElement("button");
+    removeButton.className = "btn-secondary danger gallery-remove-btn";
+    removeButton.type = "button";
+    removeButton.textContent = "Remove";
+    removeButton.setAttribute(`data-remove-${kind}`, String(index));
+
+    item.appendChild(sequence);
     item.appendChild(img);
-    item.appendChild(button);
+    item.appendChild(controls);
+    item.appendChild(removeButton);
     container.appendChild(item);
   });
 };
+
+const getImageListByKind = (kind) => (kind === "hero" ? activeHeroImages : activeGallery);
+
+const moveImageInList = (kind, index, direction) => {
+  const list = getImageListByKind(kind);
+  const target = direction === "up" ? index - 1 : index + 1;
+  if (target < 0 || target >= list.length) return;
+  [list[index], list[target]] = [list[target], list[index]];
+  if (kind === "hero") renderHeroList();
+  else renderGallery();
+  setStatus(saveStatus, "Photo order updated — save the project.");
+};
+
+let imageDragKind = null;
+let imageDragIndex = null;
 
 const updateGalleryCounts = () => {
   const heroHint = document.querySelector(".hero-editor .field-hint");
   const galleryHint = document.querySelector(".gallery-editor:not(.hero-editor) .field-hint");
   if (heroHint) {
-    heroHint.textContent = `${activeHeroImages.length} hero slide${activeHeroImages.length === 1 ? "" : "s"} — upload as many as you need.`;
+    heroHint.textContent = `${activeHeroImages.length} hero slide${activeHeroImages.length === 1 ? "" : "s"} — drag or use arrows to reorder.`;
   }
   if (galleryHint) {
-    galleryHint.textContent = `${activeGallery.length} project photo${activeGallery.length === 1 ? "" : "s"} — upload as many as you need.`;
+    galleryHint.textContent = `${activeGallery.length} project photo${activeGallery.length === 1 ? "" : "s"} — drag or use arrows to reorder.`;
   }
 };
 
@@ -691,6 +743,11 @@ heroUpload.addEventListener("change", async () => {
 });
 
 galleryList.addEventListener("click", (event) => {
+  const moveBtn = event.target.closest("[data-move-image]");
+  if (moveBtn?.dataset.kind === "gallery") {
+    moveImageInList("gallery", Number(moveBtn.dataset.index), moveBtn.dataset.moveImage);
+    return;
+  }
   const button = event.target.closest("[data-remove-gallery]");
   if (!button) return;
   activeGallery.splice(Number(button.dataset.removeGallery), 1);
@@ -698,11 +755,55 @@ galleryList.addEventListener("click", (event) => {
 });
 
 heroList.addEventListener("click", (event) => {
+  const moveBtn = event.target.closest("[data-move-image]");
+  if (moveBtn?.dataset.kind === "hero") {
+    moveImageInList("hero", Number(moveBtn.dataset.index), moveBtn.dataset.moveImage);
+    return;
+  }
   const button = event.target.closest("[data-remove-hero]");
   if (!button) return;
   activeHeroImages.splice(Number(button.dataset.removeHero), 1);
   renderHeroList();
 });
+
+const initImageListDnD = (container, kind) => {
+  container.addEventListener("dragstart", (event) => {
+    if (event.target.closest("button")) {
+      event.preventDefault();
+      return;
+    }
+    const item = event.target.closest(".gallery-item");
+    if (!item || item.dataset.kind !== kind) return;
+    imageDragKind = kind;
+    imageDragIndex = Number(item.dataset.index);
+    item.classList.add("is-dragging");
+  });
+
+  container.addEventListener("dragend", (event) => {
+    event.target.closest(".gallery-item")?.classList.remove("is-dragging");
+    imageDragKind = null;
+    imageDragIndex = null;
+  });
+
+  container.addEventListener("dragover", (event) => {
+    event.preventDefault();
+    const target = event.target.closest(".gallery-item");
+    if (!target || target.dataset.kind !== kind || imageDragKind !== kind) return;
+    const targetIndex = Number(target.dataset.index);
+    if (imageDragIndex === null || targetIndex === imageDragIndex) return;
+
+    const list = getImageListByKind(kind);
+    const [moved] = list.splice(imageDragIndex, 1);
+    list.splice(targetIndex, 0, moved);
+    imageDragIndex = targetIndex;
+    if (kind === "hero") renderHeroList();
+    else renderGallery();
+    setStatus(saveStatus, "Photo order updated — save the project.");
+  });
+};
+
+initImageListDnD(galleryList, "gallery");
+initImageListDnD(heroList, "hero");
 
 exportButton.addEventListener("click", () => {
   const blob = new Blob(
