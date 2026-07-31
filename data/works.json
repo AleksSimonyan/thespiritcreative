@@ -1,7 +1,43 @@
 {
   "version": 2,
-  "updatedAt": "2026-07-31T14:26:39.274Z",
+  "updatedAt": "2026-07-31T14:27:03.126Z",
   "works": [
+    {
+      "id": "chocolate-palace",
+      "title": "Chocolate Palace",
+      "services": "Packaging / Brand Identity",
+      "categories": [
+        "branding",
+        "packaging",
+        "product"
+      ],
+      "industry": "Confectionery",
+      "client": "Chocolate Palace Ltd.",
+      "year": "2026",
+      "order": 3,
+      "visible": true,
+      "cardImage": "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785507795027-zpkuxr7q.jpg",
+      "heroImage": "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785507795027-zpkuxr7q.jpg",
+      "cardAlt": "Premium chocolate packaging collection featuring fruit, nuts, and Belgian chocolate in colorful metallic wrappers.",
+      "subtitle": "Premium confectionery packaging inspired by natural ingredients and handcrafted Belgian chocolate.",
+      "brandStory": "Chocolate Palace was created as a premium confectionery brand that celebrates the harmony of fine Belgian chocolate, carefully selected nuts, and naturally dried fruits. The objective was to design a visual identity that immediately communicates quality, craftsmanship, and indulgence.\nThe packaging system is built around a distinctive ingredient illustration that reveals the product's filling at first glance, creating both transparency and strong shelf recognition. Each flavor is assigned its own metallic color palette, allowing the collection to remain visually unified while making every variety easy to identify.\nElegant typography, refined layouts, and premium finishing details reinforce the artisanal character of the brand. From individual wrapped chocolates to gift boxes and presentation materials, every touchpoint follows the same sophisticated visual language.\nThe result is a complete packaging identity that elevates the product into a premium gifting experience while building a memorable and recognizable confectionery brand.",
+      "heroImages": [
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785507822051-d7z2ync9.jpg"
+      ],
+      "gallery": [
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785507807789-0003jro7.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785507829627-tqqu7dp8.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785507818639-2xwu549c.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785507821103-r7rm1t98.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785507809951-qvnbdft2.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785507824713-ir202bv4.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785507812052-wsoqwtgc.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785507816236-ddt787be.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785507813986-by44igus.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785507827038-0ctmi1tu.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785507822906-azo0k7sg.jpg"
+      ]
+    },
     {
       "id": "chocolate-palace-packaging",
       "title": "Chocolate Palace Packaging",
