@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "updatedAt": "2026-07-31T14:41:24.120Z",
+  "updatedAt": "2026-07-31T14:41:31.578Z",
   "works": [
     {
       "id": "ot-martina-pop-corn",
@@ -256,7 +256,7 @@
       "client": "Runa",
       "year": "2025",
       "order": 8,
-      "visible": true,
+      "visible": false,
       "cardImage": "https://images.unsplash.com/photo-1526947425960-945c6e72858f?auto=format&fit=crop&w=1200&q=85",
       "heroImage": "https://images.unsplash.com/photo-1526947425960-945c6e72858f?auto=format&fit=crop&w=1800&q=90",
       "cardAlt": "Botanical skin care packaging",
