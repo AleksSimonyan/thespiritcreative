@@ -6,6 +6,7 @@ import hmac
 import json
 import mimetypes
 import os
+import re
 import sys
 import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -78,6 +79,17 @@ def verify_token(header):
     return hmac.compare_digest(sig, expected)
 
 
+DATA_URL_PATTERN = re.compile(r"^data:(image/(?:jpeg|jpg|png|webp));base64,(.+)$", re.I)
+
+
+def write_asset(relative_path, payload):
+    normalized = relative_path.lstrip("/")
+    file_path = ROOT / normalized
+    file_path.parent.mkdir(parents=True, exist_ok=True)
+    file_path.write_bytes(payload)
+    return f"/{normalized}"
+
+
 class SiteHandler(BaseHTTPRequestHandler):
     server_version = "SpiritCreative/1.1"
 
@@ -104,6 +116,20 @@ class SiteHandler(BaseHTTPRequestHandler):
             if body.get("password") != ADMIN_PASSWORD:
                 return json_response(self, 401, {"error": "Unauthorized"})
             return json_response(self, 200, {"token": create_token()})
+
+        if path == "/api/upload" and method == "POST":
+            if not verify_token(self.headers.get("Authorization")):
+                return json_response(self, 401, {"error": "Unauthorized"})
+            body = self.parse_json_body()
+            match = DATA_URL_PATTERN.match(body.get("dataUrl") or "")
+            if not match:
+                return json_response(self, 400, {"error": "Invalid image payload"})
+            mime = match.group(1).lower()
+            ext = "png" if "png" in mime else "webp" if "webp" in mime else "jpg"
+            payload = base64.b64decode(match.group(2))
+            filename = f"assets/uploads/{int(time.time() * 1000)}-{os.urandom(4).hex()}.{ext}"
+            url = write_asset(filename, payload)
+            return json_response(self, 200, {"url": url})
 
         if path == "/api/works":
             if method == "GET":

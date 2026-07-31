@@ -3,6 +3,7 @@ import path from "path";
 import { parseJsonResponse, parseJsonText } from "./parse.js";
 
 const DATA_DIR = path.join(process.cwd(), "data");
+const ROOT_DIR = process.cwd();
 
 const githubConfigured = () => Boolean(process.env.GITHUB_TOKEN && process.env.GITHUB_REPO);
 
@@ -12,42 +13,54 @@ const githubHeaders = () => ({
   "X-GitHub-Api-Version": "2022-11-28",
 });
 
-async function githubGetFile(relativePath) {
+async function githubGetFileMeta(relativePath) {
   const [owner, repo] = process.env.GITHUB_REPO.split("/");
   const url = `https://api.github.com/repos/${owner}/${repo}/contents/${relativePath}`;
-  console.info("[githubGetFile] fetching", { relativePath, owner, repo });
-
   const response = await fetch(url, { headers: githubHeaders() });
 
-  if (response.status === 404) {
+  if (response.status === 404) return null;
+  return parseJsonResponse(response, `githubGetFileMeta ${relativePath}`);
+}
+
+async function fetchGitHubFileText(payload, relativePath) {
+  if (payload.content) {
+    const decoded = Buffer.from(String(payload.content).replace(/\n/g, ""), "base64").toString("utf8");
+    if (decoded) return decoded;
+  }
+
+  if (payload.download_url) {
+    console.info("[githubGetFile] falling back to download_url", { relativePath });
+    const response = await fetch(payload.download_url, { headers: githubHeaders() });
+    const text = await response.text();
+    if (!response.ok) {
+      throw new Error(
+        `[githubGetFile] download_url fetch failed (${response.status}) for ${relativePath}`
+      );
+    }
+    return text;
+  }
+
+  throw new Error(`[githubGetFile] No content or download_url for ${relativePath}`);
+}
+
+async function githubGetFile(relativePath) {
+  console.info("[githubGetFile] fetching", { relativePath });
+
+  const payload = await githubGetFileMeta(relativePath);
+  if (!payload) {
     console.info("[githubGetFile] file not found", { relativePath });
     return null;
   }
 
-  const context = `githubGetFile response ${relativePath}`;
-  let payload;
-  try {
-    payload = await parseJsonResponse(response, context);
-  } catch (error) {
-    console.error("[githubGetFile] failed to parse GitHub API response", {
-      relativePath,
-      status: response.status,
-      error: error.message,
-    });
-    throw error;
-  }
-
-  if (!payload?.content) {
-    const error = new Error(`[githubGetFile] Missing content field for ${relativePath}`);
-    console.error(error.message, { relativePath, keys: Object.keys(payload || {}) });
-    throw error;
-  }
-
   let decoded;
   try {
-    decoded = Buffer.from(payload.content, "base64").toString("utf8");
+    decoded = await fetchGitHubFileText(payload, relativePath);
   } catch (error) {
-    console.error("[githubGetFile] base64 decode failed", { relativePath, error: error.message });
+    console.error("[githubGetFile] failed to read file body", {
+      relativePath,
+      error: error.message,
+      keys: Object.keys(payload || {}),
+    });
     throw error;
   }
 
@@ -67,21 +80,11 @@ async function githubGetFile(relativePath) {
   return { content, sha: payload.sha };
 }
 
-async function githubPutFile(relativePath, content, sha) {
+async function githubPutRaw(relativePath, base64Content, sha, message) {
   const [owner, repo] = process.env.GITHUB_REPO.split("/");
   const url = `https://api.github.com/repos/${owner}/${repo}/contents/${relativePath}`;
-  const body = {
-    message: `Update ${relativePath}`,
-    content: Buffer.from(JSON.stringify(content, null, 2) + "\n").toString("base64"),
-  };
-
+  const body = { message, content: base64Content };
   if (sha) body.sha = sha;
-
-  console.info("[githubPutFile] writing", {
-    relativePath,
-    hasSha: Boolean(sha),
-    contentBytes: body.content.length,
-  });
 
   const response = await fetch(url, {
     method: "PUT",
@@ -90,35 +93,21 @@ async function githubPutFile(relativePath, content, sha) {
   });
 
   const responseText = await response.text();
-
   if (!response.ok) {
-    const error = new Error(
-      `[githubPutFile] HTTP ${response.status} — ${responseText.slice(0, 500) || "(empty body)"}`
+    throw new Error(
+      `[githubPutRaw] HTTP ${response.status} — ${responseText.slice(0, 500) || "(empty body)"}`
     );
-    console.error(error.message, {
-      relativePath,
-      status: response.status,
-      responseLength: responseText.length,
-      responsePreview: responseText.slice(0, 500),
-    });
-    throw error;
   }
+}
 
-  if (responseText) {
-    try {
-      parseJsonText(responseText, `githubPutFile success response ${relativePath}`);
-    } catch (error) {
-      console.error("[githubPutFile] success response was not valid JSON", {
-        relativePath,
-        responseLength: responseText.length,
-        responsePreview: responseText.slice(0, 500),
-        error: error.message,
-      });
-      throw error;
-    }
-  } else {
-    console.warn("[githubPutFile] success response had empty body", { relativePath, status: response.status });
-  }
+async function githubPutFile(relativePath, content, sha) {
+  const base64Content = Buffer.from(JSON.stringify(content, null, 2) + "\n").toString("base64");
+  console.info("[githubPutFile] writing", {
+    relativePath,
+    hasSha: Boolean(sha),
+    contentBytes: base64Content.length,
+  });
+  await githubPutRaw(relativePath, base64Content, sha, `Update ${relativePath}`);
 }
 
 function localRead(fileName) {
@@ -168,4 +157,35 @@ export async function writeData(fileName, content) {
   }
 
   localWrite(fileName, content);
+}
+
+export async function writeAsset(relativePath, buffer) {
+  const normalizedPath = relativePath.replace(/^\/+/, "");
+  console.info("[writeAsset] start", {
+    relativePath: normalizedPath,
+    bytes: buffer.length,
+    githubConfigured: githubConfigured(),
+  });
+
+  if (githubConfigured()) {
+    const existing = await githubGetFileMeta(normalizedPath);
+    await githubPutRaw(
+      normalizedPath,
+      buffer.toString("base64"),
+      existing?.sha,
+      `Upload ${normalizedPath}`
+    );
+    return `/${normalizedPath}`;
+  }
+
+  if (process.env.VERCEL) {
+    throw new Error(
+      "Server storage is not configured. Add GITHUB_TOKEN and GITHUB_REPO to your Vercel project environment variables."
+    );
+  }
+
+  const filePath = path.join(ROOT_DIR, normalizedPath);
+  fs.mkdirSync(path.dirname(filePath), { recursive: true });
+  fs.writeFileSync(filePath, buffer);
+  return `/${normalizedPath}`;
 }

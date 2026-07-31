@@ -36,6 +36,7 @@ let activeId = null;
 let activeGallery = [];
 let activeHeroImages = [];
 let dragId = null;
+let dragReordered = false;
 
 const escapeHtml = (value = "") =>
   String(value)
@@ -83,9 +84,45 @@ const uniqueId = (title, currentId = "") => {
   return next;
 };
 
+const authHeaders = () => {
+  const token = sessionStorage.getItem(ADMIN_TOKEN_KEY);
+  return token ? { Authorization: `Bearer ${token}` } : {};
+};
+
+const uploadDataUrl = async (value) => {
+  if (!value || !value.startsWith("data:image/")) return value;
+
+  const response = await fetch("/api/upload", {
+    method: "POST",
+    headers: { ...authHeaders(), "Content-Type": "application/json" },
+    body: JSON.stringify({ dataUrl: value }),
+  });
+
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.error || "Image upload failed.");
+  return data.url;
+};
+
+const externalizeWork = async (work) => {
+  const cardImage = await uploadDataUrl(work.cardImage);
+  const heroImages = await Promise.all((work.heroImages || []).map(uploadDataUrl));
+  const gallery = await Promise.all((work.gallery || []).map(uploadDataUrl));
+
+  return {
+    ...work,
+    cardImage,
+    heroImages,
+    gallery,
+    heroImage: heroImages[0] || cardImage || work.heroImage || "",
+  };
+};
+
 const persistWorks = async () => {
   try {
-    works = works.map((work, index) => ({ ...work, order: index }));
+    setStatus(saveStatus, "Saving...");
+    works = await Promise.all(
+      works.map(async (work, index) => externalizeWork({ ...work, order: index }))
+    );
     await window.SpiritWorks.saveWorks(works);
     return true;
   } catch (error) {
@@ -465,24 +502,30 @@ workList.addEventListener("dragstart", (event) => {
   const item = event.target.closest("[data-id]");
   if (!item) return;
   dragId = item.dataset.id;
+  dragReordered = false;
   item.classList.add("is-dragging");
 });
 
-workList.addEventListener("dragend", (event) => {
+workList.addEventListener("dragend", async (event) => {
   event.target.closest("[data-id]")?.classList.remove("is-dragging");
+  if (dragReordered && (await persistWorks())) {
+    setStatus(saveStatus, "Order updated.");
+  }
   dragId = null;
+  dragReordered = false;
 });
 
-workList.addEventListener("dragover", async (event) => {
+workList.addEventListener("dragover", (event) => {
   event.preventDefault();
   const target = event.target.closest("[data-id]");
   if (!target || !dragId || target.dataset.id === dragId) return;
   const from = works.findIndex((w) => w.id === dragId);
   const to = works.findIndex((w) => w.id === target.dataset.id);
-  if (from < 0 || to < 0) return;
+  if (from < 0 || to < 0 || from === to) return;
   const [moved] = works.splice(from, 1);
   works.splice(to, 0, moved);
-  if (await persistWorks()) renderWorkList();
+  dragReordered = true;
+  renderWorkList();
 });
 
 workForm.addEventListener("submit", (event) => {
@@ -517,8 +560,9 @@ document.querySelectorAll("[data-image-target]").forEach((input) => {
     setStatus(saveStatus, "Processing image...");
     try {
       const dataUrl = await processImageUpload(file, input.dataset.imageTarget);
-      setImageField(input.dataset.imageTarget, dataUrl);
-      setStatus(saveStatus, "Image ready — save the project.");
+      const url = await uploadDataUrl(dataUrl);
+      setImageField(input.dataset.imageTarget, url);
+      setStatus(saveStatus, "Image uploaded — save the project.");
     } catch (error) {
       setStatus(saveStatus, error.message, true);
     } finally {
@@ -540,9 +584,12 @@ galleryUpload.addEventListener("change", async () => {
   if (!files.length) return;
   setStatus(saveStatus, "Processing photos...");
   try {
-    for (const file of files) activeGallery.push(await processImageUpload(file, "gallery"));
+    for (const file of files) {
+      const dataUrl = await processImageUpload(file, "gallery");
+      activeGallery.push(await uploadDataUrl(dataUrl));
+    }
     renderGallery();
-    setStatus(saveStatus, "Photos ready — save the project.");
+    setStatus(saveStatus, "Photos uploaded — save the project.");
   } catch (error) {
     setStatus(saveStatus, error.message, true);
   } finally {
@@ -555,9 +602,12 @@ heroUpload.addEventListener("change", async () => {
   if (!files.length) return;
   setStatus(saveStatus, "Processing hero slides...");
   try {
-    for (const file of files) activeHeroImages.push(await processImageUpload(file, "hero"));
+    for (const file of files) {
+      const dataUrl = await processImageUpload(file, "hero");
+      activeHeroImages.push(await uploadDataUrl(dataUrl));
+    }
     renderHeroList();
-    setStatus(saveStatus, "Hero slides ready — save the project.");
+    setStatus(saveStatus, "Hero slides uploaded — save the project.");
   } catch (error) {
     setStatus(saveStatus, error.message, true);
   } finally {
