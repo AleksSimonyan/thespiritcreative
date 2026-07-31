@@ -646,11 +646,23 @@ caseStudyShell?.addEventListener("click", (event) => {
 
 renderWorks();
 
-window.SpiritWorks.init().then(() => {
-  renderWorks();
+const refreshWorksFromServer = () =>
+  window.SpiritWorks.init({ force: true }).then(() => {
+    renderWorks();
+  });
 
+window.SpiritWorks.init({ force: true }).then(() => {
+  renderWorks();
   const initialProject = window.location.hash.match(/^#project-(.+)$/)?.[1];
   if (initialProject) setTimeout(() => openProject(initialProject, false), 800);
+});
+
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible") refreshWorksFromServer();
+});
+
+window.addEventListener("pageshow", (event) => {
+  if (event.persisted) refreshWorksFromServer();
 });
 
 window.addEventListener("storage", (event) => {

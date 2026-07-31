@@ -161,6 +161,9 @@ const persistWorks = async () => {
     }
     works = nextWorks;
     await window.SpiritWorks.saveWorks(works);
+    await window.SpiritWorks.init({ includeInquiries: true, force: true });
+    works = window.SpiritWorks.getWorks(true);
+    if (activeId && !works.find((w) => w.id === activeId)) activeId = works[0]?.id || null;
     return true;
   } catch (error) {
     setStatus(
@@ -358,7 +361,7 @@ const saveActiveWork = async () => {
 
   if (await persistWorks()) {
     renderWorkList();
-    populateForm(saved);
+    populateForm(activeWork());
     updateBadges();
     setStatus(saveStatus, "Saved — changes are live on the website.");
   }

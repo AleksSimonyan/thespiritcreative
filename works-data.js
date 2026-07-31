@@ -383,21 +383,22 @@
     const { includeInquiries = false, force = false } = options;
     if (initPromise && !force) return initPromise;
 
-    initPromise = (async () => {
+    const run = async () => {
       try {
-        const data = await apiRequest("/api/works");
-        if (Array.isArray(data?.works) && data.works.length) {
+        const data = await apiRequest(`/api/works?_=${Date.now()}`);
+        if (Array.isArray(data?.works)) {
           cacheWorks(data.works);
         } else {
           worksCache = readWorksStore();
         }
-      } catch {
+      } catch (error) {
+        console.warn("[SpiritWorks] Could not load works from server.", error);
         worksCache = readWorksStore();
       }
 
       if (includeInquiries) {
         try {
-          const data = await apiRequest("/api/inquiries", { headers: authHeaders() });
+          const data = await apiRequest(`/api/inquiries?_=${Date.now()}`, { headers: authHeaders() });
           inquiriesCache = Array.isArray(data?.inquiries)
             ? data.inquiries.map(normalizeInquiry)
             : readInquiriesStore();
@@ -405,8 +406,9 @@
           inquiriesCache = readInquiriesStore();
         }
       }
-    })();
+    };
 
+    initPromise = run();
     return initPromise;
   };
 
@@ -417,13 +419,14 @@
   };
 
   const saveWorks = async (works) => {
-    const normalized = cacheWorks(works);
-    await apiRequest("/api/works", {
+    const normalized = sortWorks(works.map((work, index) => normalizeWork(work, index)));
+    const data = await apiRequest("/api/works", {
       method: "PUT",
       headers: authHeaders(),
       body: JSON.stringify({ works: normalized }),
     });
-    return normalized;
+    cacheWorks(Array.isArray(data?.works) ? data.works : normalized);
+    return worksCache;
   };
 
   const resetWorks = () => {
