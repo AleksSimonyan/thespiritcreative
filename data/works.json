@@ -1,7 +1,36 @@
 {
   "version": 2,
-  "updatedAt": "2026-07-31T14:42:19.911Z",
+  "updatedAt": "2026-08-07T06:10:08.124Z",
   "works": [
+    {
+      "id": "otmartina-christmas-box",
+      "title": "OtMartina Christmas Box",
+      "services": "Packaging",
+      "categories": [
+        "packaging",
+        "product"
+      ],
+      "industry": "Confectionery",
+      "client": "Martin Star Ltd.",
+      "year": "2025",
+      "order": 5,
+      "visible": true,
+      "cardImage": "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786082599369-nhwaoiel.jpg",
+      "heroImage": "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786082599369-nhwaoiel.jpg",
+      "cardAlt": "Christmas gift box and festive sticker collection designed for OtMartina.",
+      "subtitle": "A festive packaging system designed to transform holiday confectionery into a memorable gifting experience.",
+      "brandStory": "OtMartina celebrates the magic of the holiday season through joyful design, playful storytelling, and memorable gifting experiences. The Christmas Box was created to strengthen the brand's festive identity by combining vibrant seasonal colors, custom illustrations, expressive typography, and charming holiday details into one cohesive visual system. From the gift box to the collectible sticker series, every element was designed to spark excitement, create emotional connection, and make each product feel like a gift before it is even opened. The result is a distinctive holiday packaging experience that captures the warmth of Christmas while reinforcing OtMartina as a fun, recognizable, and family-oriented confectionery brand.",
+      "heroImages": [],
+      "gallery": [
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786082647784-ui5usjgg.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786082652304-fiiqz9ao.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786082654559-tb357vrp.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786082649716-er9c56ft.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786082645788-dejaix2n.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786082656688-foekrq5t.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786082658760-x7bjhymf.jpg"
+      ]
+    },
     {
       "id": "ot-martina-pop-corn",
       "title": "OT MARTINA POP CORN",
