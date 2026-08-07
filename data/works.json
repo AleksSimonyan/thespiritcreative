@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "updatedAt": "2026-08-07T07:31:07.588Z",
+  "updatedAt": "2026-08-07T07:31:19.901Z",
   "works": [
     {
       "id": "elf-house",
@@ -36,26 +36,6 @@
         "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786087575716-70lrgqgx.jpg",
         "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786087582322-6vd0n7x4.jpg"
       ]
-    },
-    {
-      "id": "new-project",
-      "title": "New Project",
-      "services": "Branding / Packaging",
-      "categories": [
-        "branding"
-      ],
-      "industry": "",
-      "client": "",
-      "year": "2026",
-      "order": 0,
-      "visible": true,
-      "cardImage": "",
-      "heroImage": "",
-      "cardAlt": "Project image",
-      "subtitle": "Short description of the project.",
-      "brandStory": "",
-      "heroImages": [],
-      "gallery": []
     },
     {
       "id": "ot-martina-pop-corn",
