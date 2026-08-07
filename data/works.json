@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "updatedAt": "2026-08-07T07:22:35.607Z",
+  "updatedAt": "2026-08-07T07:22:39.396Z",
   "works": [
     {
       "id": "ot-martina-pop-corn",
@@ -405,31 +405,6 @@
       ],
       "gallery": [
         "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1600&q=90"
-      ]
-    },
-    {
-      "id": "forma",
-      "title": "Forma Architecture",
-      "services": "Branding / Creative Direction",
-      "categories": [
-        "branding",
-        "direction"
-      ],
-      "industry": "Architecture",
-      "client": "Forma",
-      "year": "2024",
-      "order": 14,
-      "visible": false,
-      "cardImage": "https://images.unsplash.com/photo-1487958449943-2429e8be8625?auto=format&fit=crop&w=1200&q=85",
-      "heroImage": "https://images.unsplash.com/photo-1487958449943-2429e8be8625?auto=format&fit=crop&w=1800&q=90",
-      "cardAlt": "Architecture studio brand",
-      "subtitle": "Architecture practice rooted in structural clarity.",
-      "brandStory": "Architecture practice identity rooted in structural clarity and monolithic typography.\n\nCommunicate precision and vision without cold corporate sterility.\n\nGrid-based identity, architectural photography, and restrained motion principles.\n\nStructure as language — every line intentional, every space considered.\n\nAdd project portfolio and team bios when ready.",
-      "heroImages": [
-        "https://images.unsplash.com/photo-1487958449943-2429e8be8625?auto=format&fit=crop&w=1800&q=90"
-      ],
-      "gallery": [
-        "https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=1600&q=90"
       ]
     }
   ]
