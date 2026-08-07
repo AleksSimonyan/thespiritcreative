@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "updatedAt": "2026-08-07T07:22:57.002Z",
+  "updatedAt": "2026-08-07T07:23:01.346Z",
   "works": [
     {
       "id": "ot-martina-pop-corn",
@@ -330,31 +330,6 @@
       ],
       "gallery": [
         "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1600&q=90"
-      ]
-    },
-    {
-      "id": "meridian",
-      "title": "Meridian Coffee",
-      "services": "Branding / Packaging",
-      "categories": [
-        "branding",
-        "packaging"
-      ],
-      "industry": "Food & Beverage",
-      "client": "Meridian",
-      "year": "2025",
-      "order": 11,
-      "visible": false,
-      "cardImage": "https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&w=1200&q=85",
-      "heroImage": "https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&w=1800&q=90",
-      "cardAlt": "Specialty coffee packaging",
-      "subtitle": "Specialty coffee brand with origin-forward storytelling.",
-      "brandStory": "Specialty coffee brand with origin-forward storytelling and refined pack architecture.\n\nDifferentiate in a saturated specialty market without cliché craft aesthetics.\n\nTypographic hierarchy, origin maps, and a restrained earth-tone system.\n\nEvery bag reads like a passport stamp — precise, warm, unmistakable.\n\nAdd origin stories and roast profiles when final copy is ready.",
-      "heroImages": [
-        "https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&w=1800&q=90"
-      ],
-      "gallery": [
-        "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=1600&q=90"
       ]
     }
   ]
