@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "updatedAt": "2026-08-07T07:21:53.198Z",
+  "updatedAt": "2026-08-07T07:22:26.048Z",
   "works": [
     {
       "id": "ot-martina-pop-corn",
@@ -130,6 +130,37 @@
       ]
     },
     {
+      "id": "maison-th",
+      "title": "Maison Thé",
+      "services": "Branding / Creative Direction",
+      "categories": [
+        "branding",
+        "packaging",
+        "product",
+        "direction"
+      ],
+      "industry": "Cafe",
+      "client": "Concept Project",
+      "year": "2025",
+      "order": 4,
+      "visible": true,
+      "cardImage": "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786086352499-xgvamg2q.jpg",
+      "heroImage": "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786086352499-xgvamg2q.jpg",
+      "cardAlt": "Luxury tea house branding featuring elegant typography, premium tea ceremony visuals, and refined editorial design.",
+      "subtitle": "Refined tea house identity inspired by slow rituals, timeless craftsmanship, and the elegance of premium tea culture.",
+      "brandStory": "Maison Thé is a contemporary tea house rooted in the timeless ritual of tea. Inspired by Japanese craftsmanship and European elegance, the brand creates a quiet sanctuary where every cup invites people to slow down, reconnect, and appreciate the beauty of intentional moments.\nThe identity embraces minimal typography, organic illustrations, warm earthy tones, and refined editorial compositions to communicate sophistication without excess. Every visual element reflects balance, calmness, and authenticity, transforming tea from a simple beverage into a meaningful daily ritual.\nMaison Thé is more than a tea brand it is an atmosphere where tradition meets modern aesthetics, creating an experience built around mindfulness, craftsmanship, and timeless design.",
+      "heroImages": [],
+      "gallery": [
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786086434945-ce37wavt.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786086854909-zgng4mu1.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786086431954-os3ghhjf.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786086804977-pwimt1qg.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786086788255-r2m0hp4i.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786086893407-o8h04yxo.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786086437768-28fcjj59.jpg"
+      ]
+    },
+    {
       "id": "dr-diana",
       "title": "Dr. Diana",
       "services": "Personal Brand Identity",
@@ -139,7 +170,7 @@
       "industry": "Medical & Aesthetic",
       "client": "Dr. Diana",
       "year": "2025",
-      "order": 4,
+      "order": 5,
       "visible": true,
       "cardImage": "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785508623935-zrajrx8y.jpg",
       "heroImage": "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1785508623935-zrajrx8y.jpg",
@@ -173,7 +204,7 @@
       "industry": "Spirits",
       "client": "Concept Project",
       "year": "2025",
-      "order": 5,
+      "order": 6,
       "visible": true,
       "cardImage": "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786084438811-pt8325q2.jpg",
       "heroImage": "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786084438811-pt8325q2.jpg",
@@ -204,7 +235,7 @@
       "industry": "Confectionery",
       "client": "Martin Star Ltd.",
       "year": "2025",
-      "order": 6,
+      "order": 7,
       "visible": true,
       "cardImage": "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786082599369-nhwaoiel.jpg",
       "heroImage": "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786082599369-nhwaoiel.jpg",
@@ -233,7 +264,7 @@
       "industry": "Beverage",
       "client": "Union Ltd. & ARM Games",
       "year": "2025",
-      "order": 7,
+      "order": 8,
       "visible": true,
       "cardImage": "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786086259423-wnb2fxw5.jpg",
       "heroImage": "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786086259423-wnb2fxw5.jpg",
@@ -250,30 +281,6 @@
         "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786085971666-1e613393.jpg",
         "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786085966223-yelrjs30.jpg",
         "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786085962510-j39k3n3e.jpg"
-      ]
-    },
-    {
-      "id": "sahar",
-      "title": "Sahar Sun",
-      "services": "Packaging Design",
-      "categories": [
-        "packaging"
-      ],
-      "industry": "Beverage",
-      "client": "Sahar Sun",
-      "year": "2025",
-      "order": 8,
-      "visible": false,
-      "cardImage": "https://images.unsplash.com/photo-1560461396-ec0ef7bb29dd?auto=format&fit=crop&w=1200&q=85",
-      "heroImage": "https://images.unsplash.com/photo-1560461396-ec0ef7bb29dd?auto=format&fit=crop&w=1800&q=90",
-      "cardAlt": "Colorful beverage cartons on pastel set",
-      "subtitle": "Playful drink packaging with bold shelf presence.",
-      "brandStory": "Playful drink packaging with bold shelf blocking and character-led flavor cues.\n\nStand out in a crowded refrigerated aisle while keeping the family flexible.\n\nHigh-energy illustration, simple flavor coding, bold pack silhouettes.\n\nBuilt for fast recognition across cartons, cans, motion, and seasonal flavors.\n\nAdd final SKU names and production images when ready.",
-      "heroImages": [
-        "https://images.unsplash.com/photo-1560461396-ec0ef7bb29dd?auto=format&fit=crop&w=1800&q=90"
-      ],
-      "gallery": [
-        "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=1600&q=90"
       ]
     },
     {
@@ -327,37 +334,6 @@
       ]
     },
     {
-      "id": "maison-th",
-      "title": "Maison Thé",
-      "services": "Branding / Creative Direction",
-      "categories": [
-        "branding",
-        "packaging",
-        "product",
-        "direction"
-      ],
-      "industry": "Cafe",
-      "client": "Concept Project",
-      "year": "2025",
-      "order": 3,
-      "visible": true,
-      "cardImage": "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786086352499-xgvamg2q.jpg",
-      "heroImage": "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786086352499-xgvamg2q.jpg",
-      "cardAlt": "Luxury tea house branding featuring elegant typography, premium tea ceremony visuals, and refined editorial design.",
-      "subtitle": "Refined tea house identity inspired by slow rituals, timeless craftsmanship, and the elegance of premium tea culture.",
-      "brandStory": "Maison Thé is a contemporary tea house rooted in the timeless ritual of tea. Inspired by Japanese craftsmanship and European elegance, the brand creates a quiet sanctuary where every cup invites people to slow down, reconnect, and appreciate the beauty of intentional moments.\nThe identity embraces minimal typography, organic illustrations, warm earthy tones, and refined editorial compositions to communicate sophistication without excess. Every visual element reflects balance, calmness, and authenticity, transforming tea from a simple beverage into a meaningful daily ritual.\nMaison Thé is more than a tea brand it is an atmosphere where tradition meets modern aesthetics, creating an experience built around mindfulness, craftsmanship, and timeless design.",
-      "heroImages": [],
-      "gallery": [
-        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786086434945-ce37wavt.jpg",
-        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786086854909-zgng4mu1.jpg",
-        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786086431954-os3ghhjf.jpg",
-        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786086804977-pwimt1qg.jpg",
-        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786086788255-r2m0hp4i.jpg",
-        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786086893407-o8h04yxo.jpg",
-        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786086437768-28fcjj59.jpg"
-      ]
-    },
-    {
       "id": "volt",
       "title": "Volt Athletics",
       "services": "Branding / Creative Direction",
@@ -368,7 +344,7 @@
       "industry": "Sportswear",
       "client": "Volt",
       "year": "2024",
-      "order": 12,
+      "order": 11,
       "visible": false,
       "cardImage": "https://images.unsplash.com/photo-1556906781-9a412961c28c?auto=format&fit=crop&w=1200&q=85",
       "heroImage": "https://images.unsplash.com/photo-1556906781-9a412961c28c?auto=format&fit=crop&w=1800&q=90",
@@ -393,7 +369,7 @@
       "industry": "Hospitality",
       "client": "Aria Group",
       "year": "2024",
-      "order": 13,
+      "order": 12,
       "visible": false,
       "cardImage": "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=85",
       "heroImage": "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1800&q=90",
@@ -418,7 +394,7 @@
       "industry": "Spirits",
       "client": "Nocturne",
       "year": "2024",
-      "order": 14,
+      "order": 13,
       "visible": false,
       "cardImage": "https://images.unsplash.com/photo-1569529465841-df597ade617e?auto=format&fit=crop&w=1200&q=85",
       "heroImage": "https://images.unsplash.com/photo-1569529465841-df597ade617e?auto=format&fit=crop&w=1800&q=90",
@@ -443,7 +419,7 @@
       "industry": "Architecture",
       "client": "Forma",
       "year": "2024",
-      "order": 15,
+      "order": 14,
       "visible": false,
       "cardImage": "https://images.unsplash.com/photo-1487958449943-2429e8be8625?auto=format&fit=crop&w=1200&q=85",
       "heroImage": "https://images.unsplash.com/photo-1487958449943-2429e8be8625?auto=format&fit=crop&w=1800&q=90",
@@ -468,7 +444,7 @@
       "industry": "Beauty",
       "client": "Lumen",
       "year": "2024",
-      "order": 16,
+      "order": 15,
       "visible": false,
       "cardImage": "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?auto=format&fit=crop&w=1200&q=85",
       "heroImage": "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?auto=format&fit=crop&w=1800&q=90",
