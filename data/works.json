@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "updatedAt": "2026-08-07T07:22:30.630Z",
+  "updatedAt": "2026-08-07T07:22:35.607Z",
   "works": [
     {
       "id": "ot-martina-pop-corn",
@@ -430,31 +430,6 @@
       ],
       "gallery": [
         "https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=1600&q=90"
-      ]
-    },
-    {
-      "id": "lumen",
-      "title": "Lumen Skincare",
-      "services": "Product / Packaging",
-      "categories": [
-        "product",
-        "packaging"
-      ],
-      "industry": "Beauty",
-      "client": "Lumen",
-      "year": "2024",
-      "order": 15,
-      "visible": false,
-      "cardImage": "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?auto=format&fit=crop&w=1200&q=85",
-      "heroImage": "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?auto=format&fit=crop&w=1800&q=90",
-      "cardAlt": "Clinical skincare packaging",
-      "subtitle": "Clinical-meets-luxury skincare packaging system.",
-      "brandStory": "Clinical-meets-luxury skincare with transparent ingredient storytelling.\n\nBalance scientific credibility with aspirational beauty marketing.\n\nLaboratory-inspired typography, glass-and-aluminum pack system, clean data visualization.\n\nTransparency as luxury — every ingredient named, every claim earned.\n\nAdd clinical study references when approved for public use.",
-      "heroImages": [
-        "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?auto=format&fit=crop&w=1800&q=90"
-      ],
-      "gallery": [
-        "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=1600&q=90"
       ]
     }
   ]
