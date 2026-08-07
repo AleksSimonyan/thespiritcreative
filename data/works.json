@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "updatedAt": "2026-08-07T07:31:19.901Z",
+  "updatedAt": "2026-08-07T07:32:11.525Z",
   "works": [
     {
       "id": "elf-house",
@@ -13,7 +13,7 @@
       "industry": "HoReCa",
       "client": "Elf House Ltd.",
       "year": "2025",
-      "order": 0,
+      "order": 1,
       "visible": true,
       "cardImage": "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786087540355-795g0qqm.jpg",
       "heroImage": "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786087540355-795g0qqm.jpg",
