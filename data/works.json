@@ -1,7 +1,38 @@
 {
   "version": 2,
-  "updatedAt": "2026-08-07T07:16:07.441Z",
+  "updatedAt": "2026-08-07T07:19:06.521Z",
   "works": [
+    {
+      "id": "maison-th",
+      "title": "Maison Thé",
+      "services": "Branding / Creative Direction",
+      "categories": [
+        "branding",
+        "packaging",
+        "product",
+        "direction"
+      ],
+      "industry": "Cafe",
+      "client": "Concept Project",
+      "year": "2025",
+      "order": 10,
+      "visible": true,
+      "cardImage": "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786086352499-xgvamg2q.jpg",
+      "heroImage": "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786086352499-xgvamg2q.jpg",
+      "cardAlt": "Luxury tea house branding featuring elegant typography, premium tea ceremony visuals, and refined editorial design.",
+      "subtitle": "Refined tea house identity inspired by slow rituals, timeless craftsmanship, and the elegance of premium tea culture.",
+      "brandStory": "Maison Thé is a contemporary tea house rooted in the timeless ritual of tea. Inspired by Japanese craftsmanship and European elegance, the brand creates a quiet sanctuary where every cup invites people to slow down, reconnect, and appreciate the beauty of intentional moments.\nThe identity embraces minimal typography, organic illustrations, warm earthy tones, and refined editorial compositions to communicate sophistication without excess. Every visual element reflects balance, calmness, and authenticity, transforming tea from a simple beverage into a meaningful daily ritual.\nMaison Thé is more than a tea brand it is an atmosphere where tradition meets modern aesthetics, creating an experience built around mindfulness, craftsmanship, and timeless design.",
+      "heroImages": [],
+      "gallery": [
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786086434945-ce37wavt.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786086854909-zgng4mu1.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786086431954-os3ghhjf.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786086804977-pwimt1qg.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786086788255-r2m0hp4i.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786086893407-o8h04yxo.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786086437768-28fcjj59.jpg"
+      ]
+    },
     {
       "id": "arm-games-drinks",
       "title": "ARM GAMES DRINKS",
