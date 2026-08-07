@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "updatedAt": "2026-08-07T07:04:43.780Z",
+  "updatedAt": "2026-08-07T07:11:06.758Z",
   "works": [
     {
       "id": "arm-games-drinks",
@@ -263,18 +263,18 @@
       "industry": "Beauty",
       "client": "Tame",
       "year": "2025",
-      "order": 7,
+      "order": 8,
       "visible": true,
-      "cardImage": "https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=1200&q=85",
-      "heroImage": "https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=1800&q=90",
+      "cardImage": "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786086352499-xgvamg2q.jpg",
+      "heroImage": "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786086352499-xgvamg2q.jpg",
       "cardAlt": "Cosmetic product with dramatic light",
       "subtitle": "Minimal cosmetic brand with confident, controlled color.",
       "brandStory": "A cosmetic concept built on simple routines and confident color.\n\nMake minimal product feel ownable without noisy decoration.\n\nControlled art direction with high-contrast sets and precise pack forms.\n\nSoftness and control in equal measure — clean silhouettes, direct photographic tone.\n\nAdd final ingredients and campaign credits when ready.",
-      "heroImages": [
-        "https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=1800&q=90"
-      ],
+      "heroImages": [],
       "gallery": [
-        "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1600&q=90"
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786086431954-os3ghhjf.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786086434945-ce37wavt.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786086437768-28fcjj59.jpg"
       ]
     },
     {
