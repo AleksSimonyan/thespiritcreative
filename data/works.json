@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "updatedAt": "2026-08-07T07:19:26.616Z",
+  "updatedAt": "2026-08-07T07:21:53.198Z",
   "works": [
     {
       "id": "ot-martina-pop-corn",
@@ -339,7 +339,7 @@
       "industry": "Cafe",
       "client": "Concept Project",
       "year": "2025",
-      "order": 11,
+      "order": 3,
       "visible": true,
       "cardImage": "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786086352499-xgvamg2q.jpg",
       "heroImage": "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786086352499-xgvamg2q.jpg",
