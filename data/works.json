@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "updatedAt": "2026-08-07T07:22:39.396Z",
+  "updatedAt": "2026-08-07T07:22:44.310Z",
   "works": [
     {
       "id": "ot-martina-pop-corn",
@@ -380,31 +380,6 @@
       ],
       "gallery": [
         "https://images.unsplash.com/photo-1571902943202-507ec2618e8f?auto=format&fit=crop&w=1600&q=90"
-      ]
-    },
-    {
-      "id": "aria",
-      "title": "Aria Hotels",
-      "services": "Branding / Creative Direction",
-      "categories": [
-        "branding",
-        "direction"
-      ],
-      "industry": "Hospitality",
-      "client": "Aria Group",
-      "year": "2024",
-      "order": 13,
-      "visible": false,
-      "cardImage": "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=85",
-      "heroImage": "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1800&q=90",
-      "cardAlt": "Luxury hotel brand identity",
-      "subtitle": "Boutique hospitality identity with understated luxury.",
-      "brandStory": "Boutique hospitality brand balancing warmth, silence, and understated luxury.\n\nCreate a unified identity across properties with distinct local character.\n\nFlexible monogram system, editorial photography, and tactile print collateral.\n\nLuxury that whispers — material, light, and service as the primary brand signals.\n\nAdd property-specific guidelines when portfolio expands.",
-      "heroImages": [
-        "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1800&q=90"
-      ],
-      "gallery": [
-        "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1600&q=90"
       ]
     }
   ]
