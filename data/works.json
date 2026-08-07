@@ -1,7 +1,36 @@
 {
   "version": 2,
-  "updatedAt": "2026-08-07T06:52:20.576Z",
+  "updatedAt": "2026-08-07T07:03:48.072Z",
   "works": [
+    {
+      "id": "arm-games-drinks",
+      "title": "ARM GAMES DRINKS",
+      "services": "Product / Packaging",
+      "categories": [
+        "packaging",
+        "product"
+      ],
+      "industry": "Beverage",
+      "client": "Union Ltd. & ARM Games",
+      "year": "2025",
+      "order": 7,
+      "visible": true,
+      "cardImage": "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786085936773-45knmks2.jpg",
+      "heroImage": "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786085936773-45knmks2.jpg",
+      "cardAlt": "Premium ARM Games beverage cans with bold geometric packaging design.",
+      "subtitle": "Premium beverage packaging inspired by the iconic ARM Games visual identity.",
+      "brandStory": "ARM Games transforms one of Armenia's most recognizable reality show identities into a bold collectible beverage experience. Inspired by the project's iconic geometric symbols and unmistakable visual language, the packaging is designed to create instant recognition while delivering a modern premium aesthetic.\nBuilt around simplicity, contrast, and strong visual impact, every can combines oversized typography, clean geometric forms, and a distinctive color system that gives each flavor its own identity without compromising the consistency of the collection.\nMore than just packaging, the project demonstrates how entertainment branding can successfully evolve into a commercial product, creating an engaging experience that stands out on retail shelves and across digital platforms.",
+      "heroImages": [],
+      "gallery": [
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786085983692-rwonnmm9.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786085967855-ea9notxw.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786085969990-nuulne0v.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786085964516-acvl5b84.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786085971666-1e613393.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786085966223-yelrjs30.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786085962510-j39k3n3e.jpg"
+      ]
+    },
     {
       "id": "ot-martina-pop-corn",
       "title": "OT MARTINA POP CORN",
