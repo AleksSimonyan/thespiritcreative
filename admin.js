@@ -102,6 +102,31 @@ const isVideoFile = (file) => {
   return type.startsWith("video/") || name.endsWith(".mp4") || name.endsWith(".mov");
 };
 
+const isHeicFile = (file) => {
+  const type = (file.type || "").toLowerCase();
+  const name = (file.name || "").toLowerCase();
+  return (
+    type.includes("heic") ||
+    type.includes("heif") ||
+    name.endsWith(".heic") ||
+    name.endsWith(".heif")
+  );
+};
+
+const isBrowserImageFile = (file) => {
+  const type = (file.type || "").toLowerCase();
+  const name = (file.name || "").toLowerCase();
+  return (
+    type.startsWith("image/") &&
+    !isHeicFile(file) &&
+    !type.includes("svg") &&
+    !name.endsWith(".svg")
+  );
+};
+
+const HEIC_ERROR =
+  "HEIC photos from iPhone can't be processed here. On your phone go to Settings → Camera → Formats → Most Compatible, or convert the photo to JPG before uploading.";
+
 const DIRECT_UPLOAD_LIMIT = 4 * 1024 * 1024;
 const CHUNK_SIZE = 3 * 1024 * 1024;
 
@@ -199,7 +224,13 @@ const uploadBlob = async (blob, label = "image") => {
     });
     const data = await response.json().catch(() => ({}));
     if (response.ok) return data.url;
-    lastError = data.error || lastError;
+    if (response.status === 401) {
+      lastError = "Session expired — log out and log back in, then try again.";
+    } else if (response.status === 404) {
+      lastError = "Upload API not found. Open admin from your live site URL, not as a local file.";
+    } else {
+      lastError = data.error || lastError;
+    }
     if (attempt < 3) await sleep(400 * attempt);
   }
   throw new Error(lastError);
@@ -640,51 +671,82 @@ const blankWork = () =>
 
 const resizeImageToBlob = (file, aspectW, aspectH, maxWidth = 1200, quality = 0.82) =>
   new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onerror = () => reject(new Error("Could not read image."));
-    reader.onload = () => {
-      const image = new Image();
-      image.onerror = () => reject(new Error("Could not load image."));
-      image.onload = () => {
-        const targetRatio = aspectW / aspectH;
-        const sourceRatio = image.width / image.height;
-        let sx;
-        let sy;
-        let sw;
-        let sh;
+    if (isHeicFile(file)) {
+      reject(new Error(HEIC_ERROR));
+      return;
+    }
 
-        if (sourceRatio > targetRatio) {
-          sh = image.height;
-          sw = sh * targetRatio;
-          sx = (image.width - sw) / 2;
-          sy = 0;
-        } else {
-          sw = image.width;
-          sh = sw / targetRatio;
-          sx = 0;
-          sy = (image.height - sh) / 2;
-        }
+    const drawToBlob = (source, width, height) => {
+      const targetRatio = aspectW / aspectH;
+      const sourceRatio = width / height;
+      let sx;
+      let sy;
+      let sw;
+      let sh;
 
-        const scale = Math.min(1, maxWidth / sw);
-        const canvas = document.createElement("canvas");
-        canvas.width = Math.round(sw * scale);
-        canvas.height = Math.round(sh * scale);
-        canvas.getContext("2d").drawImage(image, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
-        canvas.toBlob(
-          (blob) => (blob ? resolve(blob) : reject(new Error("Could not compress image."))),
-          "image/jpeg",
-          quality
-        );
-      };
-      image.src = reader.result;
+      if (sourceRatio > targetRatio) {
+        sh = height;
+        sw = sh * targetRatio;
+        sx = (width - sw) / 2;
+        sy = 0;
+      } else {
+        sw = width;
+        sh = sw / targetRatio;
+        sx = 0;
+        sy = (height - sh) / 2;
+      }
+
+      const scale = Math.min(1, maxWidth / sw);
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.round(sw * scale);
+      canvas.height = Math.round(sh * scale);
+      canvas.getContext("2d").drawImage(source, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
+      source.close?.();
+      canvas.toBlob(
+        (blob) => (blob ? resolve(blob) : reject(new Error("Could not compress image."))),
+        "image/jpeg",
+        quality
+      );
     };
-    reader.readAsDataURL(file);
+
+    const loadWithImageElement = () => {
+      const reader = new FileReader();
+      reader.onerror = () => reject(new Error("Could not read image."));
+      reader.onload = () => {
+        const image = new Image();
+        image.onerror = () =>
+          reject(
+            new Error(
+              "Could not load image. Use JPG or PNG, or convert iPhone HEIC photos to JPG first."
+            )
+          );
+        image.onload = () => drawToBlob(image, image.width, image.height);
+        image.src = reader.result;
+      };
+      reader.readAsDataURL(file);
+    };
+
+    if (typeof createImageBitmap === "function") {
+      createImageBitmap(file)
+        .then((bitmap) => drawToBlob(bitmap, bitmap.width, bitmap.height))
+        .catch(loadWithImageElement);
+      return;
+    }
+
+    loadWithImageElement();
   });
 
 const processImageUpload = async (file, target) => {
-  if (target === "cardImage") return resizeImageToBlob(file, 3, 4, 900, 0.82);
-  if (target === "hero") return resizeImageToBlob(file, 16, 9, 1400, 0.8);
-  return resizeImageToBlob(file, 3, 4, 800, 0.76);
+  if (isHeicFile(file)) throw new Error(HEIC_ERROR);
+
+  try {
+    if (target === "cardImage") return await resizeImageToBlob(file, 3, 4, 900, 0.82);
+    if (target === "hero") return await resizeImageToBlob(file, 16, 9, 1400, 0.8);
+    return await resizeImageToBlob(file, 3, 4, 800, 0.76);
+  } catch (error) {
+    if (isBrowserImageFile(file)) return file;
+    throw error;
+  }
 };
 
 const uploadProcessedFiles = async (files, target, label) => {

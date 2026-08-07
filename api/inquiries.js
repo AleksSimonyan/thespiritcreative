@@ -1,4 +1,5 @@
 import { verifyToken } from "./_lib/auth.js";
+import { sendInquiryEmail } from "./_lib/email.js";
 import { readData, writeData } from "./_lib/storage.js";
 
 const emptyPayload = () => ({
@@ -71,6 +72,16 @@ export async function POST(request) {
 
     const inquiries = [inquiry, ...(await readInquiries())];
     const payload = await saveInquiries(inquiries);
+
+    try {
+      await sendInquiryEmail(inquiry);
+    } catch (error) {
+      console.error("[POST /api/inquiries] email failed", {
+        error: error.message,
+        inquiryId: inquiry.id,
+      });
+    }
+
     return Response.json({ inquiry, ...payload }, { status: 201 });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });

@@ -12,7 +12,6 @@ const portfolioNavNext = document.querySelector(".portfolio-nav-next");
 const trackTop = document.querySelector('[data-track="top"]');
 const trackBottom = document.querySelector('[data-track="bottom"]');
 const caseStudyShell = document.querySelector(".case-study-shell");
-const quotes = [...document.querySelectorAll(".quote")];
 const bookingForm = document.querySelector("#bookingForm");
 const formSuccess = document.querySelector("#formSuccess");
 
@@ -49,10 +48,15 @@ window.addEventListener("load", () => {
   }, 700);
 });
 
+let headerScrollRaf = null;
 window.addEventListener(
   "scroll",
   () => {
-    header?.classList.toggle("is-scrolled", window.scrollY > 20);
+    if (headerScrollRaf) return;
+    headerScrollRaf = requestAnimationFrame(() => {
+      headerScrollRaf = null;
+      header?.classList.toggle("is-scrolled", window.scrollY > 20);
+    });
   },
   { passive: true }
 );
@@ -71,16 +75,6 @@ mainNav?.querySelectorAll("a").forEach((link) => {
     navToggle?.setAttribute("aria-expanded", "false");
   });
 });
-
-/* ── Testimonials ── */
-let quoteIndex = 0;
-if (quotes.length > 1) {
-  setInterval(() => {
-    quotes[quoteIndex].classList.remove("is-current");
-    quoteIndex = (quoteIndex + 1) % quotes.length;
-    quotes[quoteIndex].classList.add("is-current");
-  }, 5000);
-}
 
 /* ── Scroll reveal ── */
 const revealObserver = new IntersectionObserver(
@@ -112,27 +106,13 @@ const observeReveals = () => {
   });
 };
 
-let revealScrollTick = false;
-window.addEventListener(
-  "scroll",
-  () => {
-    if (revealScrollTick) return;
-    revealScrollTick = true;
-    requestAnimationFrame(() => {
-      revealScrollTick = false;
-      observeReveals();
-    });
-  },
-  { passive: true }
-);
-
 const isVideoMedia = (url = "") =>
   /\.(mp4|mov)(\?|#|$)/i.test(url) || /^data:video\//i.test(url);
 
 const renderCardMedia = (src, alt) => {
   if (!src) return "";
   if (isVideoMedia(src)) {
-    return `<video class="project-card-video" src="${escapeHtml(src)}" muted loop playsinline preload="auto" draggable="false" aria-label="${escapeHtml(alt)}"></video>`;
+    return `<video class="project-card-video" src="${escapeHtml(src)}" muted loop playsinline preload="metadata" draggable="false" aria-label="${escapeHtml(alt)}"></video>`;
   }
   return `<img src="${escapeHtml(src)}" alt="${escapeHtml(alt)}" loading="lazy" draggable="false" />`;
 };
@@ -140,7 +120,6 @@ const renderCardMedia = (src, alt) => {
 const getActiveCardVideos = () =>
   [...document.querySelectorAll(".project-card:not(.is-hidden) .project-card-video")];
 
-let cardVideoSyncTimer = null;
 let cardVideoObserver = null;
 
 const pauseCardVideos = (videos = getActiveCardVideos()) => {
@@ -149,72 +128,14 @@ const pauseCardVideos = (videos = getActiveCardVideos()) => {
 
 const syncProjectCardVideos = () => {
   const videos = getActiveCardVideos();
-  if (cardVideoSyncTimer) {
-    clearInterval(cardVideoSyncTimer);
-    cardVideoSyncTimer = null;
-  }
-
   if (!videos.length) return;
 
   videos.forEach((video) => {
     video.muted = true;
     video.playsInline = true;
     video.loop = true;
+    if (video.paused) video.play().catch(() => {});
   });
-
-  let synced = false;
-  const pending = new Set(videos);
-
-  const playTogether = () => {
-    if (synced) return;
-    synced = true;
-
-    videos.forEach((video) => {
-      video.pause();
-      try {
-        video.currentTime = 0;
-      } catch {
-        /* ignore seek errors while loading */
-      }
-    });
-
-    requestAnimationFrame(() => {
-      videos.forEach((video) => {
-        video.play().catch(() => {});
-      });
-    });
-
-    if (videos.length > 1) {
-      const leader = videos[0];
-      cardVideoSyncTimer = setInterval(() => {
-        if (leader.paused || document.hidden) return;
-        const time = leader.currentTime;
-        videos.slice(1).forEach((video) => {
-          if (Math.abs(video.currentTime - time) > 0.18) {
-            try {
-              video.currentTime = time;
-            } catch {
-              /* ignore seek errors */
-            }
-          }
-        });
-      }, 1200);
-    }
-  };
-
-  const markReady = (video) => {
-    pending.delete(video);
-    if (pending.size === 0) playTogether();
-  };
-
-  videos.forEach((video) => {
-    if (video.readyState >= 2) markReady(video);
-    else video.addEventListener("loadeddata", () => markReady(video), { once: true });
-  });
-
-  window.setTimeout(() => {
-    if (!synced) playTogether();
-  }, 2500);
 };
 
 const initProjectCardVideos = () => {
@@ -665,9 +586,6 @@ const renderWorks = () => {
   initPortfolioRows();
   initProjectCardVideos();
   syncProjectCardVideos();
-  initCaseGalleryRows(caseStudyShell);
-  initPhotoGlows(caseStudyShell);
-  initCaseStudyAmbience(caseStudyShell);
   updatePortfolioScrollState();
 };
 
@@ -687,6 +605,76 @@ const syncPortfolioRows = (sourceRow, scrollLeft) => {
   getPortfolioRows().forEach((row) => {
     if (row !== sourceRow) row.scrollLeft = scrollLeft;
   });
+};
+
+let portfolioSuppressClick = false;
+
+const initPortfolioTouchScroll = (row) => {
+  let startX = 0;
+  let startY = 0;
+  let lastY = 0;
+  let lastMoveAt = 0;
+  let axis = null;
+
+  row.addEventListener(
+    "touchstart",
+    (event) => {
+      if (event.touches.length !== 1) return;
+      startX = event.touches[0].clientX;
+      startY = event.touches[0].clientY;
+      lastY = startY;
+      lastMoveAt = Date.now();
+      axis = null;
+    },
+    { passive: true, capture: true }
+  );
+
+  row.addEventListener(
+    "touchmove",
+    (event) => {
+      if (event.touches.length !== 1) return;
+
+      const now = Date.now();
+      if (lastMoveAt && now - lastMoveAt > 150) {
+        axis = null;
+        startX = event.touches[0].clientX;
+        startY = event.touches[0].clientY;
+        lastY = event.touches[0].clientY;
+      }
+      lastMoveAt = now;
+
+      const x = event.touches[0].clientX;
+      const y = event.touches[0].clientY;
+      const dx = x - startX;
+      const dy = y - startY;
+
+      if (!axis) {
+        if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
+        axis = Math.abs(dy) >= Math.abs(dx) ? "y" : "x";
+      }
+
+      if (axis === "y") {
+        event.preventDefault();
+        window.scrollBy(0, lastY - y);
+        lastY = y;
+        if (Math.abs(dy) > 12) portfolioSuppressClick = true;
+      }
+    },
+    { passive: false, capture: true }
+  );
+
+  const resetTouch = () => {
+    axis = null;
+    lastMoveAt = 0;
+    if (portfolioSuppressClick) {
+      window.setTimeout(() => {
+        portfolioSuppressClick = false;
+      }, 350);
+    }
+  };
+
+  row.addEventListener("touchend", resetTouch, { passive: true, capture: true });
+  row.addEventListener("touchcancel", resetTouch, { passive: true, capture: true });
 };
 
 let portfolioScrollRaf = null;
@@ -736,6 +724,18 @@ const initPortfolioRows = () => {
     row.dataset.initialized = "1";
 
     row.addEventListener("scroll", () => updatePortfolioScrollState(), { passive: true });
+
+    row.addEventListener(
+      "wheel",
+      (event) => {
+        if (Math.abs(event.deltaY) <= Math.abs(event.deltaX)) return;
+        window.scrollBy({ top: event.deltaY, behavior: "auto" });
+        event.preventDefault();
+      },
+      { passive: false }
+    );
+
+    initPortfolioTouchScroll(row);
 
     if (!prefersFinePointer) return;
 
@@ -807,15 +807,21 @@ const openProject = (projectId, shouldScroll = true) => {
     s.classList.toggle("is-active", s === study);
   });
 
-  if (shouldScroll) study.scrollIntoView({ behavior: "smooth", block: "start" });
+  if (shouldScroll) study.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth", block: "start" });
   history.replaceState(null, "", `#project-${projectId}`);
 
   study.querySelector(".case-gallery-row")?.scrollTo({ left: 0 });
   const gallerySection = study.querySelector(".case-gallery-section");
   if (gallerySection) updateCaseGalleryScroll(gallerySection);
 
+  initCaseGalleryRows(study);
+  initPhotoGlows(study);
+
   const work = getWorks().find((item) => item.id === projectId);
-  if (work) applyCaseStudyAmbience(study, work);
+  if (work && !study.dataset.ambienceReady) {
+    study.dataset.ambienceReady = "1";
+    applyCaseStudyAmbience(study, work);
+  }
 };
 
 caseStudyShell?.addEventListener("click", (event) => {
@@ -834,8 +840,6 @@ caseStudyShell?.addEventListener("click", (event) => {
   }
 });
 
-renderWorks();
-
 const refreshWorksFromServer = () =>
   window.SpiritWorks.init({ force: true }).then(() => {
     renderWorks();
@@ -845,10 +849,6 @@ window.SpiritWorks.init({ force: true }).then(() => {
   renderWorks();
   const initialProject = window.location.hash.match(/^#project-(.+)$/)?.[1];
   if (initialProject) setTimeout(() => openProject(initialProject, false), 800);
-});
-
-document.addEventListener("visibilitychange", () => {
-  if (document.visibilityState === "visible") refreshWorksFromServer();
 });
 
 window.addEventListener("pageshow", (event) => {
@@ -873,6 +873,11 @@ filterButtons.forEach((btn) => {
 });
 
 portfolioShowcase?.addEventListener("click", (e) => {
+  if (portfolioSuppressClick) {
+    e.preventDefault();
+    e.stopPropagation();
+    return;
+  }
   const trigger = e.target.closest("[data-project]");
   if (trigger) openProject(trigger.dataset.project);
 });
@@ -881,23 +886,47 @@ document.querySelectorAll(".main-nav a, .footer-nav a, .brand, .to-top").forEach
   link.addEventListener("click", () => closeProject());
 });
 
+document.querySelectorAll('a[href^="#"]').forEach((link) => {
+  link.addEventListener("click", (event) => {
+    const targetId = link.getAttribute("href");
+    if (!targetId || targetId === "#top") return;
+    const target = document.querySelector(targetId);
+    if (!target) return;
+    event.preventDefault();
+    target.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth", block: "start" });
+  });
+});
+
 const initHeroLogoLightning = () => {
   const wrap = document.querySelector("#heroLogoWrap");
   if (!wrap || !window.matchMedia("(pointer: fine)").matches) return;
 
-  const onPointerMove = (event) => {
+  let heroLogoRaf = null;
+  let lastEvent = null;
+
+  const updateHeroLogoHover = () => {
+    heroLogoRaf = null;
+    if (!lastEvent) return;
+
     const rect = wrap.getBoundingClientRect();
     const pad = 48;
     const inside =
-      event.clientX >= rect.left - pad &&
-      event.clientX <= rect.right + pad &&
-      event.clientY >= rect.top - pad &&
-      event.clientY <= rect.bottom + pad;
+      lastEvent.clientX >= rect.left - pad &&
+      lastEvent.clientX <= rect.right + pad &&
+      lastEvent.clientY >= rect.top - pad &&
+      lastEvent.clientY <= rect.bottom + pad;
 
     wrap.classList.toggle("is-cursor-over", inside);
   };
 
-  document.addEventListener("pointermove", onPointerMove, { passive: true });
+  document.addEventListener(
+    "pointermove",
+    (event) => {
+      lastEvent = event;
+      if (!heroLogoRaf) heroLogoRaf = requestAnimationFrame(updateHeroLogoHover);
+    },
+    { passive: true }
+  );
 };
 
 initHeroLogoLightning();
@@ -918,6 +947,7 @@ const initCursorFollower = () => {
   let scale = 1;
   let targetScale = 1;
   let visible = false;
+  let cursorRaf = null;
 
   const render = () => {
     const dx = targetX - currentX;
@@ -948,7 +978,19 @@ const initCursorFollower = () => {
       glow.style.opacity = targetScale > 1 ? "0.85" : "0";
     }
 
-    requestAnimationFrame(render);
+    const stillMoving =
+      visible &&
+      (distance >= 0.35 || Math.abs(targetScale - scale) > 0.01);
+
+    if (stillMoving) {
+      cursorRaf = requestAnimationFrame(render);
+    } else {
+      cursorRaf = null;
+    }
+  };
+
+  const scheduleRender = () => {
+    if (!cursorRaf) cursorRaf = requestAnimationFrame(render);
   };
 
   const onPointerMove = (event) => {
@@ -961,12 +1003,15 @@ const initCursorFollower = () => {
       visible = true;
       cursorFollower.classList.add("is-visible");
     }
+
+    scheduleRender();
   };
 
   const onPointerOver = (event) => {
     const isHover = Boolean(event.target.closest(interactiveSelector));
     targetScale = isHover ? 1.32 : 1;
     cursorFollower.classList.toggle("is-hover", isHover);
+    scheduleRender();
   };
 
   document.addEventListener("pointermove", onPointerMove, { passive: true });
@@ -975,9 +1020,11 @@ const initCursorFollower = () => {
     visible = false;
     targetScale = 1;
     cursorFollower.classList.remove("is-visible", "is-hover");
+    if (cursorRaf) {
+      cancelAnimationFrame(cursorRaf);
+      cursorRaf = null;
+    }
   });
-
-  requestAnimationFrame(render);
 };
 
 initCursorFollower();
@@ -985,18 +1032,36 @@ initCursorFollower();
 /* ── Magnetic hover ── */
 function initMagnetic() {
   if (!window.matchMedia("(pointer: fine)").matches) return;
+
+  let magneticRaf = null;
+  const pending = new Map();
+
+  const applyMagnetic = () => {
+    magneticRaf = null;
+    pending.forEach((event, el) => {
+      const rect = el.getBoundingClientRect();
+      const x = event.clientX - rect.left - rect.width / 2;
+      const y = event.clientY - rect.top - rect.height / 2;
+      el.style.transform = `translate(${x * 0.18}px, ${y * 0.18}px)`;
+    });
+    pending.clear();
+  };
+
   document.querySelectorAll(".magnetic").forEach((el) => {
     if (el.dataset.magneticInit) return;
     el.dataset.magneticInit = "1";
 
-    el.addEventListener("mousemove", (e) => {
-      const rect = el.getBoundingClientRect();
-      const x = e.clientX - rect.left - rect.width / 2;
-      const y = e.clientY - rect.top - rect.height / 2;
-      el.style.transform = `translate(${x * 0.18}px, ${y * 0.18}px)`;
-    });
+    el.addEventListener(
+      "mousemove",
+      (e) => {
+        pending.set(el, e);
+        if (!magneticRaf) magneticRaf = requestAnimationFrame(applyMagnetic);
+      },
+      { passive: true }
+    );
 
     el.addEventListener("mouseleave", () => {
+      pending.delete(el);
       el.style.transform = "";
     });
   });
