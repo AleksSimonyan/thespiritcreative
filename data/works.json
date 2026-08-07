@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "updatedAt": "2026-08-07T07:19:06.521Z",
+  "updatedAt": "2026-08-07T07:19:13.303Z",
   "works": [
     {
       "id": "maison-th",
@@ -15,7 +15,7 @@
       "industry": "Cafe",
       "client": "Concept Project",
       "year": "2025",
-      "order": 10,
+      "order": 11,
       "visible": true,
       "cardImage": "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786086352499-xgvamg2q.jpg",
       "heroImage": "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786086352499-xgvamg2q.jpg",
