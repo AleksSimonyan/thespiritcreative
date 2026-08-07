@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "updatedAt": "2026-08-07T07:22:50.168Z",
+  "updatedAt": "2026-08-07T07:22:57.002Z",
   "works": [
     {
       "id": "ot-martina-pop-corn",
@@ -333,28 +333,28 @@
       ]
     },
     {
-      "id": "volt",
-      "title": "Volt Athletics",
-      "services": "Branding / Creative Direction",
+      "id": "meridian",
+      "title": "Meridian Coffee",
+      "services": "Branding / Packaging",
       "categories": [
         "branding",
-        "direction"
+        "packaging"
       ],
-      "industry": "Sportswear",
-      "client": "Volt",
-      "year": "2024",
+      "industry": "Food & Beverage",
+      "client": "Meridian",
+      "year": "2025",
       "order": 11,
       "visible": false,
-      "cardImage": "https://images.unsplash.com/photo-1556906781-9a412961c28c?auto=format&fit=crop&w=1200&q=85",
-      "heroImage": "https://images.unsplash.com/photo-1556906781-9a412961c28c?auto=format&fit=crop&w=1800&q=90",
-      "cardAlt": "Athletic brand visual identity",
-      "subtitle": "Performance sportswear with kinetic campaign language.",
-      "brandStory": "Performance sportswear identity with kinetic typography and high-contrast campaign language.\n\nFeel premium and technical without copying established athletic giants.\n\nModular wordmark, electric accent system, and motion-first art direction.\n\nEnergy encoded in every frame — speed, precision, controlled aggression.\n\nAdd athlete partnerships and campaign credits when ready.",
+      "cardImage": "https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&w=1200&q=85",
+      "heroImage": "https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&w=1800&q=90",
+      "cardAlt": "Specialty coffee packaging",
+      "subtitle": "Specialty coffee brand with origin-forward storytelling.",
+      "brandStory": "Specialty coffee brand with origin-forward storytelling and refined pack architecture.\n\nDifferentiate in a saturated specialty market without cliché craft aesthetics.\n\nTypographic hierarchy, origin maps, and a restrained earth-tone system.\n\nEvery bag reads like a passport stamp — precise, warm, unmistakable.\n\nAdd origin stories and roast profiles when final copy is ready.",
       "heroImages": [
-        "https://images.unsplash.com/photo-1556906781-9a412961c28c?auto=format&fit=crop&w=1800&q=90"
+        "https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&w=1800&q=90"
       ],
       "gallery": [
-        "https://images.unsplash.com/photo-1571902943202-507ec2618e8f?auto=format&fit=crop&w=1600&q=90"
+        "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=1600&q=90"
       ]
     }
   ]
