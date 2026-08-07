@@ -1,7 +1,40 @@
 {
   "version": 2,
-  "updatedAt": "2026-08-07T06:35:11.593Z",
+  "updatedAt": "2026-08-07T06:40:28.074Z",
   "works": [
+    {
+      "id": "chaos-gin",
+      "title": "CHAOS GIN",
+      "services": "Branding / Packaging",
+      "categories": [
+        "branding",
+        "packaging",
+        "product",
+        "direction"
+      ],
+      "industry": "Spirits",
+      "client": "Concept Project",
+      "year": "2025",
+      "order": 5,
+      "visible": true,
+      "cardImage": "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786084438811-pt8325q2.jpg",
+      "heroImage": "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786084438811-pt8325q2.jpg",
+      "cardAlt": "Matte black premium gin bottle with engraved beast illustration and luxury packaging.",
+      "subtitle": "A premium gin identity inspired by the balance between darkness, instinct, and refined minimalism.",
+      "brandStory": "CHAOS explores the contrast between discipline and instinct through a bold yet restrained visual identity. Inspired by the idea of awakening the \"inner beast,\" the project transforms a dark narrative into a premium packaging experience defined by craftsmanship, texture, and minimalism.\nAt the heart of the identity is a hand-illustrated beast engraved directly into the bottle, allowing the artwork to emerge through light and shadow rather than color. Combined with a matte black finish, refined typography, and subtle gloss details, the design creates an object that feels timeless, collectible, and intentionally understated. Rather than relying on excess decoration, CHAOS communicates strength through simplicity, making the bottle itself the centerpiece of the brand experience.",
+      "heroImages": [],
+      "gallery": [
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786084470075-aur2xw4w.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786084465625-svt0bcpa.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786084464186-075hjru1.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786084474349-uk4xuvrr.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786084472274-teyvcrcj.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786084467029-4qbryh4z.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786084468463-q73dm4lg.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786084476116-oi8c1ihf.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786084462707-szmvbaxq.jpg"
+      ]
+    },
     {
       "id": "otmartina-christmas-box",
       "title": "OtMartina Christmas Box",
