@@ -1,39 +1,7 @@
 {
   "version": 2,
-  "updatedAt": "2026-08-07T07:38:25.192Z",
+  "updatedAt": "2026-08-07T07:38:48.342Z",
   "works": [
-    {
-      "id": "dreamy-night",
-      "title": "DREAMY NIGHT",
-      "services": "Branding / Packaging",
-      "categories": [
-        "branding",
-        "packaging",
-        "direction"
-      ],
-      "industry": "Home & Living",
-      "client": "Dreamy Night Ltd.",
-      "year": "2024",
-      "order": 10,
-      "visible": true,
-      "cardImage": "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786088089543-zmnfbsuy.jpg",
-      "heroImage": "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786088089543-zmnfbsuy.jpg",
-      "cardAlt": "Premium bedding branding featuring pastel packaging, luxury gift boxes, and soft lifestyle visuals.",
-      "subtitle": "A calming visual identity for premium bedding essentials inspired by softness, comfort, and peaceful sleep.",
-      "brandStory": "Dreamy Night is a lifestyle brand dedicated to transforming everyday sleep into a calming ritual. Inspired by soft fabrics, gentle light, and the quiet beauty of slow living, the brand celebrates comfort through thoughtful design and refined simplicity.\nThe visual identity embraces pastel tones, minimal typography, and elegant geometric forms to evoke serenity, warmth, and emotional well-being. Every package and visual element is designed to feel as soft and comforting as the products themselves, creating a memorable experience before the box is even opened.\nDreamy Night is more than bedding it is an invitation to rest, recharge, and wake up feeling renewed.",
-      "heroImages": [],
-      "gallery": [
-        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786088111095-r0t7rcxb.jpg",
-        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786088112969-huudbcxj.jpg",
-        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786088118557-9z212orj.jpg",
-        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786088116745-p9ng2qpy.jpg",
-        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786088122014-20s5n5kw.jpg",
-        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786088114807-v7e466gh.jpg",
-        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786088120359-26noz0qn.jpg",
-        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786088127529-ghiqs3dw.jpg",
-        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786088129403-7j6zfrof.jpg"
-      ]
-    },
     {
       "id": "elf-house",
       "title": "ELF HOUSE",
@@ -351,6 +319,38 @@
       ]
     },
     {
+      "id": "dreamy-night",
+      "title": "DREAMY NIGHT",
+      "services": "Branding / Packaging",
+      "categories": [
+        "branding",
+        "packaging",
+        "direction"
+      ],
+      "industry": "Home & Living",
+      "client": "Dreamy Night Ltd.",
+      "year": "2024",
+      "order": 10,
+      "visible": true,
+      "cardImage": "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786088089543-zmnfbsuy.jpg",
+      "heroImage": "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786088089543-zmnfbsuy.jpg",
+      "cardAlt": "Premium bedding branding featuring pastel packaging, luxury gift boxes, and soft lifestyle visuals.",
+      "subtitle": "A calming visual identity for premium bedding essentials inspired by softness, comfort, and peaceful sleep.",
+      "brandStory": "Dreamy Night is a lifestyle brand dedicated to transforming everyday sleep into a calming ritual. Inspired by soft fabrics, gentle light, and the quiet beauty of slow living, the brand celebrates comfort through thoughtful design and refined simplicity.\nThe visual identity embraces pastel tones, minimal typography, and elegant geometric forms to evoke serenity, warmth, and emotional well-being. Every package and visual element is designed to feel as soft and comforting as the products themselves, creating a memorable experience before the box is even opened.\nDreamy Night is more than bedding it is an invitation to rest, recharge, and wake up feeling renewed.",
+      "heroImages": [],
+      "gallery": [
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786088111095-r0t7rcxb.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786088112969-huudbcxj.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786088118557-9z212orj.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786088116745-p9ng2qpy.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786088122014-20s5n5kw.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786088114807-v7e466gh.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786088120359-26noz0qn.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786088127529-ghiqs3dw.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786088129403-7j6zfrof.jpg"
+      ]
+    },
+    {
       "id": "sahar",
       "title": "Sahar Sun",
       "services": "Packaging Design",
@@ -360,8 +360,8 @@
       "industry": "Beverage",
       "client": "Sahar Sun",
       "year": "2025",
-      "order": 10,
-      "visible": true,
+      "order": 11,
+      "visible": false,
       "cardImage": "https://images.unsplash.com/photo-1560461396-ec0ef7bb29dd?auto=format&fit=crop&w=1200&q=85",
       "heroImage": "https://images.unsplash.com/photo-1560461396-ec0ef7bb29dd?auto=format&fit=crop&w=1800&q=90",
       "cardAlt": "Colorful beverage cartons on pastel set",
