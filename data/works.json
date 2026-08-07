@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "updatedAt": "2026-08-07T07:23:01.346Z",
+  "updatedAt": "2026-08-07T07:23:10.879Z",
   "works": [
     {
       "id": "ot-martina-pop-corn",
@@ -305,31 +305,6 @@
       ],
       "gallery": [
         "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=1600&q=90"
-      ]
-    },
-    {
-      "id": "runa",
-      "title": "Runa Wellness",
-      "services": "Branding / Creative Direction",
-      "categories": [
-        "branding",
-        "direction"
-      ],
-      "industry": "Wellness",
-      "client": "Runa",
-      "year": "2025",
-      "order": 10,
-      "visible": false,
-      "cardImage": "https://images.unsplash.com/photo-1526947425960-945c6e72858f?auto=format&fit=crop&w=1200&q=85",
-      "heroImage": "https://images.unsplash.com/photo-1526947425960-945c6e72858f?auto=format&fit=crop&w=1800&q=90",
-      "cardAlt": "Botanical skin care packaging",
-      "subtitle": "Natural care identity with calm, botanical rhythm.",
-      "brandStory": "Natural care identity with botanical materials and a calm visual rhythm.\n\nCreate softness without becoming generic in a crowded wellness market.\n\nEarthy photography, restrained type, modular brand kit for repeat launches.\n\nSimple, tactile, slow — space for material, scent, and routine.\n\nAdd founder story and certifications when ready.",
-      "heroImages": [
-        "https://images.unsplash.com/photo-1526947425960-945c6e72858f?auto=format&fit=crop&w=1800&q=90"
-      ],
-      "gallery": [
-        "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1600&q=90"
       ]
     }
   ]
