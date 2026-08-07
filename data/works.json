@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "updatedAt": "2026-08-07T07:22:26.048Z",
+  "updatedAt": "2026-08-07T07:22:30.630Z",
   "works": [
     {
       "id": "ot-martina-pop-corn",
@@ -284,6 +284,30 @@
       ]
     },
     {
+      "id": "sahar",
+      "title": "Sahar Sun",
+      "services": "Packaging Design",
+      "categories": [
+        "packaging"
+      ],
+      "industry": "Beverage",
+      "client": "Sahar Sun",
+      "year": "2025",
+      "order": 9,
+      "visible": false,
+      "cardImage": "https://images.unsplash.com/photo-1560461396-ec0ef7bb29dd?auto=format&fit=crop&w=1200&q=85",
+      "heroImage": "https://images.unsplash.com/photo-1560461396-ec0ef7bb29dd?auto=format&fit=crop&w=1800&q=90",
+      "cardAlt": "Colorful beverage cartons on pastel set",
+      "subtitle": "Playful drink packaging with bold shelf presence.",
+      "brandStory": "Playful drink packaging with bold shelf blocking and character-led flavor cues.\n\nStand out in a crowded refrigerated aisle while keeping the family flexible.\n\nHigh-energy illustration, simple flavor coding, bold pack silhouettes.\n\nBuilt for fast recognition across cartons, cans, motion, and seasonal flavors.\n\nAdd final SKU names and production images when ready.",
+      "heroImages": [
+        "https://images.unsplash.com/photo-1560461396-ec0ef7bb29dd?auto=format&fit=crop&w=1800&q=90"
+      ],
+      "gallery": [
+        "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=1600&q=90"
+      ]
+    },
+    {
       "id": "runa",
       "title": "Runa Wellness",
       "services": "Branding / Creative Direction",
@@ -294,7 +318,7 @@
       "industry": "Wellness",
       "client": "Runa",
       "year": "2025",
-      "order": 9,
+      "order": 10,
       "visible": false,
       "cardImage": "https://images.unsplash.com/photo-1526947425960-945c6e72858f?auto=format&fit=crop&w=1200&q=85",
       "heroImage": "https://images.unsplash.com/photo-1526947425960-945c6e72858f?auto=format&fit=crop&w=1800&q=90",
@@ -319,7 +343,7 @@
       "industry": "Food & Beverage",
       "client": "Meridian",
       "year": "2025",
-      "order": 10,
+      "order": 11,
       "visible": false,
       "cardImage": "https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&w=1200&q=85",
       "heroImage": "https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&w=1800&q=90",
@@ -344,7 +368,7 @@
       "industry": "Sportswear",
       "client": "Volt",
       "year": "2024",
-      "order": 11,
+      "order": 12,
       "visible": false,
       "cardImage": "https://images.unsplash.com/photo-1556906781-9a412961c28c?auto=format&fit=crop&w=1200&q=85",
       "heroImage": "https://images.unsplash.com/photo-1556906781-9a412961c28c?auto=format&fit=crop&w=1800&q=90",
@@ -369,7 +393,7 @@
       "industry": "Hospitality",
       "client": "Aria Group",
       "year": "2024",
-      "order": 12,
+      "order": 13,
       "visible": false,
       "cardImage": "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=85",
       "heroImage": "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1800&q=90",
@@ -381,31 +405,6 @@
       ],
       "gallery": [
         "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1600&q=90"
-      ]
-    },
-    {
-      "id": "nocturne",
-      "title": "Nocturne Spirits",
-      "services": "Packaging / Product Design",
-      "categories": [
-        "packaging",
-        "product"
-      ],
-      "industry": "Spirits",
-      "client": "Nocturne",
-      "year": "2024",
-      "order": 13,
-      "visible": false,
-      "cardImage": "https://images.unsplash.com/photo-1569529465841-df597ade617e?auto=format&fit=crop&w=1200&q=85",
-      "heroImage": "https://images.unsplash.com/photo-1569529465841-df597ade617e?auto=format&fit=crop&w=1800&q=90",
-      "cardAlt": "Dark spirits bottle design",
-      "subtitle": "Night-inspired gin line with lunar symbolism.",
-      "brandStory": "Night-inspired gin line with lunar symbolism and deep indigo material palette.\n\nStand out on back-bar shelves dominated by transparent bottles.\n\nMatte ceramic-feel glass, embossed moon phases, and copper foil accents.\n\nDarkness as a design material — depth, mystery, and slow discovery.\n\nAdd tasting notes and batch stories when ready.",
-      "heroImages": [
-        "https://images.unsplash.com/photo-1569529465841-df597ade617e?auto=format&fit=crop&w=1800&q=90"
-      ],
-      "gallery": [
-        "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&w=1600&q=90"
       ]
     },
     {
