@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "updatedAt": "2026-08-07T06:52:11.258Z",
+  "updatedAt": "2026-08-07T06:52:16.395Z",
   "works": [
     {
       "id": "ot-martina-pop-corn",
@@ -234,7 +234,7 @@
       "client": "Tame",
       "year": "2025",
       "order": 7,
-      "visible": false,
+      "visible": true,
       "cardImage": "https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=1200&q=85",
       "heroImage": "https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=1800&q=90",
       "cardAlt": "Cosmetic product with dramatic light",
