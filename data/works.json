@@ -1,7 +1,42 @@
 {
   "version": 2,
-  "updatedAt": "2026-08-07T07:23:15.477Z",
+  "updatedAt": "2026-08-07T07:31:07.588Z",
   "works": [
+    {
+      "id": "elf-house",
+      "title": "ELF HOUSE",
+      "services": "Branding / Creative Direction",
+      "categories": [
+        "branding",
+        "direction"
+      ],
+      "industry": "HoReCa",
+      "client": "Elf House Ltd.",
+      "year": "2025",
+      "order": 0,
+      "visible": true,
+      "cardImage": "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786087540355-795g0qqm.jpg",
+      "heroImage": "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786087540355-795g0qqm.jpg",
+      "cardAlt": "Boutique guest house branding featuring logo design, stationery, menus, and hospitality applications.",
+      "subtitle": "A warm hospitality identity inspired by the charm of countryside architecture and the feeling of home.",
+      "brandStory": "Elf House is a boutique guest house created around the idea that hospitality begins with warmth, comfort, and meaningful details. Inspired by traditional architecture, cozy interiors, and the quiet beauty of nature, the brand invites guests into a place where every stay feels personal.\nThe visual identity combines architectural forms with soft earthy colors, creating a recognizable symbol that represents both a welcoming home and the magical atmosphere of the guest house. Every branding element from stationery to menus and guest materials reinforces the feeling of authenticity, craftsmanship, and genuine hospitality.\nMore than a place to stay, Elf House is designed as a destination where people reconnect with nature, slow down, and create lasting memories.",
+      "heroImages": [],
+      "gallery": [
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786087571625-lqsit5kf.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786087648530-5mm0d7cd.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786087643683-b5d5bpxf.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786087580530-h3k6e2kg.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786087577565-dy3opgfr.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786087641192-b3ugo7me.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786087569561-im53wbak.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786087573816-jmsqv3xz.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786087646482-dtgrmyqr.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786087579160-2hljtkr8.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786087650722-5zpylned.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786087575716-70lrgqgx.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1786087582322-6vd0n7x4.jpg"
+      ]
+    },
     {
       "id": "new-project",
       "title": "New Project",
