@@ -821,34 +821,48 @@ const updatePhotoLightbox = () => {
   if (!photoLightboxImage || !lightboxPhotos.length) return;
 
   const photo = lightboxPhotos[lightboxIndex];
-  photoLightboxImage.src = photo.src;
-  photoLightboxImage.alt = photo.alt || "";
-  if (photoLightboxCount) {
-    photoLightboxCount.textContent = `${lightboxIndex + 1} / ${lightboxPhotos.length}`;
-  }
+  const apply = () => {
+    photoLightboxImage.src = photo.src;
+    photoLightboxImage.alt = photo.alt || "";
+    photoLightboxImage.classList.remove("is-switching");
+    if (photoLightboxCount) {
+      photoLightboxCount.textContent = `${lightboxIndex + 1} / ${lightboxPhotos.length}`;
+    }
 
-  const many = lightboxPhotos.length > 1;
-  if (photoLightboxPrev) photoLightboxPrev.hidden = !many;
-  if (photoLightboxNext) photoLightboxNext.hidden = !many;
+    const many = lightboxPhotos.length > 1;
+    if (photoLightboxPrev) photoLightboxPrev.hidden = !many;
+    if (photoLightboxNext) photoLightboxNext.hidden = !many;
 
-  const preload = (index) => {
-    const next = lightboxPhotos[index];
-    if (!next) return;
-    const image = new Image();
-    image.src = next.src;
+    const preload = (index) => {
+      const next = lightboxPhotos[index];
+      if (!next) return;
+      const image = new Image();
+      image.src = next.src;
+    };
+    if (many) {
+      preload((lightboxIndex + 1) % lightboxPhotos.length);
+      preload((lightboxIndex - 1 + lightboxPhotos.length) % lightboxPhotos.length);
+    }
   };
-  if (many) {
-    preload((lightboxIndex + 1) % lightboxPhotos.length);
-    preload((lightboxIndex - 1 + lightboxPhotos.length) % lightboxPhotos.length);
+
+  const current = photoLightboxImage.getAttribute("src");
+  if (current && current !== photo.src && photoLightbox.classList.contains("is-open")) {
+    photoLightboxImage.classList.add("is-switching");
+    window.setTimeout(apply, 180);
+    return;
   }
+  apply();
 };
 
 const closePhotoLightbox = () => {
-  if (!photoLightbox || photoLightbox.hidden) return;
+  if (!photoLightbox || !photoLightbox.classList.contains("is-open")) return;
   photoLightbox.classList.remove("is-open");
-  photoLightbox.hidden = true;
   document.body.classList.remove("is-lightbox-open");
-  lightboxLastFocus?.focus?.();
+  window.setTimeout(() => {
+    photoLightbox.hidden = true;
+    photoLightbox.setAttribute("aria-hidden", "true");
+    lightboxLastFocus?.focus?.();
+  }, 420);
 };
 
 const openPhotoLightbox = (photos, startIndex) => {
@@ -857,10 +871,13 @@ const openPhotoLightbox = (photos, startIndex) => {
   lightboxIndex = Math.max(0, Math.min(startIndex, photos.length - 1));
   lightboxLastFocus = document.activeElement;
   photoLightbox.hidden = false;
-  photoLightbox.classList.add("is-open");
+  photoLightbox.setAttribute("aria-hidden", "false");
   document.body.classList.add("is-lightbox-open");
   updatePhotoLightbox();
-  photoLightboxClose?.focus();
+  requestAnimationFrame(() => {
+    photoLightbox.classList.add("is-open");
+    photoLightboxClose?.focus();
+  });
 };
 
 const stepPhotoLightbox = (direction) => {
@@ -1121,7 +1138,7 @@ function initMagnetic() {
       const rect = el.getBoundingClientRect();
       const x = e.clientX - rect.left - rect.width / 2;
       const y = e.clientY - rect.top - rect.height / 2;
-      el.style.transform = `translate(${x * 0.18}px, ${y * 0.18}px)`;
+      el.style.transform = `translate(${x * 0.1}px, ${y * 0.1}px)`;
     });
 
     el.addEventListener("mouseleave", () => {
