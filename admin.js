@@ -710,6 +710,8 @@ const PROJECT_TYPE_LABELS = {
   direction: "Creative Direction",
   product: "Product Design",
   rebrand: "Rebrand / Redesign",
+  marketing: "Full-Service Marketing",
+  smm: "SMM & Meta Ads",
   other: "Other",
 };
 
