@@ -1176,6 +1176,7 @@ body.is-project-open .marquee { display: none; }
   animation: galleryItemIn 0.75s var(--ease) backwards;
   animation-delay: var(--gallery-delay, 0s);
   transition: border-color 0.25s var(--ease), box-shadow 0.25s var(--ease);
+  cursor: zoom-in;
 }
 
 .case-gallery-item-inner {
@@ -1227,7 +1228,97 @@ body.is-project-open .marquee { display: none; }
   object-fit: cover;
   user-select: none;
   -webkit-user-drag: none;
+  pointer-events: none;
   transition: transform 0.35s var(--ease);
+}
+
+.photo-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 10050;
+  display: none;
+  background: #000;
+  touch-action: none;
+}
+
+.photo-lightbox.is-open {
+  display: block;
+}
+
+.photo-lightbox-stage {
+  position: absolute;
+  inset: 72px 72px 64px;
+  margin: 0;
+  display: grid;
+  place-items: center;
+}
+
+.photo-lightbox-stage img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.photo-lightbox-close,
+.photo-lightbox-nav {
+  position: absolute;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--white);
+  border-radius: 50%;
+  color: var(--white);
+  background: var(--black);
+  transition: background 0.35s var(--ease), color 0.35s var(--ease), opacity 0.35s var(--ease);
+}
+
+.photo-lightbox-close {
+  top: max(16px, env(safe-area-inset-top));
+  right: max(16px, env(safe-area-inset-right));
+  width: 48px;
+  height: 48px;
+  font-size: 28px;
+  line-height: 1;
+}
+
+.photo-lightbox-nav {
+  top: 50%;
+  width: 48px;
+  height: 48px;
+  transform: translateY(-50%);
+}
+
+.photo-lightbox-prev { left: max(12px, env(safe-area-inset-left)); }
+.photo-lightbox-next { right: max(12px, env(safe-area-inset-right)); }
+
+.photo-lightbox-close:hover,
+.photo-lightbox-nav:hover {
+  background: var(--white);
+  color: var(--black);
+}
+
+.photo-lightbox-nav[hidden] {
+  display: none;
+}
+
+.photo-lightbox-count {
+  position: absolute;
+  left: 50%;
+  bottom: max(20px, env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  margin: 0;
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+body.is-lightbox-open {
+  overflow: hidden;
 }
 
 .case-gallery-scroll-ui {
@@ -1825,6 +1916,16 @@ body.is-project-open .marquee { display: none; }
     transform: none;
     margin: 8px auto 28px;
     animation: scrollBounceMobile 2.5s ease-in-out infinite;
+  }
+
+  .photo-lightbox-stage {
+    inset: 64px 16px 56px;
+  }
+
+  .photo-lightbox-close,
+  .photo-lightbox-nav {
+    width: 44px;
+    height: 44px;
   }
 
   .hero-title {

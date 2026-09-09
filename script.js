@@ -268,7 +268,14 @@ const renderCaseGallery = (work) => {
           ${work.gallery
             .map(
               (img, index) => `
-            <figure class="case-gallery-item" style="--gallery-delay:${index * 0.08}s">
+            <figure
+              class="case-gallery-item"
+              style="--gallery-delay:${index * 0.08}s"
+              data-gallery-index="${index}"
+              role="button"
+              tabindex="0"
+              aria-label="View ${escapeHtml(work.title)} photo ${index + 1} full screen"
+            >
               <div class="case-gallery-item-inner">
                 <img src="${escapeHtml(img)}" alt="${escapeHtml(work.title)} photo ${index + 1}" loading="lazy" draggable="false" />
               </div>
@@ -354,6 +361,7 @@ const initCaseGalleryRows = (root = document) => {
       isDragging = true;
       startX = event.clientX;
       scrollStart = row.scrollLeft;
+      delete row.dataset.didDrag;
       row.classList.add("is-dragging");
       section.classList.add("is-scrolling");
       row.setPointerCapture(event.pointerId);
@@ -361,6 +369,7 @@ const initCaseGalleryRows = (root = document) => {
 
     const onPointerMove = (event) => {
       if (!isDragging) return;
+      if (Math.abs(event.clientX - startX) > 8) row.dataset.didDrag = "1";
       pendingScrollLeft = scrollStart - (event.clientX - startX);
       if (!dragRaf) dragRaf = requestAnimationFrame(applyDragScroll);
     };
@@ -783,6 +792,7 @@ window.addEventListener("resize", () => updatePortfolioScrollState(), { passive:
 
 /* ── Case study ── */
 const closeProject = () => {
+  closePhotoLightbox();
   document.body.classList.remove("is-project-open");
   caseStudyShell?.classList.remove("is-open");
   history.replaceState(null, "", window.location.pathname);
@@ -809,8 +819,137 @@ const openProject = (projectId, shouldScroll = true) => {
   if (work) applyCaseStudyAmbience(study, work);
 };
 
+const photoLightbox = document.querySelector("#photoLightbox");
+const photoLightboxImage = document.querySelector("#photoLightboxImage");
+const photoLightboxCount = document.querySelector("#photoLightboxCount");
+const photoLightboxPrev = document.querySelector("#photoLightboxPrev");
+const photoLightboxNext = document.querySelector("#photoLightboxNext");
+const photoLightboxClose = document.querySelector("#photoLightboxClose");
+const photoLightboxStage = document.querySelector("#photoLightboxStage");
+
+let lightboxPhotos = [];
+let lightboxIndex = 0;
+let lightboxLastFocus = null;
+
+const updatePhotoLightbox = () => {
+  if (!photoLightboxImage || !lightboxPhotos.length) return;
+
+  const photo = lightboxPhotos[lightboxIndex];
+  photoLightboxImage.src = photo.src;
+  photoLightboxImage.alt = photo.alt || "";
+  if (photoLightboxCount) {
+    photoLightboxCount.textContent = `${lightboxIndex + 1} / ${lightboxPhotos.length}`;
+  }
+
+  const many = lightboxPhotos.length > 1;
+  if (photoLightboxPrev) photoLightboxPrev.hidden = !many;
+  if (photoLightboxNext) photoLightboxNext.hidden = !many;
+
+  const preload = (index) => {
+    const next = lightboxPhotos[index];
+    if (!next) return;
+    const image = new Image();
+    image.src = next.src;
+  };
+  if (many) {
+    preload((lightboxIndex + 1) % lightboxPhotos.length);
+    preload((lightboxIndex - 1 + lightboxPhotos.length) % lightboxPhotos.length);
+  }
+};
+
+const closePhotoLightbox = () => {
+  if (!photoLightbox || photoLightbox.hidden) return;
+  photoLightbox.classList.remove("is-open");
+  photoLightbox.hidden = true;
+  document.body.classList.remove("is-lightbox-open");
+  lightboxLastFocus?.focus?.();
+};
+
+const openPhotoLightbox = (photos, startIndex) => {
+  if (!photoLightbox || !photos.length) return;
+  lightboxPhotos = photos;
+  lightboxIndex = Math.max(0, Math.min(startIndex, photos.length - 1));
+  lightboxLastFocus = document.activeElement;
+  photoLightbox.hidden = false;
+  photoLightbox.classList.add("is-open");
+  document.body.classList.add("is-lightbox-open");
+  updatePhotoLightbox();
+  photoLightboxClose?.focus();
+};
+
+const stepPhotoLightbox = (direction) => {
+  if (lightboxPhotos.length < 2) return;
+  lightboxIndex = (lightboxIndex + direction + lightboxPhotos.length) % lightboxPhotos.length;
+  updatePhotoLightbox();
+};
+
+const photosFromGallery = (section) =>
+  [...section.querySelectorAll(".case-gallery-item img")].map((img) => ({
+    src: img.currentSrc || img.src,
+    alt: img.alt,
+  }));
+
+const openGalleryItem = (item) => {
+  const section = item.closest(".case-gallery-section");
+  const row = section?.querySelector(".case-gallery-row");
+  if (!section) return;
+  if (row?.dataset.didDrag === "1") {
+    delete row.dataset.didDrag;
+    return;
+  }
+  const photos = photosFromGallery(section);
+  const index = Number(item.dataset.galleryIndex || 0);
+  openPhotoLightbox(photos, index);
+};
+
+photoLightboxClose?.addEventListener("click", closePhotoLightbox);
+photoLightboxPrev?.addEventListener("click", () => stepPhotoLightbox(-1));
+photoLightboxNext?.addEventListener("click", () => stepPhotoLightbox(1));
+photoLightbox?.addEventListener("click", (event) => {
+  if (event.target === photoLightbox) closePhotoLightbox();
+});
+
+if (photoLightboxStage) {
+  let swipeX = 0;
+  let swiping = false;
+
+  photoLightboxStage.addEventListener("pointerdown", (event) => {
+    if (event.pointerType === "mouse" && event.button !== 0) return;
+    swiping = true;
+    swipeX = event.clientX;
+    photoLightboxStage.setPointerCapture(event.pointerId);
+  });
+
+  photoLightboxStage.addEventListener("pointerup", (event) => {
+    if (!swiping) return;
+    swiping = false;
+    const delta = event.clientX - swipeX;
+    if (Math.abs(delta) > 50) stepPhotoLightbox(delta < 0 ? 1 : -1);
+    photoLightboxStage.releasePointerCapture(event.pointerId);
+  });
+
+  photoLightboxStage.addEventListener("pointercancel", () => {
+    swiping = false;
+  });
+}
+
+document.addEventListener("keydown", (event) => {
+  if (!photoLightbox || photoLightbox.hidden) return;
+  if (event.key === "Escape") {
+    event.preventDefault();
+    closePhotoLightbox();
+  } else if (event.key === "ArrowLeft") {
+    event.preventDefault();
+    stepPhotoLightbox(-1);
+  } else if (event.key === "ArrowRight") {
+    event.preventDefault();
+    stepPhotoLightbox(1);
+  }
+});
+
 caseStudyShell?.addEventListener("click", (event) => {
   if (event.target.closest("#caseClose")) {
+    closePhotoLightbox();
     closeProject();
     return;
   }
@@ -822,7 +961,19 @@ caseStudyShell?.addEventListener("click", (event) => {
 
   if (event.target.closest(".case-gallery-next")) {
     scrollCaseGallery(event.target, 1);
+    return;
   }
+
+  const galleryItem = event.target.closest(".case-gallery-item");
+  if (galleryItem) openGalleryItem(galleryItem);
+});
+
+caseStudyShell?.addEventListener("keydown", (event) => {
+  if (event.key !== "Enter" && event.key !== " ") return;
+  const galleryItem = event.target.closest(".case-gallery-item");
+  if (!galleryItem) return;
+  event.preventDefault();
+  openGalleryItem(galleryItem);
 });
 
 renderWorks();

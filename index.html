@@ -28,7 +28,7 @@
     />
     <link rel="icon" href="assets/spirit-mark.png" type="image/png" />
     <link rel="apple-touch-icon" href="assets/spirit-mark.png" />
-    <link rel="stylesheet" href="styles.css?v=62" />
+    <link rel="stylesheet" href="styles.css?v=63" />
   </head>
   <body>
     <a class="skip-link" href="#top">Skip to content</a>
@@ -442,7 +442,27 @@
       <a class="to-top magnetic" href="#top">Back to top</a>
     </footer>
 
+    <div class="photo-lightbox" id="photoLightbox" hidden role="dialog" aria-modal="true" aria-label="Project photo">
+      <button class="photo-lightbox-close" type="button" id="photoLightboxClose" aria-label="Close photo">
+        <span aria-hidden="true">×</span>
+      </button>
+      <button class="photo-lightbox-nav photo-lightbox-prev" type="button" id="photoLightboxPrev" aria-label="Previous photo">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+        </svg>
+      </button>
+      <figure class="photo-lightbox-stage" id="photoLightboxStage">
+        <img id="photoLightboxImage" alt="" />
+      </figure>
+      <button class="photo-lightbox-nav photo-lightbox-next" type="button" id="photoLightboxNext" aria-label="Next photo">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+        </svg>
+      </button>
+      <p class="photo-lightbox-count" id="photoLightboxCount"></p>
+    </div>
+
     <script src="works-data.js?v=53"></script>
-    <script src="script.js?v=64"></script>
+    <script src="script.js?v=65"></script>
   </body>
 </html>
