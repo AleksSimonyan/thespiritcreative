@@ -47,7 +47,7 @@ window.addEventListener("load", () => {
       el.classList.add("is-visible");
     });
     observeReveals();
-  }, 700);
+  }, 400);
 });
 
 window.addEventListener(
@@ -62,7 +62,8 @@ window.addEventListener(
 navToggle?.addEventListener("click", () => {
   const open = mainNav.classList.toggle("is-open");
   navToggle.classList.toggle("is-open", open);
-  navToggle.setAttribute("aria-expanded", open);
+  navToggle.setAttribute("aria-expanded", String(open));
+  document.body.classList.toggle("is-nav-open", open);
 });
 
 mainNav?.querySelectorAll("a").forEach((link) => {
@@ -70,6 +71,7 @@ mainNav?.querySelectorAll("a").forEach((link) => {
     mainNav.classList.remove("is-open");
     navToggle?.classList.remove("is-open");
     navToggle?.setAttribute("aria-expanded", "false");
+    document.body.classList.remove("is-nav-open");
   });
 });
 
@@ -102,20 +104,6 @@ const observeReveals = () => {
     revealObserver.observe(el);
   });
 };
-
-let revealScrollTick = false;
-window.addEventListener(
-  "scroll",
-  () => {
-    if (revealScrollTick) return;
-    revealScrollTick = true;
-    requestAnimationFrame(() => {
-      revealScrollTick = false;
-      observeReveals();
-    });
-  },
-  { passive: true }
-);
 
 const isVideoMedia = (url = "") =>
   /\.(mp4|mov)(\?|#|$)/i.test(url) || /^data:video\//i.test(url);
@@ -262,8 +250,6 @@ const renderCaseGallery = (work) => {
         </div>
       </div>
       <div class="case-gallery-shell">
-        <div class="case-gallery-fade case-gallery-fade--left" aria-hidden="true"></div>
-        <div class="case-gallery-fade case-gallery-fade--right" aria-hidden="true"></div>
         <div class="case-gallery-row">
           ${work.gallery
             .map(
@@ -1051,7 +1037,7 @@ const initCursorFollower = () => {
   const mark = cursorFollower.querySelector(".cursor-follower-mark");
   const glow = cursorFollower.querySelector(".cursor-follower-glow");
   const interactiveSelector =
-    "a, button, input, textarea, select, .magnetic, .project-card, .project-trigger, .social-icon, .filter-btn, .contact-method, .portfolio-nav";
+    "a, button, input, textarea, select, .magnetic, .project-card, .project-trigger, .social-icon, .filter-btn, .contact-method, .portfolio-nav, .case-gallery-item, .photo-lightbox-close, .photo-lightbox-nav";
 
   let targetX = window.innerWidth / 2;
   let targetY = window.innerHeight / 2;
