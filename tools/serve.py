@@ -58,6 +58,39 @@ def write_json(name, payload):
     path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
 
 
+EMAIL_PATTERN = re.compile(r"^[^\s@]+@[^\s@]+\.[^\s@]+$")
+
+
+def parse_public_inquiry(body):
+    if str(body.get("website") or "").strip():
+        return {"honeypot": True}
+
+    inquiry = {
+        "id": body.get("id") or f"inq-{int(time.time() * 1000)}",
+        "fullName": str(body.get("fullName") or "").strip(),
+        "company": str(body.get("company") or "").strip(),
+        "email": str(body.get("email") or "").strip(),
+        "phone": str(body.get("phone") or "").strip(),
+        "projectType": str(body.get("projectType") or "").strip(),
+        "budget": str(body.get("budget") or "").strip(),
+        "message": str(body.get("message") or "").strip(),
+        "createdAt": body.get("createdAt") or time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "read": False,
+    }
+
+    missing = [field for field in ("fullName", "email", "phone", "projectType", "message") if not inquiry[field]]
+    if missing:
+        return {"error": f"Missing required fields: {', '.join(missing)}"}
+
+    if not EMAIL_PATTERN.match(inquiry["email"]):
+        return {"error": "Enter a valid email address."}
+
+    if len(inquiry["phone"].replace(" ", "")) < 6:
+        return {"error": "Enter a valid phone number."}
+
+    return {"inquiry": inquiry}
+
+
 def create_token():
     exp = int(time.time() * 1000) + 86400000
     sig = hmac.new(ADMIN_PASSWORD.encode(), str(exp).encode(), hashlib.sha256).hexdigest()
@@ -262,18 +295,13 @@ class SiteHandler(BaseHTTPRequestHandler):
                     write_json("inquiries.json", payload)
                     return json_response(self, 200, payload)
 
-                inquiry = {
-                    "id": body.get("id") or f"inq-{int(time.time() * 1000)}",
-                    "fullName": body.get("fullName", ""),
-                    "company": body.get("company", ""),
-                    "email": body.get("email", ""),
-                    "phone": body.get("phone", ""),
-                    "projectType": body.get("projectType", ""),
-                    "budget": body.get("budget", ""),
-                    "message": body.get("message", ""),
-                    "createdAt": body.get("createdAt") or time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-                    "read": False,
-                }
+                parsed = parse_public_inquiry(body)
+                if parsed.get("honeypot"):
+                    return json_response(self, 201, {"ok": True})
+                if parsed.get("error"):
+                    return json_response(self, 400, {"error": parsed["error"]})
+
+                inquiry = parsed["inquiry"]
                 data = read_json("inquiries.json") or {"version": 2, "inquiries": []}
                 inquiries = [inquiry] + list(data.get("inquiries", []))
                 payload = {
@@ -282,7 +310,7 @@ class SiteHandler(BaseHTTPRequestHandler):
                     "inquiries": inquiries,
                 }
                 write_json("inquiries.json", payload)
-                return json_response(self, 201, {"inquiry": inquiry, **payload})
+                return json_response(self, 201, {"inquiry": inquiry, "emailSent": False, **payload})
 
             if method == "PUT":
                 if not verify_token(self.headers.get("Authorization")):

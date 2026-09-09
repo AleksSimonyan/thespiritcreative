@@ -28,7 +28,7 @@
     />
     <link rel="icon" href="assets/spirit-mark.png" type="image/png" />
     <link rel="apple-touch-icon" href="assets/spirit-mark.png" />
-    <link rel="stylesheet" href="styles.css?v=58" />
+    <link rel="stylesheet" href="styles.css?v=59" />
   </head>
   <body>
     <a class="skip-link" href="#top">Skip to content</a>
@@ -307,6 +307,10 @@
           <form class="booking-form reveal" id="bookingForm" novalidate>
             <h3>Project Request Form</h3>
             <p class="form-intro">Prefer email? Fill out the form and we'll respond within 48 hours.</p>
+            <label class="hp-field" aria-hidden="true">
+              <span>Website</span>
+              <input name="website" type="text" tabindex="-1" autocomplete="off" />
+            </label>
 
             <div class="form-grid">
               <label class="form-field">
@@ -363,11 +367,14 @@
               </label>
             </div>
 
-            <button class="btn btn-primary btn-lg btn-full magnetic" type="submit">
+            <button class="btn btn-primary btn-lg btn-full magnetic" type="submit" id="formSubmit">
               Send Request
             </button>
             <p class="form-success" id="formSuccess" hidden role="status">
               Thank you — your request has been received. We'll be in touch within 48 hours.
+            </p>
+            <p class="form-error" id="formError" hidden role="alert">
+              We couldn't send your request. Please try again, or email us directly.
             </p>
           </form>
         </div>
@@ -432,7 +439,7 @@
       <a class="to-top magnetic" href="#top">Back to top</a>
     </footer>
 
-    <script src="works-data.js?v=50"></script>
-    <script src="script.js?v=60"></script>
+    <script src="works-data.js?v=52"></script>
+    <script src="script.js?v=62"></script>
   </body>
 </html>

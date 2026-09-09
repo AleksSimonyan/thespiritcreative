@@ -1,5 +1,45 @@
 import { verifyToken } from "./_lib/auth.js";
+import { sendInquiryEmail } from "./_lib/email.js";
 import { readData, writeData } from "./_lib/storage.js";
+
+const REQUIRED_FIELDS = ["fullName", "email", "phone", "projectType", "message"];
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+const trimValue = (value) => String(value || "").trim();
+
+const validateInquiry = (body) => {
+  if (trimValue(body.website)) {
+    return { honeypot: true };
+  }
+
+  const inquiry = {
+    id: body.id || `inq-${Date.now()}`,
+    fullName: trimValue(body.fullName),
+    company: trimValue(body.company),
+    email: trimValue(body.email),
+    phone: trimValue(body.phone),
+    projectType: trimValue(body.projectType),
+    budget: trimValue(body.budget),
+    message: trimValue(body.message),
+    createdAt: body.createdAt || new Date().toISOString(),
+    read: false,
+  };
+
+  const missing = REQUIRED_FIELDS.filter((field) => !inquiry[field]);
+  if (missing.length) {
+    return { error: `Missing required fields: ${missing.join(", ")}` };
+  }
+
+  if (!EMAIL_PATTERN.test(inquiry.email)) {
+    return { error: "Enter a valid email address." };
+  }
+
+  if (inquiry.phone.replace(/\s/g, "").length < 6) {
+    return { error: "Enter a valid phone number." };
+  }
+
+  return { inquiry };
+};
 
 const emptyPayload = () => ({
   version: 2,
@@ -56,22 +96,32 @@ export async function GET(request) {
 export async function POST(request) {
   try {
     const body = await request.json();
-    const inquiry = {
-      id: body.id || `inq-${Date.now()}`,
-      fullName: body.fullName || "",
-      company: body.company || "",
-      email: body.email || "",
-      phone: body.phone || "",
-      projectType: body.projectType || "",
-      budget: body.budget || "",
-      message: body.message || "",
-      createdAt: body.createdAt || new Date().toISOString(),
-      read: false,
-    };
+    const parsed = validateInquiry(body);
 
+    if (parsed.honeypot) {
+      return Response.json({ ok: true }, { status: 201 });
+    }
+
+    if (parsed.error) {
+      return Response.json({ error: parsed.error }, { status: 400 });
+    }
+
+    const inquiry = parsed.inquiry;
     const inquiries = [inquiry, ...(await readInquiries())];
     const payload = await saveInquiries(inquiries);
-    return Response.json({ inquiry, ...payload }, { status: 201 });
+
+    let emailSent = false;
+    try {
+      const result = await sendInquiryEmail(inquiry);
+      emailSent = Boolean(result?.sent);
+    } catch (error) {
+      console.error("[POST /api/inquiries] email failed", {
+        error: error.message,
+        inquiryId: inquiry.id,
+      });
+    }
+
+    return Response.json({ inquiry, emailSent, ...payload }, { status: 201 });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
   }

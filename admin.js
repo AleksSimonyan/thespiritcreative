@@ -704,6 +704,22 @@ const uploadProcessedFiles = async (files, target, label) => {
   }
 };
 
+const PROJECT_TYPE_LABELS = {
+  branding: "Brand Identity",
+  packaging: "Packaging Design",
+  direction: "Creative Direction",
+  product: "Product Design",
+  rebrand: "Rebrand / Redesign",
+  other: "Other",
+};
+
+const BUDGET_LABELS = {
+  "under-5k": "Under $5,000",
+  "5k-15k": "$5,000 – $15,000",
+  "15k-50k": "$15,000 – $50,000",
+  "50k-plus": "$50,000+",
+};
+
 const formatDate = (iso) => {
   const d = new Date(iso);
   return d.toLocaleString(undefined, {
@@ -712,12 +728,14 @@ const formatDate = (iso) => {
   });
 };
 
+const labelFor = (map, value) => map[value] || value || "";
+
 const renderInquiries = () => {
   const inquiries = window.SpiritWorks.getInquiries();
   inquiriesCount.textContent = `${inquiries.length} inquiries`;
 
   if (!inquiries.length) {
-    inquiriesList.innerHTML = `<p class="empty-state">No inquiries yet. Submissions from the website contact form will appear here.</p>`;
+    inquiriesList.innerHTML = `<p class="empty-state">No inquiries yet. New project requests from the website form will appear here and also go to info@thespiritcreative.com.</p>`;
     return;
   }
 
@@ -732,15 +750,15 @@ const renderInquiries = () => {
           <div class="inquiry-meta">
             <span>${escapeHtml(inq.email)}</span>
             <span>${escapeHtml(inq.phone)}</span>
-            ${inq.projectType ? `<span>${escapeHtml(inq.projectType)}</span>` : ""}
-            ${inq.budget ? `<span>Budget: ${escapeHtml(inq.budget)}</span>` : ""}
+            ${inq.projectType ? `<span>${escapeHtml(labelFor(PROJECT_TYPE_LABELS, inq.projectType))}</span>` : ""}
+            ${inq.budget ? `<span>Budget: ${escapeHtml(labelFor(BUDGET_LABELS, inq.budget))}</span>` : ""}
           </div>
           <p class="inquiry-message">${escapeHtml(inq.message)}</p>
           <div class="inquiry-actions">
             <button class="btn-secondary" type="button" data-mark-read="${escapeHtml(inq.id)}" data-read="${inq.read}">
               ${inq.read ? "Mark unread" : "Mark read"}
             </button>
-            <a class="btn-secondary" href="mailto:${escapeHtml(inq.email)}">Reply</a>
+            <a class="btn-secondary" href="mailto:${escapeHtml(inq.email)}?subject=${encodeURIComponent("Re: your project request")}">Reply</a>
             <button class="btn-secondary danger" type="button" data-delete-inquiry="${escapeHtml(inq.id)}">Delete</button>
           </div>
         </article>
@@ -763,7 +781,12 @@ const switchPanel = (panel) => {
   worksPanel.classList.toggle("is-active", panel === "works");
   inquiriesPanel.classList.toggle("is-active", panel === "inquiries");
   panelTitle.textContent = panel === "works" ? "Projects" : "Inquiries";
-  if (panel === "inquiries") renderInquiries();
+  if (panel === "inquiries") {
+    window.SpiritWorks.init({ includeInquiries: true, force: true }).then(() => {
+      renderInquiries();
+      updateBadges();
+    });
+  }
 };
 
 /* Events */

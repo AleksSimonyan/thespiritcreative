@@ -14,6 +14,8 @@ const trackBottom = document.querySelector('[data-track="bottom"]');
 const caseStudyShell = document.querySelector(".case-study-shell");
 const bookingForm = document.querySelector("#bookingForm");
 const formSuccess = document.querySelector("#formSuccess");
+const formError = document.querySelector("#formError");
+const formSubmit = document.querySelector("#formSubmit");
 
 const prefersFinePointer = window.matchMedia("(pointer: fine)").matches;
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -1013,23 +1015,50 @@ const validateField = (field) => {
 bookingForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
   formSuccess.hidden = true;
+  if (formError) {
+    formError.hidden = true;
+    formError.textContent = "We couldn't send your request. Please try again, or email us directly.";
+  }
 
   const fields = [...bookingForm.querySelectorAll("input, select, textarea")].filter(
     (f) => f.name && f.required
   );
   if (!fields.every(validateField)) return;
 
+  const submitButton = formSubmit || bookingForm.querySelector('[type="submit"]');
+  const originalLabel = submitButton?.textContent || "Send Request";
+  if (submitButton) {
+    submitButton.disabled = true;
+    submitButton.textContent = "Sending...";
+  }
+
   try {
     await window.SpiritWorks.addInquiry(Object.fromEntries(new FormData(bookingForm)));
     bookingForm.reset();
     formSuccess.hidden = false;
-    bookingForm.querySelector('[type="submit"]').disabled = true;
+    if (submitButton) {
+      submitButton.textContent = originalLabel;
+    }
 
     setTimeout(() => {
       formSuccess.hidden = true;
-      bookingForm.querySelector('[type="submit"]').disabled = false;
-    }, 6000);
-  } catch {
+      if (submitButton) {
+        submitButton.disabled = false;
+        submitButton.textContent = originalLabel;
+      }
+    }, 8000);
+  } catch (error) {
+    if (formError) {
+      formError.textContent =
+        error?.message && !/failed \(\d+\)/i.test(error.message)
+          ? error.message
+          : "We couldn't send your request. Please try again, or email us directly.";
+      formError.hidden = false;
+    }
+    if (submitButton) {
+      submitButton.disabled = false;
+      submitButton.textContent = originalLabel;
+    }
     fields[0]?.focus();
   }
 });

@@ -534,18 +534,28 @@
   };
 
   const addInquiry = async (data) => {
-    const inquiry = normalizeInquiry({ ...data, id: `inq-${Date.now()}`, read: false });
-    try {
-      await apiRequest("/api/inquiries", {
-        method: "POST",
-        body: JSON.stringify(inquiry),
-      });
-      const inquiries = [inquiry, ...getInquiries()];
-      cacheInquiries(inquiries);
-    } catch {
-      cacheInquiries([inquiry, ...readInquiriesStore()]);
+    const inquiry = {
+      ...normalizeInquiry({ ...data, id: `inq-${Date.now()}`, read: false }),
+      website: String(data.website || "").trim(),
+    };
+    let lastError = null;
+
+    for (let attempt = 1; attempt <= 3; attempt += 1) {
+      try {
+        const result = await apiRequest("/api/inquiries", {
+          method: "POST",
+          body: JSON.stringify(inquiry),
+        });
+        const saved = result?.inquiry ? normalizeInquiry(result.inquiry) : inquiry;
+        cacheInquiries([saved, ...getInquiries().filter((item) => item.id !== saved.id)]);
+        return saved;
+      } catch (error) {
+        lastError = error;
+        if (attempt < 3) await new Promise((resolve) => setTimeout(resolve, 400 * attempt));
+      }
     }
-    return inquiry;
+
+    throw lastError || new Error("Could not send your request. Please try again.");
   };
 
   const markInquiryRead = async (id, read = true) => {
