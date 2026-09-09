@@ -62,7 +62,7 @@ EMAIL_PATTERN = re.compile(r"^[^\s@]+@[^\s@]+\.[^\s@]+$")
 
 
 def parse_public_inquiry(body):
-    if str(body.get("website") or "").strip():
+    if str(body.get("hp_field") or "").strip() or str(body.get("website") or "").strip():
         return {"honeypot": True}
 
     inquiry = {

@@ -536,7 +536,7 @@
   const addInquiry = async (data) => {
     const inquiry = {
       ...normalizeInquiry({ ...data, id: `inq-${Date.now()}`, read: false }),
-      website: String(data.website || "").trim(),
+      hp_field: String(data.hp_field || "").trim(),
     };
     let lastError = null;
 
@@ -546,7 +546,10 @@
           method: "POST",
           body: JSON.stringify(inquiry),
         });
-        const saved = result?.inquiry ? normalizeInquiry(result.inquiry) : inquiry;
+        if (!result?.inquiry) {
+          throw new Error("Could not send your request. Please try again.");
+        }
+        const saved = normalizeInquiry(result.inquiry);
         cacheInquiries([saved, ...getInquiries().filter((item) => item.id !== saved.id)]);
         return saved;
       } catch (error) {

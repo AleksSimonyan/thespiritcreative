@@ -67,6 +67,7 @@ const sendWithResend = async (inquiry) => {
       Authorization: `Bearer ${apiKey}`,
       "Content-Type": "application/json",
     },
+    signal: AbortSignal.timeout(8000),
     body: JSON.stringify({
       from,
       to: [inquiryTo()],
@@ -92,6 +93,7 @@ const sendWithFormSubmit = async (inquiry) => {
       "Content-Type": "application/json",
       Accept: "application/json",
     },
+    signal: AbortSignal.timeout(8000),
     body: JSON.stringify({
       _subject: `New project request — ${inquiry.fullName}`,
       _template: "table",

@@ -8,7 +8,7 @@ const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const trimValue = (value) => String(value || "").trim();
 
 const validateInquiry = (body) => {
-  if (trimValue(body.website)) {
+  if (trimValue(body.hp_field) || trimValue(body.website)) {
     return { honeypot: true };
   }
 
@@ -107,10 +107,22 @@ export async function POST(request) {
     }
 
     const inquiry = parsed.inquiry;
-    const inquiries = [inquiry, ...(await readInquiries())];
-    const payload = await saveInquiries(inquiries);
-
+    let saved = false;
     let emailSent = false;
+    let saveError = null;
+
+    try {
+      const inquiries = [inquiry, ...(await readInquiries())];
+      await saveInquiries(inquiries);
+      saved = true;
+    } catch (error) {
+      saveError = error;
+      console.error("[POST /api/inquiries] save failed", {
+        error: error.message,
+        inquiryId: inquiry.id,
+      });
+    }
+
     try {
       const result = await sendInquiryEmail(inquiry);
       emailSent = Boolean(result?.sent);
@@ -121,7 +133,14 @@ export async function POST(request) {
       });
     }
 
-    return Response.json({ inquiry, emailSent, ...payload }, { status: 201 });
+    if (!saved && !emailSent) {
+      return Response.json(
+        { error: saveError?.message || "Could not send your request. Please try again." },
+        { status: 500 }
+      );
+    }
+
+    return Response.json({ inquiry, emailSent, saved, version: 2 }, { status: 201 });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
   }
