@@ -12,7 +12,6 @@ const portfolioNavNext = document.querySelector(".portfolio-nav-next");
 const trackTop = document.querySelector('[data-track="top"]');
 const trackBottom = document.querySelector('[data-track="bottom"]');
 const caseStudyShell = document.querySelector(".case-study-shell");
-const quotes = [...document.querySelectorAll(".quote")];
 const bookingForm = document.querySelector("#bookingForm");
 const formSuccess = document.querySelector("#formSuccess");
 
@@ -71,16 +70,6 @@ mainNav?.querySelectorAll("a").forEach((link) => {
     navToggle?.setAttribute("aria-expanded", "false");
   });
 });
-
-/* ── Testimonials ── */
-let quoteIndex = 0;
-if (quotes.length > 1) {
-  setInterval(() => {
-    quotes[quoteIndex].classList.remove("is-current");
-    quoteIndex = (quoteIndex + 1) % quotes.length;
-    quotes[quoteIndex].classList.add("is-current");
-  }, 5000);
-}
 
 /* ── Scroll reveal ── */
 const revealObserver = new IntersectionObserver(
