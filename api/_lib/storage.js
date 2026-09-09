@@ -5,18 +5,44 @@ import { parseJsonResponse, parseJsonText } from "./parse.js";
 const DATA_DIR = path.join(process.cwd(), "data");
 const ROOT_DIR = process.cwd();
 
-const githubConfigured = () => Boolean(process.env.GITHUB_TOKEN && process.env.GITHUB_REPO);
+const tokenValue = () =>
+  String(process.env.GITHUB_TOKEN || "")
+    .trim()
+    .replace(/^["']|["']$/g, "");
 
-const githubHeaders = () => ({
-  Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
+const repoValue = () =>
+  String(process.env.GITHUB_REPO || "")
+    .trim()
+    .replace(/^["']|["']$/g, "");
+
+const githubConfigured = () => Boolean(tokenValue() && repoValue().includes("/"));
+
+const githubHeaders = (scheme = "Bearer") => ({
+  Authorization: `${scheme} ${tokenValue()}`,
   Accept: "application/vnd.github+json",
   "X-GitHub-Api-Version": "2022-11-28",
 });
 
+const githubFetch = async (url, options = {}) => {
+  let response = await fetch(url, {
+    ...options,
+    headers: { ...githubHeaders("Bearer"), ...(options.headers || {}) },
+  });
+
+  if (response.status === 401) {
+    response = await fetch(url, {
+      ...options,
+      headers: { ...githubHeaders("token"), ...(options.headers || {}) },
+    });
+  }
+
+  return response;
+};
+
 async function githubGetFileMeta(relativePath) {
-  const [owner, repo] = process.env.GITHUB_REPO.split("/");
+  const [owner, repo] = repoValue().split("/");
   const url = `https://api.github.com/repos/${owner}/${repo}/contents/${relativePath}`;
-  const response = await fetch(url, { headers: githubHeaders() });
+  const response = await githubFetch(url);
 
   if (response.status === 404) return null;
   return parseJsonResponse(response, `githubGetFileMeta ${relativePath}`);
@@ -30,7 +56,7 @@ async function fetchGitHubFileText(payload, relativePath) {
 
   if (payload.download_url) {
     console.info("[githubGetFile] falling back to download_url", { relativePath });
-    const response = await fetch(payload.download_url, { headers: githubHeaders() });
+    const response = await githubFetch(payload.download_url);
     const text = await response.text();
     if (!response.ok) {
       throw new Error(
@@ -81,14 +107,14 @@ async function githubGetFile(relativePath) {
 }
 
 async function githubPutRaw(relativePath, base64Content, sha, message) {
-  const [owner, repo] = process.env.GITHUB_REPO.split("/");
+  const [owner, repo] = repoValue().split("/");
   const url = `https://api.github.com/repos/${owner}/${repo}/contents/${relativePath}`;
   const body = { message, content: base64Content };
   if (sha) body.sha = sha;
 
-  const response = await fetch(url, {
+  const response = await githubFetch(url, {
     method: "PUT",
-    headers: { ...githubHeaders(), "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
   });
 
@@ -189,7 +215,7 @@ async function githubGetFileBuffer(relativePath) {
   }
 
   if (payload.download_url) {
-    const response = await fetch(payload.download_url, { headers: githubHeaders() });
+    const response = await githubFetch(payload.download_url);
     if (!response.ok) {
       throw new Error(`[readAssetBuffer] download failed (${response.status}) for ${relativePath}`);
     }
@@ -225,11 +251,11 @@ export async function deleteAsset(relativePath) {
   if (githubConfigured()) {
     const existing = await githubGetFileMeta(normalizedPath);
     if (!existing?.sha) return;
-    const [owner, repo] = process.env.GITHUB_REPO.split("/");
+    const [owner, repo] = repoValue().split("/");
     const url = `https://api.github.com/repos/${owner}/${repo}/contents/${normalizedPath}`;
-    const response = await fetch(url, {
+    const response = await githubFetch(url, {
       method: "DELETE",
-      headers: { ...githubHeaders(), "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         message: `Remove ${normalizedPath}`,
         sha: existing.sha,
@@ -267,7 +293,7 @@ export async function writeAsset(relativePath, buffer) {
           existing?.sha,
           `Upload ${normalizedPath}`
         );
-        const [owner, repo] = process.env.GITHUB_REPO.split("/");
+        const [owner, repo] = repoValue().split("/");
         const branch = process.env.GITHUB_BRANCH || "main";
         return `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${normalizedPath}`;
       } catch (error) {

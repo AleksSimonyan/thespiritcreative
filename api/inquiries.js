@@ -135,14 +135,24 @@ export async function POST(request) {
 
     if (!saved && !emailSent) {
       return Response.json(
-        { error: saveError?.message || "Could not send your request. Please try again." },
+        {
+          error:
+            "We couldn't send your request. Please email us directly at info@thespiritcreative.com.",
+        },
         { status: 500 }
       );
     }
 
     return Response.json({ inquiry, emailSent, saved, version: 2 }, { status: 201 });
   } catch (error) {
-    return Response.json({ error: error.message }, { status: 500 });
+    console.error("[POST /api/inquiries] unexpected failure", { error: error.message });
+    return Response.json(
+      {
+        error:
+          "We couldn't send your request. Please email us directly at info@thespiritcreative.com.",
+      },
+      { status: 500 }
+    );
   }
 }
 

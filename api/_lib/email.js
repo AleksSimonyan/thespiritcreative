@@ -87,30 +87,40 @@ const sendWithResend = async (inquiry) => {
 
 const sendWithFormSubmit = async (inquiry) => {
   const to = inquiryTo();
-  const response = await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(to)}`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-    },
-    signal: AbortSignal.timeout(8000),
-    body: JSON.stringify({
-      _subject: `New project request — ${inquiry.fullName}`,
-      _template: "table",
-      _captcha: "false",
-      name: inquiry.fullName,
-      email: inquiry.email,
-      phone: inquiry.phone,
-      company: inquiry.company || "Not provided",
-      projectType: labelFor(PROJECT_TYPE_LABELS, inquiry.projectType),
-      budget: labelFor(BUDGET_LABELS, inquiry.budget, "Not provided"),
-      message: inquiry.message,
-    }),
+  const fields = new URLSearchParams({
+    _subject: `New project request — ${inquiry.fullName}`,
+    _template: "table",
+    _captcha: "false",
+    name: inquiry.fullName,
+    email: inquiry.email,
+    phone: inquiry.phone,
+    company: inquiry.company || "Not provided",
+    projectType: labelFor(PROJECT_TYPE_LABELS, inquiry.projectType),
+    budget: labelFor(BUDGET_LABELS, inquiry.budget, "Not provided"),
+    message: inquiry.message,
   });
 
+  const response = await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(to)}`, {
+    method: "POST",
+    headers: { Accept: "application/json" },
+    signal: AbortSignal.timeout(15000),
+    body: fields,
+  });
+
+  const text = await response.text();
   if (!response.ok) {
-    const error = await response.text();
-    throw new Error(error || `Form email failed (${response.status})`);
+    throw new Error(text.slice(0, 300) || `Form email failed (${response.status})`);
+  }
+
+  try {
+    const data = JSON.parse(text);
+    if (data.success === false) throw new Error(data.message || "Form email failed");
+  } catch (error) {
+    if (error instanceof SyntaxError) {
+      /* non-JSON success bodies still count as sent */
+    } else {
+      throw error;
+    }
   }
 
   return { sent: true, via: "formsubmit" };

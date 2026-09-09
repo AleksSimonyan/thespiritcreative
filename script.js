@@ -1048,11 +1048,12 @@ bookingForm?.addEventListener("submit", async (event) => {
       }
     }, 8000);
   } catch (error) {
+    const raw = String(error?.message || "");
+    const technical = /github|credentials|unauthorized|token|failed \(\d+\)/i.test(raw);
     if (formError) {
-      formError.textContent =
-        error?.message && !/failed \(\d+\)/i.test(error.message)
-          ? error.message
-          : "We couldn't send your request. Please try again, or email us directly.";
+      formError.textContent = technical
+        ? "We couldn't send your request. Please email us directly at info@thespiritcreative.com."
+        : raw || "We couldn't send your request. Please try again, or email us directly.";
       formError.hidden = false;
     }
     if (submitButton) {
