@@ -1,5 +1,18 @@
 {
   "version": 2,
-  "updatedAt": "2026-07-28T17:56:00Z",
-  "inquiries": []
+  "updatedAt": "2026-09-09T12:35:55.786Z",
+  "inquiries": [
+    {
+      "id": "inq-1788957365512",
+      "fullName": "Aleks",
+      "company": "sxxbk",
+      "email": "gqkc@mail.ru",
+      "phone": "+37477704605",
+      "projectType": "branding",
+      "budget": "",
+      "message": "kWh",
+      "createdAt": "2026-09-09T12:36:05.512Z",
+      "read": false
+    }
+  ]
 }
