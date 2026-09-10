@@ -388,26 +388,7 @@ h1 strong, h2 strong { font-weight: 600; color: var(--white); }
   font-size: clamp(14px, 1.1vw, 17px);
   font-weight: 800;
   letter-spacing: 0.12em;
-  color: transparent;
-  -webkit-text-stroke: 0.35px rgba(255, 255, 255, 0.85);
-  background-image: linear-gradient(
-    110deg,
-    #ffffff 0%,
-    #ffffff 40%,
-    #eef3ff 50%,
-    #ffffff 60%,
-    #ffffff 100%
-  );
-  background-size: 220% 100%;
-  background-clip: text;
-  -webkit-background-clip: text;
-  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.7)) drop-shadow(0 0 20px rgba(200, 220, 255, 0.4));
-  animation: eyebrowLightning 3.8s var(--ease) infinite;
-}
-
-@keyframes eyebrowLightning {
-  0% { background-position: 130% 0; }
-  35%, 100% { background-position: -130% 0; }
+  color: var(--white);
 }
 
 .hero-title {
@@ -2072,8 +2053,7 @@ body.is-lightbox-open .cursor-follower {
   .case-gallery-row { scroll-behavior: auto; }
   .hero-title,
   .hero-logo-wrap,
-  .hero-logo-img,
-  .hero-content .eyebrow {
+  .hero-logo-img {
     animation: none !important;
     opacity: 1 !important;
     transform: none !important;
