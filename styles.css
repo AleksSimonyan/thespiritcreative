@@ -198,20 +198,17 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .site-header .brand {
   display: flex;
   align-items: center;
-  gap: 12px;
-  flex-shrink: 0;
-  line-height: 0;
+  flex-shrink: 1;
   min-width: 0;
+  line-height: 0;
 }
 
-.brand-wordmark {
-  font-size: clamp(13px, 1.05vw, 16px);
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--white);
-  white-space: nowrap;
-  line-height: 1;
+.brand-lockup {
+  display: block;
+  width: auto;
+  height: clamp(22px, 2.4vw, 32px);
+  max-width: min(52vw, 280px);
+  object-fit: contain;
 }
 
 .main-nav {
@@ -2006,16 +2003,9 @@ body.is-lightbox-open .cursor-follower {
 }
 
 @media (max-width: 600px) {
-  .site-header .brand { gap: 8px; }
-  .brand-mark {
-    width: 32px;
-    height: 32px;
-    max-width: 32px;
-    max-height: 32px;
-  }
-  .brand-wordmark {
-    font-size: 12px;
-    letter-spacing: 0.1em;
+  .brand-lockup {
+    height: 20px;
+    max-width: min(62vw, 220px);
   }
   .project-card { width: min(78vw, 300px); }
   .cta-band-actions { flex-direction: column; align-items: stretch; }
