@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "updatedAt": "2026-09-14T13:40:33.530Z",
+  "updatedAt": "2026-09-14T13:40:43.141Z",
   "works": [
     {
       "id": "hyut",
@@ -34,40 +34,6 @@
         "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1789392922205-ywuc3zs1.jpg",
         "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1789392919826-db12bwpo.jpg",
         "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1789392937773-jf8hjf5n.jpg"
-      ]
-    },
-    {
-      "id": "new-project",
-      "title": "New Project",
-      "services": "Branding / Packaging",
-      "categories": [
-        "branding"
-      ],
-      "industry": "",
-      "client": "",
-      "year": "2026",
-      "order": 0,
-      "visible": true,
-      "cardImage": "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1789392897020-nr8fy9gw.jpg",
-      "heroImage": "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1789392897020-nr8fy9gw.jpg",
-      "cardAlt": "Project image",
-      "subtitle": "Short description of the project.",
-      "brandStory": "",
-      "heroImages": [],
-      "gallery": [
-        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1789392917747-3sw4bcy2.jpg",
-        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1789392919826-db12bwpo.jpg",
-        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1789392922205-ywuc3zs1.jpg",
-        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1789392924188-k17og6v7.jpg",
-        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1789392926086-2lnye45f.jpg",
-        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1789392927878-q0qrw7f9.jpg",
-        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1789392930572-jf9bcp2p.jpg",
-        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1789392933049-8ibiyw0z.jpg",
-        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1789392935635-jvh3odgm.jpg",
-        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1789392937773-jf8hjf5n.jpg",
-        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1789392940460-2fb9t2n2.jpg",
-        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1789392942767-s88mnege.jpg",
-        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1789392945081-bexpzg3t.jpg"
       ]
     },
     {
