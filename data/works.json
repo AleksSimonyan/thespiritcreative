@@ -1,7 +1,41 @@
 {
   "version": 2,
-  "updatedAt": "2026-09-14T13:35:57.469Z",
+  "updatedAt": "2026-09-14T13:40:33.530Z",
   "works": [
+    {
+      "id": "hyut",
+      "title": "HYUT",
+      "services": "Branding / Marketing",
+      "categories": [
+        "branding",
+        "direction"
+      ],
+      "industry": "Beverages",
+      "client": "Union Ltd.",
+      "year": "2026",
+      "order": 0,
+      "visible": true,
+      "cardImage": "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1789392897020-nr8fy9gw.jpg",
+      "heroImage": "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1789392897020-nr8fy9gw.jpg",
+      "cardAlt": "HYUT natural juice brand identity, packaging, and marketing applications.",
+      "subtitle": "Brand identity and packaging for a vibrant fruit juice brand.",
+      "brandStory": "HYUT is a vibrant natural juice brand built around the idea of freshness, natural energy, and joy in every drop.\nThe project focused on creating a distinctive and flexible visual identity that brings the character of fruit into every brand touchpoint. The identity combines expressive typography, bold fruit-inspired colors, and playful graphic elements to create a fresh, energetic, and memorable presence.\nThe branding system was developed across multiple applications, including the logo, packaging direction, color palette, typography, retail refrigerator branding, merchandise, and digital product information cards.\nThe result is a cohesive brand language that connects product, packaging, and lifestyle while making HYUT feel approachable, contemporary, and full of vitality.",
+      "heroImages": [],
+      "gallery": [
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1789392917747-3sw4bcy2.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1789392940460-2fb9t2n2.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1789392926086-2lnye45f.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1789392924188-k17og6v7.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1789392933049-8ibiyw0z.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1789392935635-jvh3odgm.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1789392927878-q0qrw7f9.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1789392930572-jf9bcp2p.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1789392942767-s88mnege.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1789392922205-ywuc3zs1.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1789392919826-db12bwpo.jpg",
+        "https://raw.githubusercontent.com/AleksSimonyan/thespiritcreative/main/assets/uploads/1789392937773-jf8hjf5n.jpg"
+      ]
+    },
     {
       "id": "new-project",
       "title": "New Project",
